@@ -15,10 +15,6 @@ const HomeScreen = () => {
               Wed, 30 October 2024
             </Text>
           </View>
-          <Image
-            source={require("../assets/hero.png")}
-            className="w-20 h-20 object-cover relative -top-24"
-          />
         </View>
 
         <View className="flex flex-col gap-4 items-center justify-between self-center my-20 px-5">
