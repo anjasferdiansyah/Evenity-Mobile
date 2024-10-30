@@ -5,7 +5,7 @@ import MaterialComunityIcons from "react-native-vector-icons/MaterialCommunityIc
 const RegisterScreen = ({ navigation }) => {
   return (
     <View className="flex-1 items-center justify-center bg-white">
-      <View className="w-full h-[70%] px-10">
+      <View className="w-full h-[70%] px-10 flex-1 justify-center">
         <Text className="text-5xl font-bold text-center my-24">Register</Text>
 
         <View className="flex flex-col gap-4">

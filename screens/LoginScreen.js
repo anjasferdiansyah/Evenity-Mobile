@@ -4,7 +4,7 @@ import React from 'react'
 const LoginScreen = ({navigation}) => {
   return (
     <View className="flex-1 items-center justify-center bg-white">
-      <View className="w-full h-[70%] px-10">
+      <View className="w-full h-[70%] px-10 flex-1 justify-center">
         <Text className="text-5xl font-bold text-center my-24">Login</Text>
 
             <View className="flex flex-col gap-4">
@@ -17,7 +17,7 @@ const LoginScreen = ({navigation}) => {
         <TextInput className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs" placeholder='Enter your password'/>
         </View>
             </View>
-            <TouchableOpacity className="bg-[#00AA55] mx-auto w-[90%] mt-20 items-center justify-center px-8 py-3 rounded-full">
+            <TouchableOpacity onPress={() => navigation.navigate('Home')} className="bg-[#00AA55] mx-auto w-[90%] mt-20 items-center justify-center px-8 py-3 rounded-full">
           <Text className="text-white text-xl font-bold" >
             Login!
           </Text>

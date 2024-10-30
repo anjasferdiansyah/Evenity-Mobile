@@ -4,7 +4,7 @@ import hero from '../assets/hero.png'
 
 const AuthScreen = ({navigation}) => {
   return (
-    <View className="pt-10 flex-1 bg-white">
+    <View className="pt-10 flex-1 items-center justify-center bg-white">
       <View className="px-10 mt-4">
         <Image source={hero} />
         <View className="flex flex-col gap-2">
