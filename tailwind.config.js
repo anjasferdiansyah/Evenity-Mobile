@@ -7,7 +7,14 @@ module.exports = {
   theme: {
     extend: {},
     fontFamily: {
-      system : ["Outfit-Regular", "sans-serif"]
+      outfitLight : ["Outfit-Light", "sans-serif"],
+      outfitRegular : ["Outfit-Regular", "sans-serif"],
+      outfitMedium : ["Outfit-Medium", "sans-serif"],
+      outfitSemiBold : ["Outfit-SemiBold", "sans-serif"],
+      outfitBold : ["Outfit-Bold", "sans-serif"],
+      outfitExtraBold : ["Outfit-ExtraBold", "sans-serif"],
+      outfitBlack : ["Outfit-Black", "sans-serif"],
+      outfitExtraBlack : ["Outfit-ExtraBlack", "sans-serif"],
     },
   },
   plugins: [],

@@ -10,11 +10,12 @@
   },
   "dependencies": {
     "@react-native-vector-icons/material-icons": "^0.0.1-alpha.34",
+    "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
     "expo": "~51.0.28",
     "expo-font": "~12.0.10",
-    "expo-splash-screen": "~0.27.6",
+    "expo-splash-screen": "^0.27.6",
     "expo-status-bar": "~1.12.1",
     "nativewind": "^4.1.21",
     "react": "18.2.0",

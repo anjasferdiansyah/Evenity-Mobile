@@ -6,7 +6,7 @@ const CompletingRegister = () => {
   return (
     <View className="flex-1 items-center justify-center bg-white">
       <View className="w-full h-[70%] px-10">
-        <Text className="text-5xl font-bold w-full">Completing Register</Text>
+        <Text className="text-5xl font-outfitBold w-full">Completing Register</Text>
         <View className="flex flex-col gap-4 py-safe-or-12">
         <View className="flex flex-col gap-2">
         <Text>Product Name</Text>

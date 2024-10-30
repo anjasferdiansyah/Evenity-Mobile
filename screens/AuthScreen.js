@@ -9,7 +9,7 @@ const AuthScreen = ({navigation}) => {
         <Image source={hero} />
         <View className="flex flex-col gap-2">
         <TouchableOpacity onPress={() => navigation.replace('Login')} className="bg-[#00AA55] mx-auto w-[80%] items-center justify-center px-8 py-3 rounded-full">
-          <Text className="text-white text-xl font-bold" >
+          <Text className="text-white text-xl font-outfitBold" >
             Login!
           </Text>
         </TouchableOpacity>
@@ -22,7 +22,7 @@ const AuthScreen = ({navigation}) => {
         </View>
       
         <TouchableOpacity className="bg-[#00F279] mx-auto w-[80%] items-center justify-center px-8 py-3 rounded-full">
-          <Text className="text-white text-xl font-bold" onPress={() => navigation.navigate('Register')}>
+          <Text className="text-white text-xl font-outfitBold" onPress={() => navigation.navigate('Register')}>
             Register
           </Text>
         </TouchableOpacity>
