@@ -3,7 +3,6 @@
     "name": "evenity-mobile-app",
     "slug": "evenity-mobile-app",
     "version": "1.0.0",
-    "assetBundlePatterns": ["**/*"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -25,7 +24,19 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/Outfit/static/Outfit-Regular.ttf",
+            "./assets/fonts/Outfit/static/Outfit-Medium.ttf",
+            "./assets/fonts/Outfit/static/Outfit-SemiBold.ttf",
+            "./assets/fonts/Outfit/static/Outfit-Bold.ttf",
+            "./assets/fonts/Outfit/static/Outfit-ExtraBold.ttf",
+            "./assets/fonts/Outfit/static/Outfit-Black.ttf"
+          ]
+        }
+      ]
     ]
   }
 }

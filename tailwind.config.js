@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-import { platformSelect } from "nativewind/theme";
 
 module.exports = {
   // NOTE: Update this to include the paths to all of your component files.
@@ -8,11 +7,7 @@ module.exports = {
   theme: {
     extend: {},
     fontFamily: {
-      system: platformSelect({
-        ios: "Georgia",
-        android: "outfit_regular",
-        default: "ui-sans-serif",
-      })
+      system : ["Outfit-Regular", "sans-serif"]
     },
   },
   plugins: [],
