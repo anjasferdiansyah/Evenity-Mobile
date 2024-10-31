@@ -31,12 +31,10 @@ export default function App() {
         'Outfit-Light': require('./assets/fonts/Outfit/static/Outfit-Light.ttf')
     })
 
-
     useEffect(() => {
         if (error) throw error
         if (fontsLoaded) ExpoSplash.hideAsync()
     }, [fontsLoaded, error])
-
 
     return (
         <Provider store={store}>
@@ -49,8 +47,10 @@ export default function App() {
                     <Stack.Screen name='Auth' component={AuthScreen}/>
                     <Stack.Screen name='Register' component={RegisterScreen}/>
                     <Stack.Screen name="CompletingRegister" component={CompletingRegister}/>
+                    <Stack.Screen name="NewProduct" component={NewProduct}/>
                 </Stack.Navigator>
             </NavigationContainer>
         </Provider>
     );
 }
+

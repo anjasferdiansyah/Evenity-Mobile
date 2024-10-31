@@ -3,8 +3,9 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ProfileScreen from '../../screens/ProfileScreen';
 import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import OrderScreen from '../../screens/OrderScreen';
+import ListRequestScreen from '../../screens/ListRequestScreen';
 import HomeScreen from '../../screens/HomeScreen';
+import RequestNavigation from './RequestNavigation';
 
 const Tab = createBottomTabNavigator()
 
@@ -18,7 +19,7 @@ const TabsNavigation = () => {
           case 'Profile':
             iconName = focused ? 'account-outline' : 'account-outline'
             break;
-          case 'Order':
+          case 'Request':
             iconName = focused ? 'cart-outline' : 'cart-outline'
             break;
             case "Home":
@@ -41,7 +42,7 @@ const TabsNavigation = () => {
       tabBarLabel : '',
     })}>
         <Tab.Screen  name='Home' component={HomeScreen} />
-         <Tab.Screen name='Order' component={OrderScreen} />
+         <Tab.Screen name='Request' component={RequestNavigation} />
          
         <Tab.Screen name='History' component={ProfileScreen} />
         
