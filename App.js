@@ -14,6 +14,7 @@ import CompletingRegister from './screens/CompletingRegister';
 import TabsNavigation from './components/navigation/TabsNavigation';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
+import NewProduct from './screens/NewProduct';
 
 const Stack = createNativeStackNavigator();
 ExpoSplash.preventAutoHideAsync()
@@ -47,6 +48,7 @@ export default function App() {
       <Stack.Screen name='Auth' component={AuthScreen}/>
       <Stack.Screen name='Register' component={RegisterScreen}/>
       <Stack.Screen name="CompletingRegister" component={CompletingRegister}/>
+      <Stack.Screen name="NewProduct" component={NewProduct}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
