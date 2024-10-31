@@ -6,9 +6,9 @@ const AuthScreen = ({navigation}) => {
   return (
     <View className="pt-10 flex-1 items-center justify-center bg-white">
       <View className="px-10 mt-4">
-        <Image source={hero} />
+        <Image className="w-[450px] h-[450px] object-cover mx-auto" source={hero} resizeMode='contain'/>
         <View className="flex flex-col gap-2">
-        <TouchableOpacity onPress={() => navigation.replace('Login')} className="bg-[#00AA55] mx-auto w-[80%] items-center justify-center px-8 py-3 rounded-full">
+        <TouchableOpacity onPress={() => navigation.replace('Login')} className="bg-[#00AA55] mx-auto w-[60%] items-center justify-center px-8 py-3 rounded-full">
           <Text className="text-white text-xl font-outfitBold" >
             Login!
           </Text>
@@ -21,7 +21,7 @@ const AuthScreen = ({navigation}) => {
         <View className="h-[1px] w-1/4 bg-gray-300"></View>
         </View>
       
-        <TouchableOpacity className="bg-[#00F279] mx-auto w-[80%] items-center justify-center px-8 py-3 rounded-full">
+        <TouchableOpacity className="bg-[#00F279] mx-auto w-[60%] items-center justify-center px-8 py-3 rounded-full">
           <Text className="text-white text-xl font-outfitBold" onPress={() => navigation.navigate('Register')}>
             Register
           </Text>
