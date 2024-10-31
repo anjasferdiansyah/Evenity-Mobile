@@ -6,6 +6,7 @@ import MaterialComunityIcons from 'react-native-vector-icons/MaterialCommunityIc
 import ListRequestScreen from '../../screens/ListRequestScreen';
 import HomeScreen from '../../screens/HomeScreen';
 import RequestNavigation from './RequestNavigation';
+import HistoryNavigation from './HistoryNavigation';
 
 const Tab = createBottomTabNavigator()
 
@@ -44,7 +45,7 @@ const TabsNavigation = () => {
         <Tab.Screen  name='Home' component={HomeScreen} />
          <Tab.Screen name='Request' component={RequestNavigation} />
          
-        <Tab.Screen name='History' component={ProfileScreen} />
+        <Tab.Screen name='History' component={HistoryNavigation} />
         
         <Tab.Screen name='Profile' component={ProfileScreen} />
         

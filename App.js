@@ -16,6 +16,7 @@ import {useFonts} from 'expo-font';
 import {useEffect} from 'react';
 import {Provider} from "react-redux";
 import store from "./redux/store";
+import NewProduct from './screens/NewProduct';
 
 const Stack = createNativeStackNavigator();
 ExpoSplash.preventAutoHideAsync()
@@ -39,7 +40,7 @@ export default function App() {
     return (
         <Provider store={store}>
             <NavigationContainer>
-                <Stack.Navigator initialRouteName="Splash" screenOptions={{headerShown: false}}>
+                <Stack.Navigator initialRouteName="Dashboard" screenOptions={{headerShown: false}}>
                     <Stack.Screen name="Dashboard" component={TabsNavigation}/>
                     <Stack.Screen name="Splash" component={SplashScreen}/>
                     <Stack.Screen name="Welcome" component={WelcomeScreen}/>
