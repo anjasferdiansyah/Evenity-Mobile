@@ -14,7 +14,7 @@ const HistoryOrderScreen = ({navigation}) => {
             Rp. 2.000.000
           </Text>
           <View className="flex flex-row justify-center gap-4">
-            <TouchableOpacity onPress={() => navigation.navigate("Withdraw")} className="bg-[#00F279] px-8 py-4 w-[40%] rounded-full">
+            <TouchableOpacity onPress={() => navigation.navigate("WithdrawNext")} className="bg-[#00F279] px-8 py-4 w-[40%] rounded-full">
               <Text className="text-white font-outfitBold text-center">
                 Withdraw
               </Text>

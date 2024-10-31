@@ -6,6 +6,7 @@ import HistoryOrderScreen from '../../screens/HistoryOrderScreen'
 import HistoryOrderDetailScreen from '../../screens/HistoryOrderDetailScreen'
 import WithdrawScreen from '../../screens/WithdrawScreen'
 import WithdrawHistoryScreen from '../../screens/WithdrawHistoryScreen'
+import WithdrawNextScreen from '../../screens/WithdrawNextScreen'
 
 
 const Stack = createNativeStackNavigator()
@@ -16,6 +17,7 @@ const HistoryNavigation = () => {
         <Stack.Screen name='DetailHistory' component={HistoryOrderDetailScreen} />
         <Stack.Screen name="Withdraw" component={WithdrawScreen}/>
         <Stack.Screen name='WithdrawHistory' component={WithdrawHistoryScreen} />
+        <Stack.Screen name='WithdrawNext' component={WithdrawNextScreen} />
     </Stack.Navigator>
   )
 }
