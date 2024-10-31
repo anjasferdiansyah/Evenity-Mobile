@@ -77,7 +77,7 @@ const HistoryOrderScreen = ({ navigation }) => {
   return (
     <View className="flex-1 items-center justify-center bg-white">
       <View className="w-full h-full pt-20 px-10">
-        <Text className="text-5xl font-outfitBold">History Order</Text>
+        <Text className="text-5xl font-outfitBold">History Orders</Text>
         <ScrollView style={[tailwind`mt-5`]}>
           <View className="list-history">
             {historyItems.map((item) => (
