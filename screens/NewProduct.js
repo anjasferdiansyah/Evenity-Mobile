@@ -16,7 +16,7 @@ const NewProduct = ({navigation}) => {
         <View className="flex flex-col gap-2">
         <Text className="font-outfitRegular text-gray-500">Vendor Type</Text>
         <TouchableOpacity className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular" >
-        <RNPickerSelect useNativeAndroidPickerStyle={false} items={[
+        <RNPickerSelect onValueChange={value => console.log(value)} useNativeAndroidPickerStyle={false} items={[
         { label: 'Football', value: 'football' },
         { label: 'Baseball', value: 'baseball' },
         { label: 'Hockey', value: 'hockey' },
