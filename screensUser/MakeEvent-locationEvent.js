@@ -22,20 +22,20 @@ const MakeEventLocation = ({ navigation }) => {
         >
           <MaterialCommunityIcons name="close" size={24} color="white" />
         </TouchableOpacity>
-        <View className="w-full px-10 mb-10" style={[tailwind`mt-5`]}>
+        <View className="w-full px-10" style={[tailwind`mt-5`]}>
           <ProgressBar progress={40} variant="success" />
         </View>
 
-        <View className="px-10">
+        <View className="px-10" style={[tailwind`-mt-5`]}>
           <Text
             className="text-6xl font-outfitSemiBold"
-            style={[tailwind`mb-2`]}
+            style={[tailwind`mb-3`]}
           >
             Where's
           </Text>
           <Text
             className="text-6xl font-outfitSemiBold"
-            style={[tailwind`mb-2`]}
+            style={[tailwind`mb-3`]}
           >
             Event
           </Text>
@@ -61,10 +61,10 @@ const MakeEventLocation = ({ navigation }) => {
           </View>
         </View>
 
-        <View className="w-full px-10 flex flex-row justify-between">
+        <View className="w-full px-10 flex flex-row justify-between " style={[tailwind``] }>
           <TouchableOpacity
             onPress={() => navigation.navigate("next")}
-            className=" mx-auto w-[30%] mt-14 items-center justify-center rounded-full"
+            className=" mx-auto w-[30%] mt-10 items-center justify-center rounded-full"
             style={[tailwind`bg-red-500 p-4`]}
           >
             <MaterialCommunityIcons name="chevron-left" size={24} color="white" />

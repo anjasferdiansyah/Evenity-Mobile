@@ -35,13 +35,13 @@ const MakeEventDate = ({ navigation }) => {
         <View className="px-10">
           <Text
             className="text-6xl font-outfitSemiBold"
-            style={[tailwind`mb-2`]}
+            style={[tailwind`mb-3`]}
           >
             When's
           </Text>
           <Text
             className="text-6xl font-outfitSemiBold"
-            style={[tailwind`mb-2`]}
+            style={[tailwind`mb-3`]}
           >
             Your
           </Text>
