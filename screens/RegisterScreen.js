@@ -38,7 +38,7 @@ const RegisterScreen = ({ navigation }) => {
             />
           </View>
         </View>
-        <TouchableOpacity className="bg-[#00AA55] mx-auto w-[90%] mt-14 items-center justify-center px-8 py-3 rounded-full">
+        <TouchableOpacity onPress={() => navigation.navigate("CompletingRegister")} className="bg-[#00AA55] mx-auto w-[90%] mt-14 items-center justify-center px-8 py-3 rounded-full">
           <Text className="text-white text-xl font-outfitBold py-1.5">Register</Text>
         </TouchableOpacity>
         <Text className="text-center text-gray-500 text-xs mt-4 font-outfitRegular">

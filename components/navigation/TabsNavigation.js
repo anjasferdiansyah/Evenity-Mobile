@@ -18,17 +18,16 @@ const Tab = createBottomTabNavigator();
 
 const TabsNavigation = () => {
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color }) => {
-          let iconName;
-          switch (route.name) {
-            case "Profile":
-              iconName = focused ? "account-outline" : "account-outline";
-              break;
-            case "Order":
-              iconName = focused ? "ferris-wheel" : "ferris-wheel";
-              break;
+    <Tab.Navigator screenOptions={({route}) => ({
+      tabBarIcon: ({focused, color}) => {
+        let iconName;
+        switch (route.name) {
+          case 'Profile':
+            iconName = focused ? 'account-outline' : 'account-outline'
+            break;
+          case 'Request':
+            iconName = focused ? 'cart-outline' : 'cart-outline'
+            break;
             case "Home":
               iconName = focused ? "home-outline" : "home-outline";
               break;
@@ -57,6 +56,7 @@ const TabsNavigation = () => {
       <Tab.Screen name="History" component={ProfileScreen} />
 
       <Tab.Screen name="Profile" component={ProfileScreen} />
+
     </Tab.Navigator>
   );
 };
