@@ -1,8 +1,9 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
+import { TouchableOpacity } from 'react-native'
 
-const ListRequestScreen = () => {
+const ListRequestScreen = ({navigation}) => {
   return (
     <View className="flex-1 items-center justify-center bg-white">
     <View className="w-full h-full pt-20 px-10">
@@ -19,9 +20,9 @@ const ListRequestScreen = () => {
               Malang, Indonesia
             </Text>
           </View >
-           <View className="p-4 bg-white rounded-full">
-            <AntDesignIcons name='right' size={30} color={'#00AA55'} />
-           </View>
+           <TouchableOpacity onPress={() => navigation.navigate('DetailRequest')} className="p-4 bg-white rounded-full">
+            <AntDesignIcons name='arrowleft' size={30} color={'#00AA55'} />
+           </TouchableOpacity>
         </View>
         </View>
       
