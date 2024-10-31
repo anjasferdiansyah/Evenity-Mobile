@@ -9,6 +9,7 @@ import OrderScreen from "../../screens/OrderScreen";
 import HomeScreenUser from "../../screensUser/HomeScreenUsr";
 import MakeEventName from "../../screensUser/MakeEvent-nameEvent";
 import MakeEventLocation from "../../screensUser/MakeEvent-locationEvent";
+import MakeEventDate from "../../screensUser/MakeEvent-dateEvent";
 
 const Tab = createBottomTabNavigator();
 
@@ -48,7 +49,7 @@ const TabsNavigation = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreenUser} />
-      <Tab.Screen name="Order" component={MakeEventLocation} />
+      <Tab.Screen name="Order" component={MakeEventDate} />
 
       <Tab.Screen name="History" component={ProfileScreen} />
 
