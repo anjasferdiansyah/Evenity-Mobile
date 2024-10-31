@@ -17,7 +17,7 @@ const LoginScreen = ({navigation}) => {
         <TextInput className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight" placeholder='Enter your password'/>
         </View>
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('Home')} className="bg-[#00AA55] mx-auto w-[90%] mt-20 items-center justify-center px-8 py-3 rounded-full">
+            <TouchableOpacity onPress={() => navigation.navigate('Dashboard')} className="bg-[#00AA55] mx-auto w-[90%] mt-20 items-center justify-center px-8 py-3 rounded-full">
           <Text className="text-white text-xl font-outfitBold" >
             Login
           </Text>

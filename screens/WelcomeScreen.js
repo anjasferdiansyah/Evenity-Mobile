@@ -8,8 +8,8 @@ const WelcomeScreen = ({navigation}) => {
     <View className="flex-1 items-center justify-center bg-white">
         <Image className="w-100 h-100" source={hero} />
         <Text className="text-3xl font-outfitBold mb-10 w-[200px] text-center" >Make Your Event Easy With us</Text>
-        <TouchableOpacity className="bg-[#00AA55] px-8 py-2 rounded-full">
-          <Text className="text-white text-xl font-outfitBold" onPress={() => navigation.dispatch(StackActions.replace('Auth'))}>
+        <TouchableOpacity onPress={() => navigation.dispatch(StackActions.replace('Auth'))} className="bg-[#00AA55] px-8 py-2 rounded-full">
+          <Text className="text-white text-xl font-outfitBold" >
             Next
           </Text>
         </TouchableOpacity>
