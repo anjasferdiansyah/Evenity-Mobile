@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { TouchableOpacity } from "react-native";
 import { ProgressBar } from "../components/progress-bar";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import tailwind from "twrnc";
+
 
 const MakeEventName = ({ navigation }) => {
   return (
@@ -16,17 +18,21 @@ const MakeEventName = ({ navigation }) => {
           borderRadius: 50,
           padding: 10,
         }}
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate("Home")}
       >
         <MaterialCommunityIcons name="close" size={24} color="white" />
       </TouchableOpacity>
-      <View className="w-full px-10 mb-10 mt-10">
+      <View className="w-full px-10" style={[tailwind`-mt-15`]}>
         <ProgressBar progress={20} variant="success" />
       </View>
 
-      <View className="px-10 mt-12">
-        <Text className="text-6xl font-outfitSemiBold mb-4">Name</Text>
-        <Text className="text-6xl font-outfitSemiBold mb-4">Your</Text>
+      <View className="px-10" style={[tailwind`mt-5`]}>
+        <Text className="text-6xl font-outfitSemiBold" style={[tailwind`mb-3`]}>
+          Name
+        </Text>
+        <Text className="text-6xl font-outfitSemiBold" style={[tailwind`mb-3`]}>
+          Your
+        </Text>
         <Text className="text-6xl font-outfitExtraBold">Event?</Text>
       </View>
       <View className="flex flex-col gap-4 w-full mt-12 px-10">
@@ -41,7 +47,7 @@ const MakeEventName = ({ navigation }) => {
 
       <View className="w-full px-10">
         <TouchableOpacity
-          onPress={() => navigation.navigate("next")}
+          onPress={() => navigation.navigate("MakeEventLocation")}
           className="bg-[#00AA55] mx-auto w-full mt-14 items-center justify-center py-3 rounded-full"
         >
           <Text className="text-white text-xl font-outfitBold py-1.5">

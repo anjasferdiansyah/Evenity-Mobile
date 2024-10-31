@@ -14,6 +14,13 @@ import CompletingRegister from "./screens/CompletingRegister";
 
 // User Imports
 import HomeScreen from "./screensUser/HomeScreenUsr";
+import MakeEventName from "./screensUser/MakeEvent-nameEvent";
+import MakeEventLocation from "./screensUser/MakeEvent-locationEvent";
+import MakeEventDate from "./screensUser/MakeEvent-dateEvent";
+import MakeEventTheme from "./screensUser/MakeEvent-themeEvent";
+import ChooseVendor from "./screensUser/MakeEvent-chooseVendor";
+import MakeEventCapacity from "./screensUser/MakeEvent-capacityEvent";
+import MakeEventTransactionNote from "./screensUser/MakeEvent-transactionNote";
 
 import TabsNavigation from "./components/navigation/TabsNavigation";
 import { useFonts } from "expo-font";
@@ -54,6 +61,13 @@ export default function App() {
       <Stack.Screen name='Auth' component={AuthScreen}/>
       <Stack.Screen name='Register' component={RegisterScreen}/>
       <Stack.Screen name="CompletingRegister" component={CompletingRegister}/> */}
+        <Stack.Screen name="MakeEventName" component={MakeEventName} />
+        <Stack.Screen name="MakeEventLocation" component={MakeEventLocation} />
+        <Stack.Screen name="MakeEventDate" component={MakeEventDate} />
+        <Stack.Screen name="MakeEventTheme" component={MakeEventTheme} />
+        <Stack.Screen name="MakeEventCapacity" component={MakeEventCapacity} />
+        <Stack.Screen name="ChooseVendor" component={ChooseVendor} />
+        <Stack.Screen name="MakeEventTransactionNote" component={MakeEventTransactionNote} />
       </Stack.Navigator>
     </NavigationContainer>
   );

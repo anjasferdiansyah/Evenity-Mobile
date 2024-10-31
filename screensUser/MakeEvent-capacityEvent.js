@@ -11,7 +11,7 @@ import { ProgressBar } from "../components/progress-bar";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import tailwind from "twrnc";
 
-const MakeCapacityTheme = ({ navigation }) => {
+const MakeEventCapacity = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View className="flex-1 justify-center bg-white">
@@ -28,7 +28,7 @@ const MakeCapacityTheme = ({ navigation }) => {
         >
           <MaterialCommunityIcons name="close" size={24} color="white" />
         </TouchableOpacity>
-        <View className="w-full px-10 mb-10" style={[tailwind`-mt-10`]}>
+        <View className="w-full px-10" style={[tailwind`-mt-20`]}>
           <ProgressBar progress={80} variant="success" />
         </View>
 
@@ -65,7 +65,7 @@ const MakeCapacityTheme = ({ navigation }) => {
           style={[tailwind`-my-5`]}
         >
           <TouchableOpacity
-            onPress={() => navigation.navigate("next")}
+            onPress={() => navigation.navigate("MakeEventTheme")}
             className=" mx-auto w-[30%] mt-14 items-center justify-center rounded-full"
             style={[tailwind`bg-red-500 p-4`]}
           >
@@ -77,7 +77,7 @@ const MakeCapacityTheme = ({ navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate("next")}
+            onPress={() => navigation.navigate("ChooseVendor")}
             className="bg-[#00AA55] mx-auto mt-14 items-center justify-center py-3 rounded-full"
             style={[tailwind`w-[80%]`]}
           >
@@ -91,4 +91,4 @@ const MakeCapacityTheme = ({ navigation }) => {
   );
 };
 
-export default MakeCapacityTheme;
+export default MakeEventCapacity;
