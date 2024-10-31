@@ -33,7 +33,7 @@ const LoginScreen = ({ navigation }) => {
           </View>
         </View>
         <TouchableOpacity
-          onPress={() => navigation.navigate("Home")}
+          onPress={() => navigation.navigate("Dashboard")}
           className="bg-[#00AA55] mx-auto w-[90%] mt-20 items-center justify-center px-8 py-3 rounded-full"
         >
           <Text className="text-white text-xl font-outfitBold py-1.5">
