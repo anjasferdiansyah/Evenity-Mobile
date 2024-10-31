@@ -1,3 +1,13 @@
+// User Imports
+import HomeScreen from "./screensUser/HomeScreenUsr";
+import MakeEventName from "./screensUser/MakeEvent-nameEvent";
+import MakeEventLocation from "./screensUser/MakeEvent-locationEvent";
+import MakeEventDate from "./screensUser/MakeEvent-dateEvent";
+import MakeEventTheme from "./screensUser/MakeEvent-themeEvent";
+import ChooseVendor from "./screensUser/MakeEvent-chooseVendor";
+import MakeEventCapacity from "./screensUser/MakeEvent-capacityEvent";
+import MakeEventTransactionNote from "./screensUser/MakeEvent-transactionNote";
+
 import {StatusBar} from 'expo-status-bar';
 import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import "./global.css"
@@ -11,15 +21,12 @@ import LoginScreen from './screens/LoginScreen';
 import AuthScreen from './screens/AuthScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import CompletingRegister from './screens/CompletingRegister';
-import TabsNavigation from './components/navigation/TabsNavigation';
-import {useFonts} from 'expo-font';
-import {useEffect} from 'react';
 import {Provider} from "react-redux";
 import store from "./redux/store";
-import NewProduct from "./screens/NewProduct";
+import NewProduct from './screens/NewProduct';
 
 const Stack = createNativeStackNavigator();
-ExpoSplash.preventAutoHideAsync()
+ExpoSplash.preventAutoHideAsync();
 
 export default function App() {
 
@@ -49,9 +56,15 @@ export default function App() {
                     <Stack.Screen name='Register' component={RegisterScreen}/>
                     <Stack.Screen name="CompletingRegister" component={CompletingRegister}/>
                     <Stack.Screen name="NewProduct" component={NewProduct}/>
+        <Stack.Screen name="MakeEventName" component={MakeEventName} />
+        <Stack.Screen name="MakeEventLocation" component={MakeEventLocation} />
+        <Stack.Screen name="MakeEventDate" component={MakeEventDate} />
+        <Stack.Screen name="MakeEventTheme" component={MakeEventTheme} />
+        <Stack.Screen name="MakeEventCapacity" component={MakeEventCapacity} />
+        <Stack.Screen name="ChooseVendor" component={ChooseVendor} />
+        <Stack.Screen name="MakeEventTransactionNote" component={MakeEventTransactionNote} />
                 </Stack.Navigator>
             </NavigationContainer>
         </Provider>
     );
 }
-
