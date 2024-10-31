@@ -11,6 +11,7 @@ import MakeEventName from "../../screensUser/MakeEvent-nameEvent";
 import MakeEventLocation from "../../screensUser/MakeEvent-locationEvent";
 import MakeEventDate from "../../screensUser/MakeEvent-dateEvent";
 import MakeEventTheme from "../../screensUser/MakeEvent-themeEvent";
+import MakeEventCapacity from "../../screensUser/MakeEvent-capacityEvent";
 
 const Tab = createBottomTabNavigator();
 
@@ -50,7 +51,7 @@ const TabsNavigation = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreenUser} />
-      <Tab.Screen name="Order" component={MakeEventTheme} />
+      <Tab.Screen name="Order" component={MakeEventCapacity} />
 
       <Tab.Screen name="History" component={ProfileScreen} />
 
