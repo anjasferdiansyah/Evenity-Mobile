@@ -9,7 +9,7 @@ const HistoryOrderDetailScreen = ({navigation}) => {
             <AntDesignIcons name='arrowleft' size={20} color={'white'} />
         </TouchableOpacity>
         <View className="mt-12 border-b border-gray-300 w-full">
-        <Text className="w-full text-5xl font-outfitBold pb-4">Detail Request</Text>
+        <Text className="w-full text-5xl font-outfitBold pb-4">Detail Order</Text>
         </View>
         <View className="h-[50%]">
         <ScrollView className="">
