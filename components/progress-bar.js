@@ -1,12 +1,7 @@
 import { View, ViewStyle } from "react-native";
 import tailwind from "twrnc";
 
-type ProgressBarProps = {
-  variant?: "default" | "success" | "destructive" | "warning";
-  progress: number;
-  containerStyle?: ViewStyle;
-  barStyle?: ViewStyle;
-};
+
 
 /**
  * React Native progress bar component built with Tailwind CSS
@@ -16,7 +11,7 @@ export const ProgressBar = ({
   progress,
   containerStyle,
   barStyle,
-}: ProgressBarProps) => {
+}) => {
   const variants = {
     default: tailwind`bg-blue-400`,
     success: tailwind`bg-green-400`,
