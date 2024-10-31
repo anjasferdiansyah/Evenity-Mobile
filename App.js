@@ -40,7 +40,7 @@ export default function App() {
     return (
         <Provider store={store}>
             <NavigationContainer>
-                <Stack.Navigator initialRouteName="Dashboard" screenOptions={{headerShown: false}}>
+                <Stack.Navigator initialRouteName="Splash" screenOptions={{headerShown: false}}>
                     <Stack.Screen name="Dashboard" component={TabsNavigation}/>
                     <Stack.Screen name="Splash" component={SplashScreen}/>
                     <Stack.Screen name="Welcome" component={WelcomeScreen}/>
