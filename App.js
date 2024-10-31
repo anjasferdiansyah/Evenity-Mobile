@@ -16,6 +16,7 @@ import {useFonts} from 'expo-font';
 import {useEffect} from 'react';
 import {Provider} from "react-redux";
 import store from "./redux/store";
+import NewProduct from "./screens/NewProduct";
 
 const Stack = createNativeStackNavigator();
 ExpoSplash.preventAutoHideAsync()
