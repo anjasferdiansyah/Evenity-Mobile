@@ -1,7 +1,7 @@
 import {Text, TextInput, TouchableOpacity, View} from 'react-native'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
-import {completingRegister} from "@/redux/slices/authSlice";
+import {completingRegister, resetError, resetStatus} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
 
 const CompletingRegister = () => {
@@ -9,8 +9,23 @@ const CompletingRegister = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [address, setAddress] = useState("");
     const [ownerName, setOwnerName] = useState("");
-    const {registerData} = useSelector(state => state.auth)
+    const {registerData, status, error} = useSelector(state => state.auth)
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (status === "registered") {
+            dispatch(resetStatus())
+            alert("Registered successfully, please login")
+            router.push("/auth/login")
+        }
+    }, [status]);
+
+    useEffect(() => {
+        if (error) {
+            dispatch(resetError())
+            alert(error)
+        }
+    }, [error])
 
     const handleRegister = () => {
         const newRegisterData = {

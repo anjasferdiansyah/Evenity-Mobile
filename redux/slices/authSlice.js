@@ -1,26 +1,26 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
-import {setupAxios} from "../../config/axiosConfig";
+import {setupAxios} from "@/config/axiosConfig";
+import {jwtDecode} from "jwt-decode";
 
 export const login = createAsyncThunk(
     'auth/login',
     async ({email, password}, {rejectWithValue}) => {
+        email = email.toLowerCase()
         const response = await axios.post("auth/login", {email, password}).catch(e => e.response)
         // console.log(response.status)
-        if (response.status !== 200) {
-            return rejectWithValue("Invalid email or password");
-        }
+        if (response.status !== 200) return rejectWithValue("Invalid email or password");
         // console.log(response.data)
         const {token} = response.data.data
         if (response.data.data) {
             asyncStorage.setItem("token", token);
             setupAxios(token);
-            // const {customerId} = jwtDecode(token);
-            // asyncStorage.setItem("customerId", customerId);
-            // email = String(email).charAt(0).toUpperCase() + String(email).slice(1);
-            // asyncStorage.setItem("email", email);
-            return {email};
+            const {role, sub: userId} = jwtDecode(token);
+            asyncStorage.setItem("userId", userId);
+            asyncStorage.setItem("email", email);
+            asyncStorage.setItem("role", role);
+            return {userId, email, role};
         } else {
             return rejectWithValue("Invalid email or password");
         }
@@ -29,7 +29,7 @@ export const login = createAsyncThunk(
 
 export const completingRegister = createAsyncThunk(
     'auth/register',
-    async (data, {rejectWithValue, getState}) => {
+    async (data, {rejectWithValue}) => {
         // const registerData = getState().auth.registerData;
         // console.log(registerData)
         const response = await axios.post("auth/register/vendor", {...data}).catch(e => e.response)
@@ -46,16 +46,17 @@ export const loadUser = createAsyncThunk(
     async () => {
         const token = await asyncStorage.getItem("token");
         setupAxios(token);
-        const customerId = await asyncStorage.getItem("customerId");
+        const userId = await asyncStorage.getItem("userId");
         const email = await asyncStorage.getItem("email");
-        return {token, email, customerId, role: "ROLE_CUSTOMER"};
+        const role = await asyncStorage.getItem("role");
+        return {email, userId, role};
     }
 )
 
 const AuthSlice = createSlice({
     name: "auth",
     initialState: {
-        isLoggedIn: null,
+        isLoggedIn: false,
         error: null,
         status: "idle",
         user: null,
@@ -66,27 +67,32 @@ const AuthSlice = createSlice({
             state.registerData = action.payload
         },
         logout: (state) => {
+            asyncStorage.removeItem("token");
+            asyncStorage.removeItem("userId");
+            asyncStorage.removeItem("email");
+            asyncStorage.removeItem("role");
             state.isLoggedIn = false;
             state.user = null;
             state.error = null;
-            asyncStorage.removeItem("token");
-            asyncStorage.removeItem("customerId");
             delete axios.defaults.headers.common["Authorization"];
         },
         resetError: (state) => {
             state.error = null;
-        }
+        },
+        resetStatus: (state) => {
+            state.status = "idle";
+        },
     },
     extraReducers: (builder) => {
         builder
             .addCase(login.fulfilled, (state, action) => {
-                state.status = "success";
+                state.status = "logged in";
                 state.isLoggedIn = true;
                 state.user = action.payload;
                 state.error = null;
             })
             .addCase(completingRegister.fulfilled, (state) => {
-                state.status = "success";
+                state.status = "registered";
                 state.isLoggedIn = false;
                 state.user = null;
                 state.error = null;
@@ -109,5 +115,5 @@ const AuthSlice = createSlice({
     },
 });
 
-export const {logout, resetError, register} = AuthSlice.actions;
+export const {logout, resetError, register, resetStatus} = AuthSlice.actions;
 export default AuthSlice.reducer;

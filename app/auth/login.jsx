@@ -15,8 +15,6 @@ const LoginScreen = () => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            // dispatch(loadUser())
-            // navigation.navigate('Welcome')
             router.replace("/dashboard")
         }
     }, [isLoggedIn]);
