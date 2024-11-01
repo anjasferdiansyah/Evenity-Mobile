@@ -1,4 +1,4 @@
-import { View, Text, TextInput } from "react-native";
+import {Text, TextInput, View} from "react-native";
 import React from "react";
 // import MakeEventLayout from "../dashboard/(tabs)/MakeEventLayout";
 import tailwind from "twrnc";

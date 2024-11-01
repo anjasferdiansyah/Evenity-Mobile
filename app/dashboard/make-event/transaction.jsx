@@ -1,15 +1,6 @@
 import tailwind from "twrnc";
-import {
-    View,
-    Text,
-    TextInput,
-    ActivityIndicator,
-    ScrollView,
-    StyleSheet,
-    Modal,
-    TouchableOpacity,
-} from "react-native";
-import React, { useState, useEffect } from "react";
+import {Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
+import React, {useState} from "react";
 import ListChooseVendor from "@/components/ListChooseVendor-user";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
 
@@ -26,13 +17,13 @@ const MakeEventTransactionNote = () => {
     };
 
     const entertainmentItems = [
-        { id: 1, name: "Joko Horeg", price: "10.000.000" },
-        { id: 2, name: "Andi Mc", price: "15.000.000" },
-        { id: 3, name: "Soni Catering enak sekali", price: "15.000.000" },
-        { id: 4, name: "Gelora bung karno", price: "15.000.000" },
-        { id: 5, name: "Gelora bung karno", price: "15.000.000" },
-        { id: 6, name: "Gelora bung karno", price: "15.000.000" },
-        { id: 7, name: "Gelora bung karno", price: "15.000.000" },
+        {id: 1, name: "Joko Horeg", price: "10.000.000"},
+        {id: 2, name: "Andi Mc", price: "15.000.000"},
+        {id: 3, name: "Soni Catering enak sekali", price: "15.000.000"},
+        {id: 4, name: "Gelora bung karno", price: "15.000.000"},
+        {id: 5, name: "Gelora bung karno", price: "15.000.000"},
+        {id: 6, name: "Gelora bung karno", price: "15.000.000"},
+        {id: 7, name: "Gelora bung karno", price: "15.000.000"},
     ];
 
     return (
@@ -49,7 +40,7 @@ const MakeEventTransactionNote = () => {
 
             <ScrollView style={[tailwind`mt-2 `]} className="vendor-choosen">
                 {entertainmentItems.map((item) => (
-                    <ListChooseVendor key={item.id} item={item} radius="xl" />
+                    <ListChooseVendor key={item.id} item={item} radius="xl"/>
                 ))}
             </ScrollView>
 
@@ -61,7 +52,7 @@ const MakeEventTransactionNote = () => {
                     <Text className="font-outfitSemiBold text-xl">Total</Text>
                     <Text
                         className="font-outfitRegular text-xl"
-                        style={{ textAlign: "right", flex: 1, marginStart: 10 }}
+                        style={{textAlign: "right", flex: 1, marginStart: 10}}
                     >
                         10.000.000
                     </Text>
