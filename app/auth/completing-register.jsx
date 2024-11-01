@@ -2,6 +2,7 @@ import {Text, TextInput, TouchableOpacity, View} from 'react-native'
 import React, {useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import {completingRegister} from "@/redux/slices/authSlice";
+import {router} from "expo-router";
 
 const CompletingRegister = () => {
     const [vendorName, setVendorName] = useState("");
