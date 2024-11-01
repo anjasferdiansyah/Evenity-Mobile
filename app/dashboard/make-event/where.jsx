@@ -9,7 +9,7 @@ const MakeEventLocation = () => {
             <View className="px-10" style={[tailwind`mt-5`]}>
                 <Text
                     className="text-6xl font-outfitSemiBold"
-                    style={[tailwind`mb-3`]}
+                    style={[tailwind``]}
                 >
                     Where's
                 </Text>

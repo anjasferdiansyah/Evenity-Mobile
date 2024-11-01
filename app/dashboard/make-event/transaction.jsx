@@ -28,7 +28,7 @@ const MakeEventTransactionNote = () => {
 
     return (
         <MakeEventLayout
-            progress={80}
+            progress={100}
             nextRoute="./makeEvent-capacityEvent"
             handleAccept={handleAccept}
         >
