@@ -1,12 +1,12 @@
 import { View, Text, TextInput } from "react-native";
 import React from "react";
-import MakeEventLayout from "../../app/dashboard/make-event";
 // import MakeEventLayout from "../dashboard/(tabs)/MakeEventLayout";
 import tailwind from "twrnc";
+import MakeEventLayout from "@/app/dashboard/make-event/layout";
 
 const MakeEventName = () => {
   return (
-    <MakeEventLayout progress={20} nextRoute="./makeEvent-locationEvent">
+    <MakeEventLayout progress={20} nextRoute="where">
       <View className="px-10" style={[tailwind`mt-5`]}>
         <Text className="text-6xl font-outfitSemiBold" style={[tailwind``]}>
           Name

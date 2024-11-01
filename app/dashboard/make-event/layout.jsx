@@ -79,7 +79,7 @@ const MakeEventLayout = ({ progress, children, nextRoute }) => {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => router.replace("/dashboard/make-event/address")}
+            onPress={() => router.push(`/dashboard/make-event/${nextRoute}`)}
             className="bg-[#00AA55] mx-auto w-[60%] mt-14 items-center justify-center py-3 rounded-full"
           >
             <Text className="text-white text-xl font-outfitBold py-1.5">
