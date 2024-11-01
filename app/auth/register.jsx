@@ -1,32 +1,117 @@
 import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {validateUser} from "@/helper/validator/auth";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {register} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
+import RNPickerSelect from "react-native-picker-select";
+import { FlatList, StyleSheet } from "react-native"
 
 const RegisterScreen = () => {
-    const [email, setEmail] = React.useState("");
-    const [password, setPassword] = React.useState("");
-    const [confirmPassword, setConfirmPassword] = React.useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [query, setQuery] = useState('');
+    const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+    const [selectedProvince, setSelectedProvince] = useState(null);
+    const [selectedCity, setSelectedCity] = useState(null);
+    const [districtQuery, setDistrictQuery] = useState('');
+    const [filteredDistricts, setFilteredDistricts] = useState([]);
+    const [districtSuggestions, setDistrictSuggestions] = useState([]);
+
+    useEffect(() => {
+        const fetchCities = async () => {
+            try {
+                if (!selectedProvince) return;
+                const response = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvince}.json`);
+                const data = await response.json();
+                setSuggestions(data);
+            } catch (error) {
+                console.error('Error fetching cities:', error);
+            }
+        };
+        fetchCities();
+    }, [selectedProvince]);
+
+    useEffect(() => {
+        const fetchDistricts = async () => {
+            try {
+                if (!selectedCity) return;
+                const response = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedCity}.json`);
+                const data = await response.json();
+                setDistrictSuggestions(data);
+            } catch (error) {
+                console.error('Error fetching districts:', error);
+            }
+        };
+        fetchDistricts();
+    }, [selectedCity]);
+
+    const handleCitySearch = (text) => {
+        setQuery(text);
+        const filtered = suggestions.filter((item) =>
+            item.name.toLowerCase().includes(text.toLowerCase())
+        );
+        setFilteredSuggestions(text === '' ? [] : filtered);
+    };
+
+    const handleDistrictSearch = (text) => {
+        setDistrictQuery(text);
+        const filtered = districtSuggestions.filter((item) =>
+            item.name.toLowerCase().includes(text.toLowerCase())
+        );
+        setFilteredDistricts(text === '' ? [] : filtered);
+    };
+
+    const handleSelectCity = (city) => {
+        setQuery(city.name);
+        setSelectedCity(city.id);
+        setFilteredSuggestions([]);
+    };
+
+    const handleSelectDistrict = (district) => {
+        setDistrictQuery(district.name);
+        setFilteredDistricts([]);
+    };
+
+    const { registerData } = useSelector((state) => state.auth);
+    console.log(registerData)
+
+    const renderCitySuggestion = ({ item }) => (
+        <TouchableOpacity
+            className="p-5 bg-white border-b border-gray-400 w-full"
+            onPress={() => handleSelectCity(item)}
+        >
+            <Text className="text-sm font-outfitSemiBold">{item.name}</Text>
+        </TouchableOpacity>
+    );
+
+    const renderDistrictSuggestion = ({ item }) => (
+        <TouchableOpacity
+            className="p-5 bg-white border-b border-gray-400 w-full"
+            onPress={() => handleSelectDistrict(item)}
+        >
+            <Text className="text-sm font-outfitSemiBold">{item.name}</Text>
+        </TouchableOpacity>
+    );
 
     const dispatch = useDispatch();
 
     const handleRegister = () => {
         if (password !== confirmPassword) {
-            alert("Passwords do not match")
-            return
+            alert("Passwords do not match");
+            return;
         }
-        const {success, data, error} = validateUser({email, password})
+        const { success, data, error } = validateUser({ email, password });
         if (!success) {
-            alert(error)
+            alert(error);
         } else {
-            dispatch(register({email, password}))
-            router.push("auth/completing-register")
+            dispatch(register({ email, password, province: selectedProvince, city: selectedCity, district: districtQuery }));
+            router.push("auth/completing-register");
         }
     };
-
     return (
         <View className="flex-1 items-center justify-center bg-white">
             <View className="w-full h-[70%] px-10 flex-1 justify-center">
@@ -43,6 +128,75 @@ const RegisterScreen = () => {
                             value={email}
                         />
                     </View>
+                    <View className="flex flex-col gap-2 w-[90%]">
+                        <Text className="font-outfitRegular">Province</Text>
+                        <View className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full">
+                        <RNPickerSelect onValueChange={value => 
+                            setSelectedProvince(value)
+                        } placeholder={{label: 'Select province', value: ''}}  useNativeAndroidPickerStyle={false} pickerProps={{mode: 'dropdown'}} items={[
+                            {
+                                label : "JAWA BARAT",
+                                value : "32"
+                            },
+                            {
+                                label : "JAWA TENGAH",
+                                value : "33"
+                            },
+                            {
+                                label : "JAWA TIMUR",
+                                value : "35"
+                            },
+                            {
+                                label : "DKI JAKARTA",
+                                value : "31"
+                            },
+                            {
+                                label : "D.I YOGYAKARTA",
+                                value : "34"
+                            }
+
+                        ]}/>
+                        </View>
+                      
+                    </View>
+                    <View className="flex flex-row gap-2 w-[90%]">
+                    <View className="flex flex-col gap-2 w-[50%]">
+                        <Text className="font-outfitRegular">City</Text>
+                        <TextInput
+                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+                            placeholder="Enter your email.."
+                            maxLength={50}
+                            onChangeText={handleCitySearch}
+                            value={query}
+                        />
+                        {filteredSuggestions.length > 0 && (
+                <FlatList
+                    data={filteredSuggestions}
+                    renderItem={renderCitySuggestion}
+                    keyExtractor={(item) => item.id}
+                    className="absolute z-10 top-20 w-full border-[0.5px] h-[150px] rounded-lg border-gray-400"
+                />
+            )}
+                    </View>
+                    <View className="flex flex-col gap-2 w-[50%]">
+                        <Text className="font-outfitRegular">District</Text>
+                        <TextInput
+                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+                            placeholder="Enter district"
+                            onChangeText={handleDistrictSearch}
+                            value={districtQuery}
+                        />
+                        {filteredDistricts.length > 0 && (
+                            <FlatList
+                                data={filteredDistricts}
+                                renderItem={renderDistrictSuggestion}
+                                keyExtractor={(item) => item.id}
+                                className="absolute z-10 top-20 w-full border-[0.5px] h-[150px] rounded-lg border-gray-400"
+                            />
+                        )}
+                    </View>
+                    </View>
+                   
                     <View className="flex flex-col gap-2 w-[90%]">
                         <Text>Password</Text>
                         <MaterialCommunityIcons
