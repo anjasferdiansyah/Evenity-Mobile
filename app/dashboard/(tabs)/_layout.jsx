@@ -1,5 +1,5 @@
-import {router, Tabs} from 'expo-router';
-import React, {useEffect} from 'react';
+import {Tabs} from 'expo-router';
+import React from 'react';
 import {Entypo, Ionicons} from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -25,16 +25,16 @@ export default function DashboardLayout() {
                 }}
             />
             <Tabs.Screen
-                name="order"
+                name="request"
                 options={{
-                    title: 'Order',
+                    title: 'Request',
                     tabBarIcon: () => <Entypo name="shop" size={24} color="black"/>
                 }}
             />
             <Tabs.Screen
-                name="history"
+                name="transaction"
                 options={{
-                    title: 'History',
+                    title: 'Transaction',
                     tabBarIcon: () => <Ionicons size={28} name={"person"}/>
                 }}
             />
