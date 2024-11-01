@@ -15,12 +15,12 @@ const HistoryOrderScreen = () => {
                         Rp. 2.000.000
                     </Text>
                     <View className="flex flex-row justify-center gap-4">
-                        <TouchableOpacity onPress={() => router.push("WithdrawNext")} className="bg-[#00F279] px-8 py-4 w-[40%] rounded-full">
+                        <TouchableOpacity onPress={() => router.push("dashboard/transaction/withdraw")} className="bg-[#00F279] px-8 py-4 w-[40%] rounded-full">
                             <Text className="text-white font-outfitBold text-center">
                                 Withdraw
                             </Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => router.push("WithdrawHistory")} className="bg-[#00AA55] px-8 py-4 w-[40%] rounded-full">
+                        <TouchableOpacity onPress={() => router.push("dashboard/transaction/history")} className="bg-[#00AA55] px-8 py-4 w-[40%] rounded-full">
                             <Text className="text-white text-center font-outfitBold">
                                 History
                             </Text>
@@ -38,7 +38,7 @@ const HistoryOrderScreen = () => {
                             </Text>
                         </View>
                         <TouchableOpacity
-                            onPress={() => router.push("DetailHistory")}
+                            onPress={() => router.push("dashboard/transaction/detail")}
                             className="p-4 bg-white rounded-full"
                         >
                             <AntDesignIcons name="right" size={30} color={"#00AA55"} />
@@ -54,7 +54,7 @@ const HistoryOrderScreen = () => {
                             </Text>
                         </View>
                         <TouchableOpacity
-                            onPress={() => router.push("DetailHistory")}
+                            onPress={() => router.push("dashboard/transaction/detail")}
                             className="p-4 bg-white rounded-full"
                         >
                             <AntDesignIcons name="right" size={30} color={"#00AA55"} />
@@ -70,7 +70,7 @@ const HistoryOrderScreen = () => {
                             </Text>
                         </View>
                         <TouchableOpacity
-                            onPress={() => router.push("DetailHistory")}
+                            onPress={() => router.push("dashboard/transaction/detail")}
                             className="p-4 bg-white rounded-full"
                         >
                             <AntDesignIcons name="right" size={30} color={"#00AA55"} />
