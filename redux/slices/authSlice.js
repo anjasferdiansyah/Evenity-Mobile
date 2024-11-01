@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
-import {setupAxios} from "../../config/axiosConfig";
+import {setupAxios} from "@/config/axiosConfig";
 import {jwtDecode} from "jwt-decode";
 
 export const login = createAsyncThunk(
@@ -29,7 +29,7 @@ export const login = createAsyncThunk(
 
 export const completingRegister = createAsyncThunk(
     'auth/register',
-    async (data, {rejectWithValue, getState}) => {
+    async (data, {rejectWithValue}) => {
         // const registerData = getState().auth.registerData;
         // console.log(registerData)
         const response = await axios.post("auth/register/vendor", {...data}).catch(e => e.response)
