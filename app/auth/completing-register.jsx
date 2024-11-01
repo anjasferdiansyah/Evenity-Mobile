@@ -1,6 +1,5 @@
-import {View, Text, TextInput} from 'react-native'
+import {Text, TextInput, TouchableOpacity, View} from 'react-native'
 import React, {useState} from 'react'
-import {TouchableOpacity} from 'react-native'
 import {useDispatch, useSelector} from "react-redux";
 import {completingRegister} from "@/redux/slices/authSlice";
 
@@ -20,7 +19,7 @@ const CompletingRegister = () => {
             address,
             ownerName
         }
-        // console.log(newRegisterData)
+        console.log(newRegisterData)
         dispatch(completingRegister(newRegisterData))
     }
 

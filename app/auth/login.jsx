@@ -1,14 +1,14 @@
-import {View, Text, TextInput, TouchableOpacity} from "react-native";
+import {Text, TextInput, TouchableOpacity, View} from "react-native";
 import React, {useEffect, useState} from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import axios from "axios";
-import {validate} from "@babel/core/lib/config/validation/options";
 import {validateUser} from "@/helper/validator/auth";
 import {useDispatch, useSelector} from "react-redux";
 import {login, resetError} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
+
 const LoginScreen = () => {
-    axios.defaults.baseURL = "http://10.10.102.61:8081/api/v1";
+    axios.defaults.baseURL = "https://evenity-eo-app-production.up.railway.app/api/v1";
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -20,12 +20,11 @@ const LoginScreen = () => {
             // dispatch(loadUser())
             // navigation.navigate('Welcome')
             router.replace("/dashboard")
-            alert("Login Successful")
         }
     }, [isLoggedIn]);
 
     useEffect(() => {
-        if(error) {
+        if (error) {
             alert(error)
             dispatch(resetError())
         }
