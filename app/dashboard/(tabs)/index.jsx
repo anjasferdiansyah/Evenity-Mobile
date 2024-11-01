@@ -1,6 +1,7 @@
-import { View, Text } from "react-native";
+import {View, Text, TouchableOpacity} from "react-native";
 import React from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {router} from "expo-router";
 
 const HomeScreen = () => {
     return (
@@ -19,7 +20,7 @@ const HomeScreen = () => {
 
                 <View className="flex flex-col gap-4 items-center justify-between self-center my-20 px-5">
                     <View className="flex flex-row gap-4 items-center justify-between w-full">
-                        <View className="w-1/2 p-5 h-[190px] bg-[#78F3B5] rounded-xl flex flex-col justify-between">
+                        <TouchableOpacity onPress={() => router.push("/dashboard/make-event")} className="w-1/2 p-5 h-[190px] bg-[#78F3B5] rounded-xl flex flex-col justify-between">
                             <View className="p-4 bg-white rounded-full max-w-[60px]">
                                 <MaterialCommunityIcons name="cart" size={30} />
                             </View>
@@ -32,7 +33,7 @@ const HomeScreen = () => {
                                     Event
                                 </Text>
                             </View>
-                        </View>
+                        </TouchableOpacity>
                         <View className="w-1/2 p-5 h-[190px] bg-[#00F279] rounded-xl flex flex-col justify-between">
                             <View className="p-4 bg-white rounded-full max-w-[60px]">
                                 <MaterialCommunityIcons name="cart" size={30} />
