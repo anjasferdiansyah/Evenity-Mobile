@@ -1,19 +1,16 @@
-import {Tabs} from 'expo-router';
-import React from 'react';
+import {router, Tabs} from 'expo-router';
+import React, {useEffect} from 'react';
 import {Entypo, Ionicons} from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {useSelector} from "react-redux";
 
 export default function DashboardLayout() {
+    const {isLoggedIn} = useSelector(state => state.auth);
 
-    // useEffect(() => {
-    //     async function checkToken() {
-    //         const token = await AsyncStorage.getItem('token');
-    //         if (!token) {
-    //             router.replace('auth/login')
-    //         }
-    //     }
-    //     checkToken();
-    // }, []);
+    useEffect(() => {
+        if (!isLoggedIn) {
+            router.replace("/auth/login")
+        }
+    }, [isLoggedIn, router]);
 
     return (
         <Tabs screenOptions={{headerShown: false}}>

@@ -8,7 +8,8 @@ import * as ExpoSplash from "expo-splash-screen";
 import "../global.css"
 
 export default function IndexLayout() {
-ExpoSplash.preventAutoHideAsync();
+    ExpoSplash.preventAutoHideAsync();
+
     const [fontsLoaded, error] = useFonts({
         'Outfit-Black': require('../assets/fonts/Outfit/static/Outfit-Black.ttf'),
         'Outfit-ExtraBold': require('../assets/fonts/Outfit/static/Outfit-ExtraBold.ttf'),
