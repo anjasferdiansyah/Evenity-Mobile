@@ -21,8 +21,8 @@ const ListRequestScreen = () => {
                                 Malang, Indonesia
                             </Text>
                         </View >
-                        <TouchableOpacity onPress={() => router.push(`dashboard/request/${id}`)} className="p-4 bg-white rounded-full">
-                            <AntDesignIcons name='arrowleft' size={30} color={'#00AA55'} />
+                        <TouchableOpacity onPress={() => router.push(`dashboard/request/detail`)} className="p-4 bg-white rounded-full">
+                            <AntDesignIcons name='arrowright' size={30} color={'#00AA55'} />
                         </TouchableOpacity>
                     </View>
                 </View>
