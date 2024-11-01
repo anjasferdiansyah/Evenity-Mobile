@@ -8,7 +8,7 @@ export default function DashboardLayout() {
 
     useEffect(() => {
         if (!isLoggedIn) {
-            router.replace("/auth/login")
+            router.replace("/auth")
         }
     }, [isLoggedIn, router]);
 

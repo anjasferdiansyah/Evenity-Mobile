@@ -1,14 +1,15 @@
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
-import React, { useEffect, useState } from "react";
+import {FlatList, Text, TextInput, TouchableOpacity, View} from "react-native";
+import React, {useEffect, useState} from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {validateUser} from "@/helper/validator/auth";
 import {useDispatch, useSelector} from "react-redux";
 import {register} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
 import RNPickerSelect from "react-native-picker-select";
-import { FlatList, StyleSheet } from "react-native"
+import {setupAxios} from "@/config/axiosConfig";
 
 const RegisterScreen = () => {
+    setupAxios()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -76,10 +77,10 @@ const RegisterScreen = () => {
         setFilteredDistricts([]);
     };
 
-    const { registerData } = useSelector((state) => state.auth);
+    const {registerData} = useSelector((state) => state.auth);
     console.log(registerData)
 
-    const renderCitySuggestion = ({ item }) => (
+    const renderCitySuggestion = ({item}) => (
         <TouchableOpacity
             className="p-5 bg-white border-b border-gray-400 w-full"
             onPress={() => handleSelectCity(item)}
@@ -88,7 +89,7 @@ const RegisterScreen = () => {
         </TouchableOpacity>
     );
 
-    const renderDistrictSuggestion = ({ item }) => (
+    const renderDistrictSuggestion = ({item}) => (
         <TouchableOpacity
             className="p-5 bg-white border-b border-gray-400 w-full"
             onPress={() => handleSelectDistrict(item)}
@@ -104,11 +105,17 @@ const RegisterScreen = () => {
             alert("Passwords do not match");
             return;
         }
-        const { success, data, error } = validateUser({ email, password });
+        const {success, error} = validateUser({email, password});
         if (!success) {
             alert(error);
         } else {
-            dispatch(register({ email, password, province: selectedProvince, city: selectedCity, district: districtQuery }));
+            dispatch(register({
+                email,
+                password,
+                province: selectedProvince,
+                city: selectedCity,
+                district: districtQuery
+            }));
             router.push("auth/completing-register");
         }
     };
@@ -130,73 +137,75 @@ const RegisterScreen = () => {
                     </View>
                     <View className="flex flex-col gap-2 w-[90%]">
                         <Text className="font-outfitRegular">Province</Text>
-                        <View className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full">
-                        <RNPickerSelect onValueChange={value => 
-                            setSelectedProvince(value)
-                        } placeholder={{label: 'Select province', value: ''}}  useNativeAndroidPickerStyle={false} pickerProps={{mode: 'dropdown'}} items={[
-                            {
-                                label : "JAWA BARAT",
-                                value : "32"
-                            },
-                            {
-                                label : "JAWA TENGAH",
-                                value : "33"
-                            },
-                            {
-                                label : "JAWA TIMUR",
-                                value : "35"
-                            },
-                            {
-                                label : "DKI JAKARTA",
-                                value : "31"
-                            },
-                            {
-                                label : "D.I YOGYAKARTA",
-                                value : "34"
-                            }
+                        <View
+                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full">
+                            <RNPickerSelect onValueChange={value =>
+                                setSelectedProvince(value)
+                            } placeholder={{label: 'Select province', value: ''}} useNativeAndroidPickerStyle={false}
+                                            pickerProps={{mode: 'dropdown'}} items={[
+                                {
+                                    label: "JAWA BARAT",
+                                    value: "32"
+                                },
+                                {
+                                    label: "JAWA TENGAH",
+                                    value: "33"
+                                },
+                                {
+                                    label: "JAWA TIMUR",
+                                    value: "35"
+                                },
+                                {
+                                    label: "DKI JAKARTA",
+                                    value: "31"
+                                },
+                                {
+                                    label: "D.I YOGYAKARTA",
+                                    value: "34"
+                                }
 
-                        ]}/>
+                            ]}/>
                         </View>
-                      
+
                     </View>
                     <View className="flex flex-row gap-2 w-[90%]">
-                    <View className="flex flex-col gap-2 w-[50%]">
-                        <Text className="font-outfitRegular">City</Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                            placeholder="Enter your email.."
-                            maxLength={50}
-                            onChangeText={handleCitySearch}
-                            value={query}
-                        />
-                        {filteredSuggestions.length > 0 && (
-                <FlatList
-                    data={filteredSuggestions}
-                    renderItem={renderCitySuggestion}
-                    keyExtractor={(item) => item.id}
-                    className="absolute z-10 top-20 w-full border-[0.5px] h-[150px] rounded-lg border-gray-400"
-                />
-            )}
-                    </View>
-                    <View className="flex flex-col gap-2 w-[50%]">
-                        <Text className="font-outfitRegular">District</Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                            placeholder="Enter district"
-                            onChangeText={handleDistrictSearch}
-                            value={districtQuery}
-                        />
-                        {filteredDistricts.length > 0 && (
-                            <FlatList
-                                data={filteredDistricts}
-                                renderItem={renderDistrictSuggestion}
-                                keyExtractor={(item) => item.id}
-                                className="absolute z-10 top-20 w-full border-[0.5px] h-[150px] rounded-lg border-gray-400"
+                        <View className="flex flex-col gap-2 w-[50%]">
+                            <Text className="font-outfitRegular">City</Text>
+                            <TextInput
+                                className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+                                placeholder="Enter your email.."
+                                maxLength={50}
+                                onChangeText={handleCitySearch}
+                                value={query}
                             />
-                        )}
+                            {filteredSuggestions.length > 0 && (
+                                <FlatList
+                                    data={filteredSuggestions}
+                                    renderItem={renderCitySuggestion}
+                                    keyExtractor={(item) => item.id}
+                                    className="absolute z-10 top-20 w-full border-[0.5px] h-[150px] rounded-lg border-gray-400"
+                                />
+                            )}
+                        </View>
+                        <View className="flex flex-col gap-2 w-[50%]">
+                            <Text className="font-outfitRegular">District</Text>
+                            <TextInput
+                                className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+                                placeholder="Enter district"
+                                onChangeText={handleDistrictSearch}
+                                value={districtQuery}
+                            />
+                            {filteredDistricts.length > 0 && (
+                                <FlatList
+                                    data={filteredDistricts}
+                                    renderItem={renderDistrictSuggestion}
+                                    keyExtractor={(item) => item.id}
+                                    className="absolute z-10 top-20 w-full border-[0.5px] h-[150px] rounded-lg border-gray-400"
+                                />
+                            )}
+                        </View>
                     </View>
-                    </View>
-                   
+
                     <View className="flex flex-col gap-2 w-[90%]">
                         <Text>Password</Text>
                         <MaterialCommunityIcons
@@ -238,7 +247,8 @@ const RegisterScreen = () => {
                         />
                     </View>
                 </View>
-                <TouchableOpacity onPress={() => handleRegister()} className="bg-[#00AA55] mx-auto w-[90%] mt-14 items-center justify-center px-8 py-3 rounded-full">
+                <TouchableOpacity onPress={() => handleRegister()}
+                                  className="bg-[#00AA55] mx-auto w-[90%] mt-14 items-center justify-center px-8 py-3 rounded-full">
                     <Text className="text-white text-xl font-outfitBold py-1.5">Register</Text>
                 </TouchableOpacity>
                 <Text className="text-center text-gray-500 text-xs mt-4 font-outfitRegular">

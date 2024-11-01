@@ -1,14 +1,11 @@
-import {View, Text, TextInput, TouchableOpacity} from "react-native";
+import {Text, TextInput, TouchableOpacity, View} from "react-native";
 import React, {useEffect, useState} from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import axios from "axios";
-import {validate} from "@babel/core/lib/config/validation/options";
-import {validateUser} from "../helper/validator/auth";
+import {validateUser} from "@/helper/validator/auth";
 import {useDispatch, useSelector} from "react-redux";
-import {login, resetError} from "../redux/slices/authSlice";
+import {login, resetError} from "@/redux/slices/authSlice";
 
 const LoginScreen = ({navigation}) => {
-    axios.defaults.baseURL = "http://10.10.102.61:8081/api/v1";
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -24,7 +21,7 @@ const LoginScreen = ({navigation}) => {
     }, [isLoggedIn]);
 
     useEffect(() => {
-        if(error) {
+        if (error) {
             alert(error)
             dispatch(resetError())
         }

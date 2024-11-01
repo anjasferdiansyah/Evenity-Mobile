@@ -5,9 +5,10 @@ import {validateUser} from "@/helper/validator/auth";
 import {useDispatch, useSelector} from "react-redux";
 import {login, resetError} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
+import {setupAxios} from "@/config/axiosConfig";
 
 const LoginScreen = () => {
-
+    setupAxios()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
@@ -32,7 +33,7 @@ const LoginScreen = () => {
         if (!success) {
             alert(error)
         } else {
-            dispatch(login({email, password}))
+            dispatch(login(data))
         }
     }
     // const [hidePassword, setHidePassword] = useState(false);

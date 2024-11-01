@@ -2,10 +2,10 @@ import {Image, Text, TouchableOpacity, View} from 'react-native'
 import React from 'react'
 import hero from '@/assets/hero.png'
 import {router} from "expo-router";
-import axios from "axios";
+import {setupAxios} from "@/config/axiosConfig";
 
 const AuthScreen = () => {
-    axios.defaults.baseURL = "https://evenity-eo-app-production.up.railway.app/api/v1";
+    setupAxios()
     return (
         <View className="pt-10 flex-1 items-center justify-center bg-white">
             <View className="px-10 mt-4">
