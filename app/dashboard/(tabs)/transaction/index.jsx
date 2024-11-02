@@ -1,16 +1,21 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import { router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { historyOrderCustomer } from "@/redux/slices/request-requestDetail-slice";
+// import moment from "moment";
+
 
 const HistoryOrderScreen = () => {
   const dispatch = useDispatch();
   const { isLoading, requestDetail, status, error } = useSelector(
     (state) => state.requestDetail
   );
-  const [listRequestDetail, setListRequestDetail] = useState([]);
+
+  // const formatDate = (dateString) => {
+  //   moment(dateString).format("DD/MM/YYYY");
+  // };
 
   const historyItems = [
     {
@@ -45,14 +50,29 @@ const HistoryOrderScreen = () => {
   }, [dispatch]);
 
 
-// jangan dihapus
-//   useEffect(() => {
-//     if (requestDetail && requestDetail.length > 0) {
-//       setListRequestDetail(requestDetail);
-//     } else {
-//       setListRequestDetail(historyItems);
-//     }
-//   }, [requestDetail, historyItems]);
+
+  const renderItem = ({ item }) => (
+    <View
+      key={item.id}
+      className="flex flex-row justify-between items-center mt-5 p-6 bg-[#00F279] rounded-full"
+    >
+      <View>
+        <Text className="text-3xl font-outfitBold text-center text-white">
+          {item.date}
+          {/* {formatDate(item.date)} */}
+        </Text>
+        <Text className="font-outfitRegular text-center text-white">
+          {item.location}
+        </Text>
+      </View>
+      <TouchableOpacity
+        onPress={() => router.push("dashboard/transaction/detail")}
+        className="p-4 bg-white rounded-full"
+      >
+        <AntDesignIcons name="right" size={30} color={"#00AA55"} />
+      </TouchableOpacity>
+    </View>
+  );
 
   return (
     <View className="flex-1 items-center justify-center bg-white">
@@ -83,62 +103,14 @@ const HistoryOrderScreen = () => {
             </TouchableOpacity>
           </View>
         </View>
-        <View>
-          {listRequestDetail.map((item) => (
-            <View
-              key={item.id}
-              className="flex flex-row justify-between items-center mt-10 p-6 bg-[#00F279] rounded-full"
-            >
-              <View>
-                <Text className="text-3xl font-outfitBold text-center text-white">
-                  {item.date}
-                </Text>
-                <Text className="font-outfitRegular text-center text-white">
-                  {item.location}
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => router.push("dashboard/transaction/detail")}
-                className="p-4 bg-white rounded-full"
-              >
-                <AntDesignIcons name="right" size={30} color={"#00AA55"} />
-              </TouchableOpacity>
-            </View>
-          ))}
-
-          {/* <View className="flex flex-row justify-between items-center mt-10 p-6 bg-[#00F279] rounded-full">
-            <View>
-              <Text className="text-3xl font-outfitBold text-center text-white">
-                20/12/2024
-              </Text>
-              <Text className="font-outfitRegular text-center text-white">
-                Malang, Indonesia
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => router.push("dashboard/transaction/detail")}
-              className="p-4 bg-white rounded-full"
-            >
-              <AntDesignIcons name="right" size={30} color={"#00AA55"} />
-            </TouchableOpacity>
-          </View>
-          <View className="flex flex-row justify-between items-center mt-10 p-6 bg-[#00F279] rounded-full">
-            <View>
-              <Text className="text-3xl font-outfitBold text-center text-white">
-                20/12/2024
-              </Text>
-              <Text className="font-outfitRegular text-center text-white">
-                Malang, Indonesia
-              </Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => router.push("dashboard/transaction/detail")}
-              className="p-4 bg-white rounded-full"
-            >
-              <AntDesignIcons name="right" size={30} color={"#00AA55"} />
-            </TouchableOpacity>
-          </View> */}
-        </View>
+        <FlatList
+          data={historyItems}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          contentContainerStyle={{
+              paddingBottom: 10
+          }}
+        />
       </View>
     </View>
   );
