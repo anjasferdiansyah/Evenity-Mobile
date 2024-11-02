@@ -60,9 +60,13 @@ const AuthSlice = createSlice({
         error: null,
         status: "idle",
         user: null,
-        registerData: null
+        registerData: null,
+        registerAs: null,
     },
     reducers: {
+        setRegisterAs: (state, action) => {
+            state.registerAs = action.payload
+        },
         register: (state, action) => {
             state.registerData = action.payload
         },
@@ -74,6 +78,9 @@ const AuthSlice = createSlice({
             state.isLoggedIn = false;
             state.user = null;
             state.error = null;
+            state.status = "idle";
+            state.registerData = null;
+            state.registerAs = null;
             delete axios.defaults.headers.common["Authorization"];
         },
         resetError: (state) => {
@@ -90,30 +97,38 @@ const AuthSlice = createSlice({
                 state.isLoggedIn = true;
                 state.user = action.payload;
                 state.error = null;
+                state.registerData = null;
+                state.registerAs = null;
             })
             .addCase(completingRegister.fulfilled, (state) => {
                 state.status = "registered";
                 state.isLoggedIn = false;
                 state.user = null;
                 state.error = null;
+                state.registerData = null;
+                state.registerAs = null;
             })
             .addCase(loadUser.fulfilled, (state, action) => {
                 state.status = "success";
                 state.isLoggedIn = true;
                 state.user = action.payload;
                 state.error = null;
+                state.registerData = null;
+                state.registerAs = null;
             })
             .addMatcher((action) => action.type.endsWith("/rejected"), (state, action) => {
                 state.status = "failed";
                 state.isLoggedIn = false;
+                state.user = null;
+                state.registerData = null;
+                state.registerAs = null;
                 state.error = action?.payload ? action.payload : "Something went wrong";
             })
             .addMatcher((action) => action.type.endsWith("/pending"), (state) => {
                 state.status = "loading";
-                state.error = null;
             })
     },
 });
 
-export const {logout, resetError, register, resetStatus} = AuthSlice.actions;
+export const {logout, resetError, register, resetStatus, setRegisterAs} = AuthSlice.actions;
 export default AuthSlice.reducer;

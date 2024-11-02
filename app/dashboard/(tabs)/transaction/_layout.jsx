@@ -1,9 +1,9 @@
-import { Stack } from 'expo-router';
+import {Stack} from 'expo-router';
 
 export default function Layout() {
     return (
-        <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" />
+        <Stack screenOptions={{headerShown: false}}>
+            <Stack.Screen name="index"/>
             <Stack.Screen
                 name="detail"
                 options={{
@@ -11,7 +11,13 @@ export default function Layout() {
                 }}
             />
             <Stack.Screen
-                name="history"
+                name="withdraw/history"
+                options={{
+                    presentation: 'modal',
+                }}
+            />
+            <Stack.Screen
+                name="withdraw/index"
                 options={{
                     presentation: 'modal',
                 }}

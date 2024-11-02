@@ -1,9 +1,36 @@
-import {View, Text, TouchableOpacity} from "react-native";
+import {Text, View} from "react-native";
 import React from "react";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {router} from "expo-router";
+import {useSelector} from "react-redux";
+import {
+    ButtonListRequests,
+    ButtonListTransactions,
+    ButtonMakeEvent,
+    ButtonSettingProfile
+} from "@/components/dashboard/home/DashboardButton";
+
+
+function handleFirstPress(role) {
+    return () => {
+        if (role === "ROLE_CUSTOMER") {
+            router.push("/dashboard/make-event/")
+        } else {
+            router.push("/dashboard/product")
+        }
+    }
+}
 
 const HomeScreen = () => {
+    const {user} = useSelector(state => state.auth)
+    const role = user?.role
+    console.log(role)
+    if (!role) {
+        return <View className="flex-1 items-center justify-center bg-white">
+            <Text className="text-2xl font-outfitBold">
+                You are not logged in
+            </Text>
+        </View>
+    }
     return (
         <View className="flex-1 items-center justify-center bg-white">
             <View className="w-full px-10 justify-center">
@@ -20,66 +47,13 @@ const HomeScreen = () => {
 
                 <View className="flex flex-col gap-4 items-center justify-between self-center my-20 px-5">
                     <View className="flex flex-row gap-4 items-center justify-between w-full">
-                        <TouchableOpacity onPress={() => router.push("/dashboard/make-event")} className="w-1/2 p-5 h-[190px] bg-[#78F3B5] rounded-xl flex flex-col justify-between">
-                            <View className="p-4 bg-white rounded-full max-w-[60px]">
-                                <MaterialCommunityIcons name="cart" size={30} />
-                            </View>
-
-                            <View>
-                                <Text className="text-white font-outfitBold text-2xl text-wrap">
-                                    Make
-                                </Text>
-                                <Text className="text-white font-outfitBold text-4xl text-wrap">
-                                    Event
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                        <View className="w-1/2 p-5 h-[190px] bg-[#00F279] rounded-xl flex flex-col justify-between">
-                            <View className="p-4 bg-white rounded-full max-w-[60px]">
-                                <MaterialCommunityIcons name="cart" size={30} />
-                            </View>
-
-                            <View>
-                                <Text className="text-white font-outfitBold text-2xl text-wrap">
-                                    See
-                                </Text>
-                                <Text className="text-white font-outfitBold text-4xl text-wrap">
-                                    History
-                                </Text>
-                            </View>
-                        </View>
+                        <ButtonMakeEvent onPress={handleFirstPress(role)} role={role}/>
+                        <ButtonListRequests onPress={() => router.push("/dashboard/request")} role={role}/>
                     </View>
                     <View className="flex flex-row gap-4 items-center justify-between w-full">
-                        <View className="w-1/2 p-5 h-[190px]  bg-[#00F279] rounded-xl flex flex-col justify-between">
-                            <View className="p-4 bg-white rounded-full max-w-[60px]">
-                                <MaterialCommunityIcons name="cart" size={30} />
-                            </View>
-
-                            <View>
-                                <Text className="text-white font-outfitBold text-2xl text-wrap">
-                                    See
-                                </Text>
-                                <Text className="text-white font-outfitBold text-4xl text-wrap">
-                                    Order
-                                </Text>
-                            </View>
-                        </View>
-                        <View className="w-1/2 p-5 h-[190px] bg-[#78F3B5]  rounded-xl flex flex-col justify-between">
-                            <View className="p-4 bg-white rounded-full max-w-[60px]">
-                                <MaterialCommunityIcons name="cart" size={30} />
-                            </View>
-
-                            <View>
-                                <Text className="text-white font-outfitBold text-2xl text-wrap">
-                                    See
-                                </Text>
-                                <Text className="text-white font-outfitBold text-4xl text-wrap">
-                                    Profile
-                                </Text>
-                            </View>
-                        </View>
+                        <ButtonListTransactions onPress={() => router.push("/dashboard/transaction")}/>
+                        <ButtonSettingProfile onPress={() => router.push("/dashboard/profile")}/>
                     </View>
-
 
 
                 </View>
