@@ -19,13 +19,29 @@ web-build/
 *.mobileprovision
 *.orig.*
 
+# Metro
+.metro-health-check*
+metro-cache/
+metro-cache-*
+
+# React Native
+.native_modules/
+
 # Testing
 coverage/
+.jest/
+__tests__/**/coverage/
 
 # Production
 build/
 *.apk
 *.aab
+android/app/build/
+
+# Bundle artifacts
+*.bundle
+*.bundle.map
+*.js.map
 
 # IDE
 .idea/
@@ -56,6 +72,8 @@ Thumbs.db
 *.tmp
 *~
 *.swp
+.tmp/
+.temp/
 
 # TypeScript
 *.tsbuildinfo
