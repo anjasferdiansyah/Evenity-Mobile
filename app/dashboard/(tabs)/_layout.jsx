@@ -4,7 +4,8 @@ import {Entypo, Ionicons} from "@expo/vector-icons";
 import {useSelector} from "react-redux";
 
 export default function DashboardLayout() {
-    const {isLoggedIn} = useSelector(state => state.auth);
+    const {isLoggedIn, user} = useSelector(state => state.auth);
+    const role = user?.role
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -22,9 +23,18 @@ export default function DashboardLayout() {
                 }}
             />
             <Tabs.Screen
+                name="product"
+                options={{
+                    href: role === "ROLE_CUSTOMER" ? null : "/dashboard/product",
+                    title: 'Product',
+                    tabBarIcon: () => <Entypo name="shop" size={24} color="black"/>
+                }}
+            />
+            <Tabs.Screen
                 name="request"
                 options={{
                     title: 'Request',
+                    href: role === "ROLE_CUSTOMER" ? null : "/dashboard/request",
                     tabBarIcon: () => <Entypo name="shop" size={24} color="black"/>
                 }}
             />
@@ -43,5 +53,6 @@ export default function DashboardLayout() {
                 }}
             />
         </Tabs>
-    );
+    )
+        ;
 }
