@@ -17,6 +17,7 @@ export default function HistoryOrderDetailScreen() {
   }
 
   if (role !== ROLES.CUSTOMER) {
+    
     return <OrderDetailUser />;
   } else return <OrderDetailVendor />;
 }

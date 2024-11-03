@@ -12,5 +12,6 @@ export default function HistoryOrderScreen() {
     const role = user?.role
     if (role !== ROLES.CUSTOMER) {
         return <OrderHistoryVendor/>
+        
     } else return <OrderHistoryUser/>
 }
