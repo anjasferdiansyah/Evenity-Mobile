@@ -33,12 +33,28 @@ export const completingRegister = createAsyncThunk(
         // const registerData = getState().auth.registerData;
         // console.log(registerData)
         const response = await axios.post("auth/register/vendor", {...data}).catch(e => e.response)
-        console.log(response)
+        // console.log(response)
         if (response.status !== 200) {
             return rejectWithValue(response.data.message);
         }
         return response.data;
     }
+);
+
+export const completingRegisterUser = createAsyncThunk(
+  "auth/registerUsr",
+  async (data, { rejectWithValue }) => {
+    // const registerData = getState().auth.registerData;
+    // console.log(registerData)
+    const response = await axios
+      .post("auth/register/customer", { ...data })
+      .catch((e) => e.response);
+    // console.log(response);
+    if (response.status !== 200) {
+      return rejectWithValue(response.data.message);
+    }
+    return response.data;
+  }
 );
 
 export const loadUser = createAsyncThunk(
@@ -101,6 +117,14 @@ const AuthSlice = createSlice({
                 state.registerAs = null;
             })
             .addCase(completingRegister.fulfilled, (state) => {
+                state.status = "registered";
+                state.isLoggedIn = false;
+                state.user = null;
+                state.error = null;
+                state.registerData = null;
+                state.registerAs = null;
+            })
+            .addCase(completingRegisterUser.fulfilled, (state) => {
                 state.status = "registered";
                 state.isLoggedIn = false;
                 state.user = null;
