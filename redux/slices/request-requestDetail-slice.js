@@ -6,9 +6,10 @@ export const historyOrderCustomer = createAsyncThunk(
     "request/loadRequestDetail",
     async (id, {rejectWithValue}) => {
         const customerId = "71447de8-c5b4-4c09-b0c2-a8b659c8ba59";
+        
         const token = await asyncStorage.getItem("token");
         const response = await axios
-            .get(`event/history/${customerId}`, {
+            .get(`event/customer/${customerId}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
