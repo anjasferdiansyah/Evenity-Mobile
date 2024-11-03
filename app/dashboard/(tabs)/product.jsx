@@ -3,7 +3,7 @@ import React from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
 
-const DetailRequest = () => {
+export default function DetailRequest() {
     return (
         <View className="flex-1 items-start justify-center bg-white">
             <View className="w-full h-full pt-20 px-10">
@@ -88,5 +88,3 @@ const DetailRequest = () => {
         </View>
     )
 }
-
-export default DetailRequest

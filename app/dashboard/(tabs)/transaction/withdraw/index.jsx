@@ -4,7 +4,7 @@ import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import RNPickerSelect from 'react-native-picker-select';
 import {router} from "expo-router";
 
-const WithdrawNextScreen = () => {
+export default function WithdrawNextScreen() {
     return (
         <View className="flex-1 items-center justify-center bg-white">
             <View className="w-full h-full pt-20 px-10">
@@ -41,5 +41,3 @@ const WithdrawNextScreen = () => {
         </View>
     )
 }
-
-export default WithdrawNextScreen

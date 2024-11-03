@@ -6,8 +6,9 @@ import {useDispatch, useSelector} from "react-redux";
 import {login, resetError} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
 import {setupAxios} from "@/config/axiosConfig";
+import {ROUTES} from "@/constant/ROUTES";
 
-const LoginScreen = () => {
+export default function LoginScreen() {
     setupAxios()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -16,7 +17,7 @@ const LoginScreen = () => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            router.replace("/dashboard")
+            router.replace(ROUTES.DASHBOARD.INDEX)
         }
     }, [isLoggedIn]);
 
@@ -89,7 +90,7 @@ const LoginScreen = () => {
                     Don't have an account?{" "}
                     <Text
                         className="text-blue-500"
-                        onPress={() => router.push("auth/register")}
+                        onPress={() => router.replace(ROUTES.AUTH.REGISTER)}
                     >
                         Register
                     </Text>
@@ -98,5 +99,3 @@ const LoginScreen = () => {
         </View>
     );
 };
-
-export default LoginScreen;

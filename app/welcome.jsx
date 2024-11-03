@@ -5,8 +5,9 @@ import {router} from "expo-router";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 import {loadUser} from "@/redux/slices/authSlice";
 import {useDispatch} from "react-redux";
+import {ROUTES} from "@/constant/ROUTES";
 
-const WelcomeScreen = () => {
+export default function WelcomeScreen() {
 
     const dispatch = useDispatch();
 
@@ -15,7 +16,7 @@ const WelcomeScreen = () => {
             const token = await asyncStorage.getItem("token")
             if (token) {
                 dispatch(loadUser())
-                router.replace("/dashboard")
+                router.replace(ROUTES.DASHBOARD.INDEX)
             }
         }
         getToken()
@@ -37,5 +38,3 @@ const WelcomeScreen = () => {
         </View>
     );
 };
-
-export default WelcomeScreen;

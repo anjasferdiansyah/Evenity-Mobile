@@ -5,22 +5,24 @@ import {router} from "expo-router";
 import {setupAxios} from "@/config/axiosConfig";
 import {useDispatch, useSelector} from "react-redux";
 import {setRegisterAs} from "@/redux/slices/authSlice";
+import {ROUTES} from "@/constant/ROUTES";
+import {ROLE} from "@/constant/USER";
 
-const AuthScreen = () => {
+export default function AuthScreen() {
     setupAxios()
     const dispatch = useDispatch()
     const {isLoggedIn} = useSelector((state) => state.auth);
 
     useEffect(() => {
         if (isLoggedIn) {
-            router.replace("/dashboard")
+            router.replace(ROUTES.DASHBOARD.INDEX)
         }
     }, [isLoggedIn]);
 
     function handleRegister(role) {
         return () => {
             dispatch(setRegisterAs(role))
-            router.push('auth/register')
+            router.push(ROUTES.AUTH.REGISTER)
         }
     }
 
@@ -45,16 +47,16 @@ const AuthScreen = () => {
 
                     <TouchableOpacity
                         className="bg-[#00F279] mx-auto w-[60%] items-center justify-center px-8 py-3 rounded-full"
-                        onPress={handleRegister("customer")}>
+                        onPress={handleRegister(ROLE.CUSTOMER)}>
                         <Text className="text-white text-xl font-outfitBold">
                             Register
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         className="bg-[#00F279] mx-auto w-[60%] items-center justify-center px-8 py-3 rounded-full"
-                        onPress={handleRegister("vendor")}>
+                        onPress={handleRegister(ROLE.VENDOR)}>
                         <Text className="text-white text-xl font-outfitBold">
-                            Register
+                            Register as Vendor
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -63,5 +65,3 @@ const AuthScreen = () => {
         </View>
     )
 }
-
-export default AuthScreen

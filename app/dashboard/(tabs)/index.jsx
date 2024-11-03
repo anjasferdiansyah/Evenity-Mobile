@@ -8,19 +8,20 @@ import {
     ButtonMakeEvent,
     ButtonSettingProfile
 } from "@/components/dashboard/home/DashboardButton";
+import {ROLE as ROLES} from "@/constant/USER";
 
 
-function handleFirstPress(role) {
-    return () => {
-        if (role === "ROLE_CUSTOMER") {
-            router.push("/dashboard/make-event/")
-        } else {
-            router.push("/dashboard/product")
+export default function HomeScreen() {
+    function handleButtonPressOne(role) {
+        return () => {
+            if (role === ROLES.CUSTOMER) {
+                router.push("/dashboard/make-event/")
+            } else {
+                router.push("/dashboard/product")
+            }
         }
     }
-}
 
-const HomeScreen = () => {
     const {user} = useSelector(state => state.auth)
     const role = user?.role
     console.log(role)
@@ -47,7 +48,7 @@ const HomeScreen = () => {
 
                 <View className="flex flex-col gap-4 items-center justify-between self-center my-20 px-5">
                     <View className="flex flex-row gap-4 items-center justify-between w-full">
-                        <ButtonMakeEvent onPress={handleFirstPress(role)} role={role}/>
+                        <ButtonMakeEvent onPress={handleButtonPressOne(role)} role={role}/>
                         <ButtonListRequests onPress={() => router.push("/dashboard/request")} role={role}/>
                     </View>
                     <View className="flex flex-row gap-4 items-center justify-between w-full">
@@ -61,5 +62,3 @@ const HomeScreen = () => {
         </View>
     );
 };
-
-export default HomeScreen;

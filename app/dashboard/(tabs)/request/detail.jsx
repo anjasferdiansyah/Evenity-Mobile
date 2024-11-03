@@ -1,14 +1,14 @@
-import { View, Text, ScrollView } from 'react-native'
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import React from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
-import { TouchableOpacity } from 'react-native'
 import {router} from "expo-router";
-const DetailRequest = () => {
+
+export default function DetailRequest() {
     return (
         <View className="flex-1 items-start justify-center bg-white">
             <View className="w-full h-full pt-20 px-10">
                 <TouchableOpacity onPress={() => router.back()} className="p-2 bg-[#00F279] rounded-full self-start">
-                    <AntDesignIcons name='arrowleft' size={20} color={'white'} />
+                    <AntDesignIcons name='arrowleft' size={20} color={'white'}/>
                 </TouchableOpacity>
                 <View className="mt-12 border-b border-gray-300 w-full">
                     <Text className="w-full text-5xl font-outfitBold pb-4">Detail Request</Text>
@@ -87,5 +87,3 @@ const DetailRequest = () => {
         </View>
     )
 }
-
-export default DetailRequest

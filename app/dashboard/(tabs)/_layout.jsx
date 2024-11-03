@@ -2,6 +2,7 @@ import {router, Tabs} from 'expo-router';
 import React, {useEffect} from 'react';
 import {Entypo, Ionicons} from "@expo/vector-icons";
 import {useSelector} from "react-redux";
+import {ROLE} from "@/constant/USER";
 
 export default function DashboardLayout() {
     const {isLoggedIn, user} = useSelector(state => state.auth);
@@ -25,7 +26,7 @@ export default function DashboardLayout() {
             <Tabs.Screen
                 name="product"
                 options={{
-                    href: role === "ROLE_CUSTOMER" ? null : "/dashboard/product",
+                    href: role === ROLE.CUSTOMER ? null : "/dashboard/product",
                     title: 'Product',
                     tabBarIcon: () => <Entypo name="shop" size={24} color="black"/>
                 }}
@@ -34,7 +35,7 @@ export default function DashboardLayout() {
                 name="request"
                 options={{
                     title: 'Request',
-                    href: role === "ROLE_CUSTOMER" ? null : "/dashboard/request",
+                    href: role === ROLE.CUSTOMER ? null : "/dashboard/request",
                     tabBarIcon: () => <Entypo name="shop" size={24} color="black"/>
                 }}
             />

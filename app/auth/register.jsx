@@ -8,7 +8,7 @@ import {router} from "expo-router";
 import RNPickerSelect from "react-native-picker-select";
 import {setupAxios} from "@/config/axiosConfig";
 
-const provinceOptions = [
+const provinceData = [
     {label: "JAWA BARAT", value: "32", name: "JAWA BARAT"},
     {label: "JAWA TENGAH", value: "33", name: "JAWA TENGAH"},
     {label: "JAWA TIMUR", value: "35", name: "JAWA TIMUR"},
@@ -16,7 +16,7 @@ const provinceOptions = [
     {label: "D.I YOGYAKARTA", value: "34", name: "D.I YOGYAKARTA"}
 ];
 
-const RegisterScreen = () => {
+export default function RegisterScreen() {
     setupAxios()
 // User credentials
     const [userEmail, setUserEmail] = useState("");
@@ -221,7 +221,7 @@ const RegisterScreen = () => {
                                 setSelectedProvinceId(value);
                                 // If value exists, find the corresponding province and set its name
                                 if (value) {
-                                    const selectedProvince = provinceOptions.find(p => p.value === value);
+                                    const selectedProvince = provinceData.find(p => p.value === value);
                                     setProvinceSearchText(selectedProvince.name);
                                 } else {
                                     setProvinceSearchText("");
@@ -230,7 +230,7 @@ const RegisterScreen = () => {
                             placeholder={{label: 'Select province', value: null}}
                             useNativeAndroidPickerStyle={false}
                             pickerProps={{mode: 'dropdown'}}
-                            items={provinceOptions}
+                            items={provinceData}
                         />
                     </View>
 
@@ -334,5 +334,3 @@ const RegisterScreen = () => {
         </View>
     </View>);
 };
-
-export default RegisterScreen;

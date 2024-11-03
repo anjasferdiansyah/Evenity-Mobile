@@ -6,8 +6,9 @@ import {setupAxios} from "@/config/axiosConfig";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 import {loadUser} from "@/redux/slices/authSlice";
 import {useDispatch, useSelector} from "react-redux";
+import {ROUTES} from "@/constant/ROUTES";
 
-const SplashScreen = () => {
+export default function SplashScreen() {
 
     const dispatch = useDispatch()
     const {isLoggedIn} = useSelector(state => state.auth)
@@ -15,9 +16,9 @@ const SplashScreen = () => {
         setupAxios()
         setTimeout(() => {
             if (isLoggedIn) {
-                router.replace("/dashboard")
+                router.replace(ROUTES.DASHBOARD.INDEX)
             } else {
-                router.replace("/welcome")
+                router.replace(ROUTES.WELCOME)
             }
         }, 3000)
     }, [])
@@ -39,5 +40,3 @@ const SplashScreen = () => {
         </View>
     )
 }
-
-export default SplashScreen

@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {useDispatch} from "react-redux";
 import {logout} from "@/redux/slices/authSlice";
 
-const ProfileScreen = () => {
+export default function ProfileScreen() {
     const dispatch = useDispatch()
     return (
         <View className="flex-1 items-center justify-center bg-white">
@@ -41,5 +41,3 @@ const ProfileScreen = () => {
         </View>
     )
 }
-
-export default ProfileScreen

@@ -3,7 +3,7 @@ import React from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
 
-const WithdrawScreen = () => {
+export default function WithdrawScreen() {
     return (
         <View className="flex-1 items-center justify-center bg-white">
             <View className="w-full h-full pt-20 px-10">
@@ -34,5 +34,3 @@ const WithdrawScreen = () => {
         </View>
     )
 }
-
-export default WithdrawScreen
