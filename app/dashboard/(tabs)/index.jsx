@@ -34,19 +34,19 @@ export default function HomeScreen() {
     }
     return (
         <View className="flex-1 items-center justify-center bg-white">
-            <View className="w-full px-10 justify-center">
+            <View className="w-full h-full px-10 justify-center">
                 <View className="flex flex-row gap-4 justify-between px-5">
                     <View>
                         <Text className="text-6xl font-outfitBold">
                             Hi, <Text className="text-[#00AA55]">Joko!</Text>
                         </Text>
                         <Text className="text-gray-500 font-outfitRegular">
-                            Wed, 30 October 2024
+                           {new Date().toDateString()}
                         </Text>
                     </View>
                 </View>
 
-                <View className="flex flex-col gap-4 items-center justify-between self-center my-20 px-5">
+                <View className="flex flex-col gap-4 items-center justify-between self-center my-8 px-5">
                     <View className="flex flex-row gap-4 items-center justify-between w-full">
                         <ButtonMakeEvent onPress={handleButtonPressOne(role)} role={role}/>
                         <ButtonListRequests onPress={() => router.push("/dashboard/request")} role={role}/>
