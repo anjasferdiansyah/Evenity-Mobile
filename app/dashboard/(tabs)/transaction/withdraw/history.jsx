@@ -29,7 +29,7 @@ export default function WithdrawHistoryScreen() {
 
 
     return (
-        <View className='flex-1 justify-center items-center'>
+        <View className='flex-1 justify-center items-center bg-white'>
             <View className='w-full h-full pt-20 px-10'>
                 <TouchableOpacity onPress={() => router.back()} className="p-2 bg-[#00F279] rounded-full self-start">
                     <AntDesignIcons name='arrowleft' size={20} color={'white'}/>

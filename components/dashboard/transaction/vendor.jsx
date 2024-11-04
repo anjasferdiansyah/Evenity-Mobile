@@ -60,7 +60,7 @@ export function OrderHistoryVendor() {
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => router.push("dashboard/transaction/history")}
+                            onPress={() => router.push("dashboard/transaction/withdraw/history")}
                             className="bg-[#00AA55] px-8 py-4 w-[40%] rounded-full"
                         >
                             <Text className="text-white text-center font-outfitBold">
