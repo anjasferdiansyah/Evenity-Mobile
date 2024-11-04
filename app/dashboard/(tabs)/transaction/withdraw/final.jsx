@@ -2,8 +2,15 @@ import {Text, TextInput, TouchableOpacity, View} from 'react-native'
 import React from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
+import { useSelector } from 'react-redux';
 
 export default function WithdrawScreen() {
+
+
+    const { accountNumber, bankName, accountName } = useSelector(state => state.withdrawHistory)
+
+
+
     return (
         <View className="flex-1 items-center justify-center bg-white">
             <View className="w-full h-full pt-20 px-10">
@@ -13,8 +20,8 @@ export default function WithdrawScreen() {
                 </TouchableOpacity>
                 <View className="mt-14">
                     <Text className="text-3xl font-outfitBold text-center">Withdraw</Text>
-                    <Text className="text-xl font-outfitRegular text-center text-gray-500 mt-12">Joko Susilo</Text>
-                    <Text className="text-xl font-outfitBold text-center">BCA - 12346598</Text>
+                    <Text className="text-xl font-outfitRegular text-center text-gray-500 mt-12">{accountName}</Text>
+                    <Text className="text-xl font-outfitBold text-center">{bankName} - {accountNumber}</Text>
                     <View className="flex flex-row items-center justify-center border-b-[0.5px]  border-gray-400 px-8">
                         <Text className="text-5xl font-outfitBold text-center text-gray-500  mt-12">Rp.</Text>
                         <TextInput className="py-2 px-4 rounded-xl text-5xl font-outfitRegular w-[80%] mt-12 "/>

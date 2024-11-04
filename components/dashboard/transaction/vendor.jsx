@@ -1,9 +1,10 @@
 import {FlatList, Text, TouchableOpacity, View} from "react-native";
 import {router} from "expo-router";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {historyOrderCustomer} from "@/redux/slices/request-requestDetail-slice";
+import axios from "axios";
 
 export function OrderHistoryVendor() {
     const dispatch = useDispatch();
@@ -14,6 +15,22 @@ export function OrderHistoryVendor() {
     useEffect(() => {
         dispatch(historyOrderCustomer());
     }, [dispatch]);
+
+    const [userBalance, setUserBalance] = useState(0);
+
+    useEffect(() => {
+        const fetchUserBalance = async () => {
+            try {
+                const response = await axios.get('transaction/balance/user/9daa0e0e-db69-4d87-b235-bc32f175f260');
+                const {data } = response.data;
+                setUserBalance(data.amount);
+            } catch (error) {
+                console.error('Error fetching user balance:', error);
+            }
+        }
+
+        fetchUserBalance();
+    }, [])
 
 
     const renderItem = ({item}) => (
@@ -48,7 +65,7 @@ export function OrderHistoryVendor() {
                         Your Active balance
                     </Text>
                     <Text className="text-5xl font-outfitBold pb-4 text-center">
-                        Rp. 2.000.000
+                        Rp. {userBalance}
                     </Text>
                     <View className="flex flex-row justify-center gap-4">
                         <TouchableOpacity
