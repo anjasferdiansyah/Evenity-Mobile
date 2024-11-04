@@ -14,7 +14,7 @@ export default function DetailRequest() {
                 <View className="mt-12 border-b border-gray-300 w-full">
                     <Text className="w-full text-5xl font-outfitBold pb-4">Detail Request</Text>
                 </View>
-                <View className="h-[70%]">
+                <View className="h-[55%]">
                     <ScrollView className="">
                         <View className="py-4">
                             <Text className="text-xl font-outfitRegular text-gray-500">
