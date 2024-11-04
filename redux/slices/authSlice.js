@@ -42,19 +42,19 @@ export const completingRegister = createAsyncThunk(
 );
 
 export const completingRegisterUser = createAsyncThunk(
-  "auth/registerUsr",
-  async (data, { rejectWithValue }) => {
-    // const registerData = getState().auth.registerData;
-    // console.log(registerData)
-    const response = await axios
-      .post("auth/register/customer", { ...data })
-      .catch((e) => e.response);
-    // console.log(response);
-    if (response.status !== 200) {
-      return rejectWithValue(response.data.message);
+    "auth/registerUsr",
+    async (data, {rejectWithValue}) => {
+        // const registerData = getState().auth.registerData;
+        // console.log(registerData)
+        const response = await axios
+            .post("auth/register/customer", {...data})
+            .catch((e) => e.response);
+        // console.log(response);
+        if (response.status !== 200) {
+            return rejectWithValue(response.data.message);
+        }
+        return response.data;
     }
-    return response.data;
-  }
 );
 
 export const loadUser = createAsyncThunk(
@@ -144,8 +144,6 @@ const AuthSlice = createSlice({
                 state.status = "failed";
                 state.isLoggedIn = false;
                 state.user = null;
-                state.registerData = null;
-                state.registerAs = null;
                 state.error = action?.payload ? action.payload : "Something went wrong";
             })
             .addMatcher((action) => action.type.endsWith("/pending"), (state) => {
