@@ -11,11 +11,35 @@ export const loadWithdrawHistory = createAsyncThunk(
     }
 );
 
+export const getListBank = createAsyncThunk(
+    'withdrawHistory/getListBank',
+    async () => {
+       try{ const response = await axios.get("https://api-rekening.lfourr.com/listBank")
+        return response.data} catch (error) {
+            console.log(error)
+        }
+    }
+)
+
+export const getBankAccount = createAsyncThunk(
+    'withdrawHistory/getBankAccount',
+    async ({bankCode, accountNumber}, {rejectWithValue}) => {
+       { const response = await axios.get(`https://api-rekening.lfourr.com/getBankAccount?bankCode=${bankCode}&accountNumber=${accountNumber}`)
+        
+        return response.data}
+    }
+)
+
 const withdrawHistorySlice = createSlice({
     name: "withdrawHistory",
     initialState: {
         withdrawHistory: [],
-        status: ""
+        listBank : [],
+        accountName : "",
+        accountNumber : "",
+        bankName : "",
+        status: "",
+        isValidBankAccount : false
     },
     extraReducers: (builder) => {
         builder
@@ -26,6 +50,25 @@ const withdrawHistorySlice = createSlice({
                 console.log("Action Payload", action.payload)
                 state.withdrawHistory = action.payload;
                 state.status = "success";
+            })
+            .addCase(getListBank.fulfilled, (state, action) => {
+                console.log("Action Payload", action.payload)
+                state.listBank = action.payload.data;
+                state.status = "success";
+            })
+            .addCase(getListBank.pending, (state) => {
+                state.status = "loading";
+            })
+            .addCase(getBankAccount.fulfilled, (state, action) => {
+                console.log("Action Payload", action.payload)
+                if(action.payload.status === true){
+                    state.isValidBankAccount = true;
+                    state.accountName = action.payload.data.accountname
+                    state.accountNumber = action.payload.data.accountnumber
+                    state.bankName = action.payload.data.bankname
+                } else {
+                    state.isValidBankAccount = false;
+                }
             })
             .addMatcher((action) => action.type.endsWith("/rejected"), (state, action) => {
                 state.status = "failed";
