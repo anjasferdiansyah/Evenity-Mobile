@@ -1,11 +1,20 @@
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { router } from "expo-router";
 import { ProgressBar } from "@/components/progress-bar";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import tailwind from "twrnc";
+import { useDispatch, useSelector } from "react-redux";
 
-const MakeEventLayout = ({ progress, children, nextRoute, handleAccept }) => {
+const MakeEventLayout = ({
+  progress,
+  children,
+  nextRoute,
+  handleAccept,
+  handleNext,
+}) => {
+  const dispatch = useDispatch();
+
   return (
     <View className="flex-1 justify-center bg-white">
       <TouchableOpacity
@@ -23,19 +32,25 @@ const MakeEventLayout = ({ progress, children, nextRoute, handleAccept }) => {
       </TouchableOpacity>
       <View
         className={`w-[90%] px-10 ${
-          nextRoute === "where" ? "mt-2" : nextRoute === "./makeEvent-capacityEvent" ? "mt-10" : "mt-6"
+          nextRoute === "where"
+            ? "mt-2"
+            : nextRoute === "./makeEvent-capacityEvent"
+            ? "mt-10"
+            : "mt-6"
         }`}
-        style={[tailwind``]}
       >
         <ProgressBar progress={progress} variant="success" />
       </View>
-      <View className="px-10" style={[tailwind`mt-1 h-[60%] mt-4`]}>
-        <ScrollView>{children}</ScrollView>
+      <View className="px-10" style={tailwind`mt-1 h-[60%] mt-4`}>
+        {nextRoute === "when" ? children : <ScrollView>{children}</ScrollView>}
       </View>
       {nextRoute === "where" ? (
         <View className="w-full px-10 mt-10">
           <TouchableOpacity
-            onPress={() => router.push(`/dashboard/make-event/${nextRoute}`)}
+            onPress={() => {
+              handleNext();
+              router.push(`/dashboard/make-event/${nextRoute}`);
+            }}
             className="bg-[#00AA55] mx-auto w-full mt-14 items-center justify-center py-3 rounded-full"
           >
             <Text className="text-white text-xl font-outfitBold py-1.5">
@@ -84,7 +99,10 @@ const MakeEventLayout = ({ progress, children, nextRoute, handleAccept }) => {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => router.push(`/dashboard/make-event/${nextRoute}`)}
+            onPress={() => {
+              handleNext();
+              router.push(`/dashboard/make-event/${nextRoute}`);
+            }}
             className="bg-[#00AA55] mx-auto w-[60%] mt-14 items-center justify-center py-3 rounded-full"
           >
             <Text className="text-white text-xl font-outfitBold py-1.5">
