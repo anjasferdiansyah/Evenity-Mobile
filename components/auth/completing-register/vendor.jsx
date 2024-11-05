@@ -1,7 +1,7 @@
 import {Text, TextInput, TouchableOpacity, View} from 'react-native'
 import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
-import {completingRegister, resetError, resetStatus} from "@/redux/slices/authSlice";
+import {completingRegisterVendor, resetError, resetStatus} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
 
 const CompletingRegisterVendor = () => {
@@ -36,7 +36,7 @@ const CompletingRegisterVendor = () => {
             ownerName
         }
         console.log(newRegisterData)
-        dispatch(completingRegister(newRegisterData))
+        dispatch(completingRegisterVendor(newRegisterData))
     }
 
     return (

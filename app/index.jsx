@@ -2,25 +2,18 @@ import {Image, View} from 'react-native'
 import React, {useEffect} from 'react'
 import logo from '@/assets/evenity.png'
 import {router} from "expo-router";
-import {setupAxios} from "@/config/axiosConfig";
-import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
-import {loadUser} from "@/redux/slices/authSlice";
-import {useDispatch} from "react-redux";
+import {initializeAuth} from "@/redux/slices/authSlice";
+import {useDispatch, useSelector} from "react-redux";
 import {ROUTES} from "@/constant/ROUTES";
 
 export default function SplashScreen() {
-    setupAxios()
+    // setupAxios()
 
     const dispatch = useDispatch()
+    const {isInitialized, isLoggedIn} = useSelector((state) => state.auth);
 
     useEffect(() => {
-        const getToken = async () => {
-            const token = await asyncStorage.getItem("token")
-            if (token) {
-                dispatch(loadUser())
-            }
-        }
-        getToken()
+        dispatch(initializeAuth());
     }, [dispatch]);
 
     useEffect(() => {

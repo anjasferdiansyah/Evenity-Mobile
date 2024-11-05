@@ -6,10 +6,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {register} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
 import RNPickerSelect from "react-native-picker-select";
-import {setupAxios} from "@/config/axiosConfig";
 
 const RegisterScreen = () => {
-    setupAxios()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
