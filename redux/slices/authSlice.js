@@ -2,25 +2,20 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 import {setupAxios} from "@/config/axiosConfig";
-import {jwtDecode} from "jwt-decode";
 
 export const login = createAsyncThunk(
     'auth/login',
-    async ({email, password}, {rejectWithValue}) => {
+    async ({email, password}, {dispatch, rejectWithValue}) => {
         email = email.toLowerCase()
         const response = await axios.post("auth/login", {email, password}).catch(e => e.response)
         // console.log(response.status)
         if (response.status !== 200) return rejectWithValue("Invalid email or password");
         // console.log(response.data)
-        const {token} = response.data.data
         if (response.data.data) {
-            asyncStorage.setItem("token", token);
-            setupAxios(token);
-            const {role, sub: userId} = jwtDecode(token);
-            asyncStorage.setItem("userId", userId);
-            asyncStorage.setItem("email", email);
-            asyncStorage.setItem("role", role);
-            return {userId, email, role};
+            const {token} = response.data.data
+            await asyncStorage.setItem("token", token);
+            setupAxios(token)
+            dispatch(loadUser())
         } else {
             return rejectWithValue("Invalid email or password");
         }
@@ -59,12 +54,14 @@ export const completingRegisterUser = createAsyncThunk(
 
 export const loadUser = createAsyncThunk(
     'auth/loadUser',
-    async () => {
+    async (_, {rejectWithValue}) => {
         const token = await asyncStorage.getItem("token");
         setupAxios(token);
-        const userId = await asyncStorage.getItem("userId");
-        const email = await asyncStorage.getItem("email");
-        const role = await asyncStorage.getItem("role");
+        const response = await axios.get("/auth/user/info");
+
+        if (response.status !== 200) return rejectWithValue("Not logged in");
+        const {email, userId, role} = response.data.data;
+        console.log({email, userId, role})
         return {email, userId, role};
     }
 )
@@ -88,9 +85,6 @@ const AuthSlice = createSlice({
         },
         logout: (state) => {
             asyncStorage.removeItem("token");
-            asyncStorage.removeItem("userId");
-            asyncStorage.removeItem("email");
-            asyncStorage.removeItem("role");
             state.isLoggedIn = false;
             state.user = null;
             state.error = null;
@@ -111,7 +105,7 @@ const AuthSlice = createSlice({
             .addCase(login.fulfilled, (state, action) => {
                 state.status = "logged in";
                 state.isLoggedIn = true;
-                state.user = action.payload;
+                // state.user = action.payload;
                 state.error = null;
                 state.registerData = null;
                 state.registerAs = null;

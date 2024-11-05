@@ -24,7 +24,7 @@ export default function HomeScreen() {
 
     const {user} = useSelector(state => state.auth)
     const role = user?.role
-    console.log(role)
+    console.log(user)
     if (!role) {
         return <View className="flex-1 items-center justify-center bg-white">
             <Text className="text-2xl font-outfitBold">

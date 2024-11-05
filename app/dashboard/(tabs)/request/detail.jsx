@@ -2,8 +2,16 @@ import {ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import React from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
+import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 export default function DetailRequest() {
+
+    const { selectedRequest } = useSelector(state => state.requestListVendor)
+
+    const formatedDate = (date) => {
+        return moment(date).format('DD MMM YYYY')
+    }
     
     return (
         <View className="flex-1 items-start justify-center bg-white">
@@ -21,23 +29,15 @@ export default function DetailRequest() {
                                 Date Event
                             </Text>
                             <Text className="text-xl font-outfitSemiBold">
-                                20 November - 21 November
+                                {formatedDate(selectedRequest?.eventDate)}
                             </Text>
                         </View>
                         <View className="py-4">
                             <Text className="text-xl font-outfitRegular text-gray-500">
-                                Days
+                                {selectedRequest?.unit}
                             </Text>
                             <Text className="text-xl font-outfitSemiBold">
-                                2
-                            </Text>
-                        </View>
-                        <View className="py-4">
-                            <Text className="text-xl font-outfitRegular text-gray-500">
-                                Quantity (pcs)
-                            </Text>
-                            <Text className="text-xl font-outfitSemiBold">
-                                2
+                                {selectedRequest?.quantity}
                             </Text>
                         </View>
                         <View className="py-4">
@@ -45,7 +45,7 @@ export default function DetailRequest() {
                                 Product Name
                             </Text>
                             <Text className="text-lg font-outfitSemiBold">
-                                Catering
+                                {selectedRequest?.productName}
                             </Text>
                         </View>
                         <View className="py-4">
@@ -53,23 +53,23 @@ export default function DetailRequest() {
                                 Event Name
                             </Text>
                             <Text className="text-lg font-outfitSemiBold">
-                                Halloween
+                                {selectedRequest?.eventName}
                             </Text>
                         </View>
                         <View className="py-4">
                             <Text className="text-lg font-outfitRegular text-gray-500">
-                                Address
+                                Approval Status
                             </Text>
                             <Text className="text-lg font-outfitSemiBold">
-                                Jalan Sekartaji 1 No 20 Malang, Jawa Timur
+                                {selectedRequest?.approvalStatus}
                             </Text>
                         </View>
                         <View className="py-4">
                             <Text className="text-lg font-outfitRegular text-gray-500">
-                                Note
+                                Notes
                             </Text>
                             <Text className="text-lg font-outfitSemiBold">
-                                Harus Pedess Lurrr!
+                                {selectedRequest?.notes}
                             </Text>
                         </View>
 
