@@ -1,5 +1,5 @@
 import {configureStore} from "@reduxjs/toolkit";
-import request_requestDetailSlice from "./slices/request-requestDetail-slice";
+import orderUserSlice from "./slices/orderUserSlice";
 import authSlice from "./slices/authSlice";
 import withdrawHistorySlice from "./slices/withdrawHistorySlice";
 import makeEventSlice from "./slices/makeEventSlice";
@@ -13,7 +13,7 @@ export default configureStore({
     reducer: {
         auth: authSlice,
         withdrawHistory: withdrawHistorySlice,
-        requestDetail: request_requestDetailSlice,
+        orderUser : orderUserSlice,
         makeEventSlice: makeEventSlice,
         categorySlice: categorySlice,
         productSlice: productSlice,

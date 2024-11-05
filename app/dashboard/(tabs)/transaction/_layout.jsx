@@ -6,9 +6,9 @@ export default function TransactionLayout() {
             <Stack.Screen name="index"/>
             <Stack.Screen
                 name="detail"
-                options={{
-                    presentation: 'modal',
-                }}
+                // options={{
+                //     presentation: 'modal',
+                // }}
             />
             <Stack.Screen
                 name="withdraw/history"
