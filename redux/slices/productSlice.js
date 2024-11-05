@@ -1,48 +1,56 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 
-
-export const getProduct = createAsyncThunk(
-    "product/getProduct",
-    async (_, {rejectWithValue}) => {
-        try {
-            const response = await axios.get(`/vendor/8f6d8a02-65f6-44dc-87c2-e9c4cc7f0786/products`);
-            return response.data.data
-        } catch (error) {
-            console.log(error)
-            return rejectWithValue(error)
-        }
-     
+export const getPriceRange = createAsyncThunk(
+  "product/getPriceRange",
+  async (data, { rejectWithValue }) => {
+    try {
+      const token = await asyncStorage.getItem("token");
+      console.log("token" ,token)
+      console.log("data" ,data)
+      const response = await axios.get("/product/price/range", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: data,
+      });
+      console.log("response" ,response)
+      if (response.status !== 200) {
+        return rejectWithValue(response.data.message);
+      }
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
-)
+  }
+);
 
+const ProductSlice = createSlice({
+  name: "product",
+  initialState: {
+    isLoading: false,
+    priceRange: [],
+    status: "idle",
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(getPriceRange.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.priceRange = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(getPriceRange.rejected, (state) => {
+        state.status = "failed";
+        state.isLoading = false;
+        console.log("error fetching");
+      })
+      .addCase(getPriceRange.pending, (state) => {
+        state.status = "loading";
+        state.isLoading = true;
+      });
+  },
+});
 
-const productSlice = createSlice({
-    name: "product",
-    initialState: {
-        products : [],
-        selectedProduct: null,
-        status: null,
-        error: null
-    },
-    reducers: {
-        setSelectedProduct: (state, action) => {
-            state.selectedProduct = action.payload;
-        }
-    },
-    extraReducers: (builder) => {
-        builder
-            .addCase(getProduct.fulfilled, (state, action) => {
-                state.products = action.payload;
-                state.status = "success";
-            })
-            .addMatcher((action) => action.type.endsWith("/rejected"), (state, action) => {
-                state.status = "failed";
-                state.error = action.error.message;
-            })
-    }
-})
-
-export const {setSelectedProduct} = productSlice.actions
-
-export default productSlice.reducer;
+export default ProductSlice.reducer;
