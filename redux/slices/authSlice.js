@@ -6,18 +6,20 @@ import {setupAxios} from "@/config/axiosConfig";
 export const login = createAsyncThunk(
     'auth/login',
     async ({email, password}, {dispatch, rejectWithValue}) => {
-        email = email.toLowerCase()
-        const response = await axios.post("auth/login", {email, password}).catch(e => e.response)
-        // console.log(response.status)
-        if (response.status !== 200) return rejectWithValue("Invalid email or password");
-        // console.log(response.data)
-        if (response.data.data) {
-            const {token} = response.data.data
-            await asyncStorage.setItem("token", token);
-            setupAxios(token)
-            dispatch(loadUser())
-        } else {
-            return rejectWithValue("Invalid email or password");
+        try {
+            email = email.toLowerCase();
+            const response = await axios.post("auth/login", {email, password});
+
+            if (response.data?.data) {
+                const {token} = response.data.data;
+                await asyncStorage.setItem("token", token);
+                setupAxios(token);
+                dispatch(loadUser());
+                return response.data.data;
+            }
+            return rejectWithValue("Invalid credentials");
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Login failed");
         }
     }
 );
@@ -25,75 +27,66 @@ export const login = createAsyncThunk(
 export const completingRegister = createAsyncThunk(
     'auth/register',
     async (data, {rejectWithValue}) => {
-        // const registerData = getState().auth.registerData;
-        // console.log(registerData)
-        const response = await axios.post("auth/register/vendor", {...data}).catch(e => e.response)
-        // console.log(response)
-        if (response.status !== 200) {
-            return rejectWithValue(response.data.message);
+        try {
+            const response = await axios.post("auth/register/vendor", data);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Registration failed");
         }
-        return response.data;
     }
 );
 
 export const completingRegisterUser = createAsyncThunk(
     "auth/registerUsr",
     async (data, {rejectWithValue}) => {
-        // const registerData = getState().auth.registerData;
-        // console.log(registerData)
-        const response = await axios
-            .post("auth/register/customer", {...data})
-            .catch((e) => e.response);
-        // console.log(response);
-        if (response.status !== 200) {
-            return rejectWithValue("Invalid email or password");
+        try {
+            const response = await axios.post("auth/register/customer", data);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Registration failed");
         }
-        return response.data;
     }
 );
 
 export const loadUser = createAsyncThunk(
     'auth/loadUser',
     async (_, {rejectWithValue}) => {
-        const token = await asyncStorage.getItem("token");
-        setupAxios(token);
-        const response = await axios.get("/auth/user/info");
+        try {
+            const token = await asyncStorage.getItem("token");
+            if (!token) return rejectWithValue("No token found");
 
-        if (response.status !== 200) return rejectWithValue("Not logged in");
-        const {data} = response.data;
-        console.log(data)
-        return data;
+            setupAxios(token);
+            const response = await axios.get("/auth/user/info");
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to load user");
+        }
     }
-)
+);
+
+const initialState = {
+    id: null,
+    isLoggedIn: false,
+    error: null,
+    status: "idle",
+    user: null,
+    registerData: null,
+    registerAs: null,
+};
 
 const AuthSlice = createSlice({
     name: "auth",
-    initialState: {
-        id: null,
-        isLoggedIn: false,
-        error: null,
-        status: "idle",
-        user: null,
-        registerData: null,
-        registerAs: null,
-    },
+    initialState: initialState,
     reducers: {
         setRegisterAs: (state, action) => {
-            state.registerAs = action.payload
+            state.registerAs = action.payload;
         },
         register: (state, action) => {
-            state.registerData = action.payload
+            state.registerData = action.payload;
         },
         logout: (state) => {
             asyncStorage.removeItem("token");
-            state.id = null;
-            state.isLoggedIn = false;
-            state.user = null;
-            state.error = null;
-            state.status = "idle";
-            state.registerData = null;
-            state.registerAs = null;
-            delete axios.defaults.headers.common["Authorization"];
+            return {...initialState};
         },
         resetError: (state) => {
             state.error = null;
@@ -104,7 +97,7 @@ const AuthSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(login.fulfilled, (state, action) => {
+            .addCase(login.fulfilled, (state) => {
                 state.status = "logged in";
                 state.isLoggedIn = true;
                 state.error = null;
@@ -112,21 +105,16 @@ const AuthSlice = createSlice({
                 state.registerAs = null;
             })
             .addCase(completingRegister.fulfilled, (state) => {
-                state.id = null;
-                state.status = "registered";
-                state.isLoggedIn = false;
-                state.user = null;
-                state.error = null;
-                state.registerData = null;
-                state.registerAs = null;
+                return {
+                    ...initialState,
+                    status: "registered"
+                };
             })
             .addCase(completingRegisterUser.fulfilled, (state) => {
-                state.status = "registered";
-                state.isLoggedIn = false;
-                state.user = null;
-                state.error = null;
-                state.registerData = null;
-                state.registerAs = null;
+                return {
+                    ...initialState,
+                    status: "registered"
+                };
             })
             .addCase(loadUser.fulfilled, (state, action) => {
                 state.id = action.payload.detail.id;
@@ -137,17 +125,31 @@ const AuthSlice = createSlice({
                 state.registerData = null;
                 state.registerAs = null;
             })
-            .addMatcher((action) => action.type.endsWith("/rejected"), (state, action) => {
-                state.status = "failed";
-                state.isLoggedIn = false;
-                state.user = null;
-                state.error = action?.payload ? action.payload : "Something went wrong";
-            })
-            .addMatcher((action) => action.type.endsWith("/pending"), (state) => {
-                state.status = "loading";
-            })
+            .addMatcher(
+                (action) => action.type.endsWith("/rejected"),
+                (state, action) => {
+                    state.status = "failed";
+                    state.isLoggedIn = false;
+                    state.user = null;
+                    state.error = action.payload || "Something went wrong";
+                }
+            )
+            .addMatcher(
+                (action) => action.type.endsWith("/pending"),
+                (state) => {
+                    state.status = "loading";
+                    state.error = null;
+                }
+            );
     },
 });
 
-export const {logout, resetError, register, resetStatus, setRegisterAs} = AuthSlice.actions;
+export const {
+    logout,
+    resetError,
+    register,
+    resetStatus,
+    setRegisterAs
+} = AuthSlice.actions;
+
 export default AuthSlice.reducer;
