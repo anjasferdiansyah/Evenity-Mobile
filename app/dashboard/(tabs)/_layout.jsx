@@ -13,7 +13,7 @@ export default function DashboardLayout() {
         if (!isLoggedIn) {
             router.replace("/auth")
         }
-    }, [isLoggedIn, router]);
+    }, [isLoggedIn]);
 
     return (
         <Tabs screenOptions={{

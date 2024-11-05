@@ -2,15 +2,31 @@ import {ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import React from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
+import {approveRequest, rejectRequest} from "@/redux/slices/requestSlice";
 
 export default function DetailRequest() {
 
     const {selectedRequest} = useSelector(state => state.request)
+    const dispatch = useDispatch()
 
     const formatedDate = (date) => {
         return moment(date).format('DD MMM YYYY')
+    }
+
+    function handleApprove(id) {
+        return () => {
+            dispatch(approveRequest(id))
+            alert("Request approved")
+        }
+    }
+
+    function handleReject(id) {
+        return () => {
+            dispatch(rejectRequest(id))
+            alert("Request rejected")
+        }
     }
 
     return (
@@ -77,10 +93,12 @@ export default function DetailRequest() {
                 </View>
 
                 <View className="flex flex-row gap-8 w-full mt-3 items-center justify-center">
-                    <TouchableOpacity className="bg-[#00F279] items-center justify-center px-8 py-3 rounded-full">
+                    <TouchableOpacity className="bg-[#00F279] items-center justify-center px-8 py-3 rounded-full"
+                                      onPress={handleApprove(selectedRequest?.eventDetailId)}>
                         <Text className="text-white text-xl font-bold">Approve</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity className="bg-red-500 items-center justify-center px-8 py-3 rounded-full">
+                    <TouchableOpacity className="bg-red-500 items-center justify-center px-8 py-3 rounded-full"
+                                      onPress={handleReject(selectedRequest?.eventDetailId)}>
                         <Text className="text-white text-xl font-bold">Reject</Text>
                     </TouchableOpacity>
                 </View>

@@ -106,7 +106,7 @@ export default function ListRequestScreen() {
 
                 <View className="mt-6">
                     <View className="flex flex-row justify-around relative bg-gray-100 p-4 rounded-full">
-                        {["All", "Approved", "Rejected"].map((item, index) => (
+                        {["All", "Pending", "Approved", "Rejected"].map((item, index) => (
                             <TouchableOpacity
                                 key={index}
                                 onPress={() => handlePress(item, index)}
