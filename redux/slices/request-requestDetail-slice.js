@@ -17,7 +17,6 @@ export const historyOrderCustomer = createAsyncThunk(
             .catch((e) => e.response);
 
         if (response.status !== 200) return rejectWithValue(response.data.message);
-        console.log(JSON.stringify(response));
         return response.data.data;
     }
 );
