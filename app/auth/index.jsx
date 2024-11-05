@@ -2,22 +2,21 @@ import {Image, Text, TouchableOpacity, View} from 'react-native'
 import React, {useEffect} from 'react'
 import hero from '@/assets/hero.png'
 import {router} from "expo-router";
-import {setupAxios} from "@/config/axiosConfig";
 import {useDispatch, useSelector} from "react-redux";
 import {setRegisterAs} from "@/redux/slices/authSlice";
 import {ROUTES} from "@/constant/ROUTES";
 import {ROLE} from "@/constant/USER";
 
 export default function AuthScreen() {
-    setupAxios()
+    // setupAxios()
     const dispatch = useDispatch()
-    const {isLoggedIn} = useSelector((state) => state.auth);
+    const {isLoggedIn, isInitialized} = useSelector((state) => state.auth);
 
     useEffect(() => {
-        if (isLoggedIn) {
+        if (isInitialized && isLoggedIn) {
             router.replace(ROUTES.DASHBOARD.INDEX)
         }
-    }, [isLoggedIn]);
+    }, [isInitialized, isLoggedIn]);
 
     function handleRegister(role) {
         return () => {

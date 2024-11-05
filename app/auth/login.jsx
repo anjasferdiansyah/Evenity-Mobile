@@ -5,11 +5,9 @@ import {validateUser} from "@/helper/validator/auth";
 import {useDispatch, useSelector} from "react-redux";
 import {login, resetError} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
-import {setupAxios} from "@/config/axiosConfig";
 import {ROUTES} from "@/constant/ROUTES";
 
 export default function LoginScreen() {
-    setupAxios()
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();

@@ -3,6 +3,19 @@ import axios from "axios";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 import {setupAxios} from "@/config/axiosConfig";
 
+export const initializeAuth = createAsyncThunk(
+    'auth/initialize',
+    async (_, {dispatch}) => {
+        const token = await asyncStorage.getItem("token");
+        if (token) {
+            setupAxios(token);
+            await dispatch(loadUser());
+            return true;
+        }
+        return false;
+    }
+);
+
 export const login = createAsyncThunk(
     'auth/login',
     async ({email, password}, {dispatch, rejectWithValue}) => {
@@ -24,7 +37,7 @@ export const login = createAsyncThunk(
     }
 );
 
-export const completingRegister = createAsyncThunk(
+export const completingRegisterVendor = createAsyncThunk(
     'auth/register',
     async (data, {rejectWithValue}) => {
         try {
@@ -59,6 +72,7 @@ export const loadUser = createAsyncThunk(
             const response = await axios.get("/auth/user/info");
             return response.data.data;
         } catch (error) {
+            asyncStorage.removeItem("token");
             return rejectWithValue(error.response?.data?.message || "Failed to load user");
         }
     }
@@ -72,6 +86,7 @@ const initialState = {
     user: null,
     registerData: null,
     registerAs: null,
+    isInitialized: false,
 };
 
 const AuthSlice = createSlice({
@@ -97,6 +112,14 @@ const AuthSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(initializeAuth.fulfilled, (state, action) => {
+                state.isLoggedIn = action.payload;
+                state.isInitialized = true;
+            })
+            .addCase(initializeAuth.rejected, (state) => {
+                state.isLoggedIn = false;
+                state.isInitialized = true;
+            })
             .addCase(login.fulfilled, (state) => {
                 state.status = "logged in";
                 state.isLoggedIn = true;
@@ -104,7 +127,7 @@ const AuthSlice = createSlice({
                 state.registerData = null;
                 state.registerAs = null;
             })
-            .addCase(completingRegister.fulfilled, (state) => {
+            .addCase(completingRegisterVendor.fulfilled, (state) => {
                 return {
                     ...initialState,
                     status: "registered"
