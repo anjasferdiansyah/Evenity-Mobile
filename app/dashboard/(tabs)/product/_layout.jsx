@@ -1,16 +1,18 @@
-import { View, Text } from 'react-native'
 import React from 'react'
-import { Stack } from 'expo-router'
+import {Stack} from 'expo-router'
 
 const Product = () => {
-  return (
-    <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen
-            name="detail"
-        />
-    </Stack>
-  )
+    return (
+        <Stack screenOptions={{headerShown: false}}>
+            <Stack.Screen name="index"/>
+            <Stack.Screen
+                name="detail"
+                options={{
+                    presentation: 'modal',
+                }}
+            />
+        </Stack>
+    )
 }
 
 export default Product
