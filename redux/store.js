@@ -13,6 +13,7 @@ export default configureStore({
     requestDetail: request_requestDetailSlice,
     makeEventSlice: makeEventSlice,
     categorySlice: categorySlice,
-    productSlice: productSlice
+    productSlice: productSlice,
+    product : productSlice
   },
 });
