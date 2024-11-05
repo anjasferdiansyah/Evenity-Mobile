@@ -2,17 +2,17 @@ import {ScrollView, Text, TouchableOpacity, View} from 'react-native'
 import React from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import moment from 'moment';
 
 export default function DetailRequest() {
 
-    const { selectedRequest } = useSelector(state => state.requestListVendor)
+    const {selectedRequest} = useSelector(state => state.request)
 
     const formatedDate = (date) => {
         return moment(date).format('DD MMM YYYY')
     }
-    
+
     return (
         <View className="flex-1 items-start justify-center bg-white">
             <View className="w-full h-full pt-20 px-10">

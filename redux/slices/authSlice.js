@@ -46,7 +46,7 @@ export const completingRegisterUser = createAsyncThunk(
             .catch((e) => e.response);
         // console.log(response);
         if (response.status !== 200) {
-            return rejectWithValue(response.data.message);
+            return rejectWithValue("Invalid email or password");
         }
         return response.data;
     }
@@ -60,15 +60,16 @@ export const loadUser = createAsyncThunk(
         const response = await axios.get("/auth/user/info");
 
         if (response.status !== 200) return rejectWithValue("Not logged in");
-        const {email, userId, role} = response.data.data;
-        console.log({email, userId, role})
-        return {email, userId, role};
+        const {data} = response.data;
+        console.log(data)
+        return data;
     }
 )
 
 const AuthSlice = createSlice({
     name: "auth",
     initialState: {
+        id: null,
         isLoggedIn: false,
         error: null,
         status: "idle",
@@ -85,6 +86,7 @@ const AuthSlice = createSlice({
         },
         logout: (state) => {
             asyncStorage.removeItem("token");
+            state.id = null;
             state.isLoggedIn = false;
             state.user = null;
             state.error = null;
@@ -105,12 +107,12 @@ const AuthSlice = createSlice({
             .addCase(login.fulfilled, (state, action) => {
                 state.status = "logged in";
                 state.isLoggedIn = true;
-                // state.user = action.payload;
                 state.error = null;
                 state.registerData = null;
                 state.registerAs = null;
             })
             .addCase(completingRegister.fulfilled, (state) => {
+                state.id = null;
                 state.status = "registered";
                 state.isLoggedIn = false;
                 state.user = null;
@@ -127,6 +129,7 @@ const AuthSlice = createSlice({
                 state.registerAs = null;
             })
             .addCase(loadUser.fulfilled, (state, action) => {
+                state.id = action.payload.detail.id;
                 state.status = "success";
                 state.isLoggedIn = true;
                 state.user = action.payload;
