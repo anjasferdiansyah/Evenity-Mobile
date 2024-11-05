@@ -46,10 +46,22 @@ const MakeEventDate = () => {
   const handleMakeEvent = () => {
     dispatch(
       registMakeEvent({
-        startDate: startDate ? startDate.toISOString() : null,
-        endDate: endDate ? endDate.toISOString() : null,
-        startTime: startTime ? startTime.toISOString() : null,
-        endTime: endTime ? endTime.toISOString() : null,
+        startDate:
+          typeof startDate === "string"
+            ? startDate.split("T")[0]
+            : startDate.toISOString().split("T")[0],
+        endDate:
+          typeof endDate === "string"
+            ? endDate.split("T")[0]
+            : endDate.toISOString().split("T")[0],
+        startTime:
+          typeof startTime === "string" && startTime.includes("T")
+            ? startTime.split("T")[1].split(".")[0]
+            : startTime.toISOString().split("T")[1].split(".")[0],
+        endTime:
+          typeof endTime === "string" && endTime.includes("T")
+            ? endTime.split("T")[1].split(".")[0]
+            : endTime.toISOString().split("T")[1].split(".")[0],
       })
     );
   };

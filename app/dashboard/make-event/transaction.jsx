@@ -7,39 +7,80 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ListChooseVendor from "@/components/ListChooseVendor-user";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
 import { useDispatch, useSelector } from "react-redux";
+import { registMakeEvent, makeEvent } from "@/redux/slices/makeEventSlice";
 
 const MakeEventTransactionNote = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
+  const { makeEventData } = useSelector((state) => state.makeEventSlice);
 
   const handleAccept = () => {
     setModalVisible(true);
   };
 
-  const handleConfirm = () => {
-    setModalVisible(false);
-    navigation.navigate("Home");
+  useEffect(() => {
+    console.log("makeEventData", makeEventData);
+  }, [makeEventData]);
+
+  const handleRegenerateVendor = () => {
+    // console.log("listSelectedVendor", listSelectedVendor);
+    const newEventData = {
+      // ...makeEventData,
+      // customerId: "05e2c49d-ee52-4d35-9ab8-6d8564f328bd",
+      // categoryProduct: listSelectedVendor,
+      // previousProduct: [],
+      name: "Flower Fest 2025",
+      description:
+        "A festival in Malang city where every florist or farmer in Malang region gather and show of their work in flower arrangement and intricate gardening skill",
+      startDate: "2025-01-02",
+      endDate: "2025-01-05",
+      startTime: "07:00:00",
+      endTime: "18:00:00",
+      province: "JAWA TIMUR",
+      city: "KOTA MALANG",
+      district: "Lowokwaru",
+      address: "Malang city, Klojen district",
+      theme: "Flower festival",
+      participant: 100,
+      customerId: "05e2c49d-ee52-4d35-9ab8-6d8564f328bd",
+      categoryProduct: [
+        {
+          categoryId: "f666d1e6-6f36-4ea4-8533-84a2a79a7d7b",
+          minCost: 9000,
+          maxCost: 50000000,
+        },
+      ],
+      previousProduct: ["edf13a67-53d3-4b2b-8146-e84f8e4b8412"],
+    };
+    console.log("newEventData", newEventData);
+    dispatch(makeEvent(newEventData));
   };
 
-  const entertainmentItems = [
-    { id: 1, name: "Joko Horeg", price: "10.000.000" },
-    { id: 2, name: "Andi Mc", price: "15.000.000" },
-    { id: 3, name: "Soni Catering enak sekali", price: "15.000.000" },
-    { id: 4, name: "Gelora bung karno", price: "15.000.000" },
-    { id: 5, name: "Gelora bung karno", price: "15.000.000" },
-    { id: 6, name: "Gelora bung karno", price: "15.000.000" },
-    { id: 7, name: "Gelora bung karno", price: "15.000.000" },
-  ];
+  // const handleConfirm = () => {
+  //   setModalVisible(false);
+  //   navigation.navigate("Home");
+  // };
+
+  // const entertainmentItems = [
+  //   { id: 1, name: "Joko Horeg", price: "10.000.000" },
+  //   { id: 2, name: "Andi Mc", price: "15.000.000" },
+  //   { id: 3, name: "Soni Catering enak sekali", price: "15.000.000" },
+  //   { id: 4, name: "Gelora bung karno", price: "15.000.000" },
+  //   { id: 5, name: "Gelora bung karno", price: "15.000.000" },
+  //   { id: 6, name: "Gelora bung karno", price: "15.000.000" },
+  //   { id: 7, name: "Gelora bung karno", price: "15.000.000" },
+  // ];
 
   return (
     <MakeEventLayout
       progress={100}
-      nextRoute="./makeEvent-capacityEvent"
-      handleAccept={handleAccept}
+      nextRoute="transaction"
+      handleAccept={handleRegenerateVendor}
+
     >
       <View className="px-10" style={[tailwind`my-2 mx-auto`]}>
         <Text className="font-outfitSemiBold text-2xl" style={[tailwind`mb-3`]}>
@@ -48,9 +89,15 @@ const MakeEventTransactionNote = () => {
       </View>
 
       <ScrollView style={[tailwind`mt-2 `]} className="vendor-choosen">
-        {entertainmentItems.map((item) => (
-          <ListChooseVendor key={item.id} item={item} radius="xl" />
-        ))}
+        {makeEventData &&
+        makeEventData.recommendedList &&
+        makeEventData.recommendedList.length > 0 ? (
+          makeEventData.recommendedList.map((item) => (
+            <ListChooseVendor key={item.productId} item={item} radius="xl" />
+          ))
+        ) : (
+          <Text>No recommended vendors available.</Text>
+        )}
       </ScrollView>
 
       <View className="flex flex-row gap-4 w-full mt-12 px-10 items-center">

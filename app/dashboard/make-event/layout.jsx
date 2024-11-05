@@ -73,7 +73,11 @@ const MakeEventLayout = ({
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => router.push("MakeEventTransactionNote")}
+            // onPress={() => {
+            //   handleAccept();
+            //   router.push(`/dashboard/make-event/${nextRoute}`);
+            // }}
+            onPress={handleAccept}
             className=" mx-auto items-center justify-center py-3 rounded-full"
             style={[tailwind`w-full bg-[#19ff8c]`]}
           >

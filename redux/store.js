@@ -19,6 +19,6 @@ export default configureStore({
     productSlice: productSlice,
     productVendor : productVendorSlice,
     requestListVendor : requesListVendorSlice,
-    orderHistoryVendor : orderHistoryVendorSlice
+    orderHistoryVendor : orderHistoryVendorSlice,
   },
 });

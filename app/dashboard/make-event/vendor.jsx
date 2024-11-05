@@ -29,13 +29,18 @@ const MakeEventChooseVendor = () => {
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.categorySlice);
   const { makeEventData } = useSelector((state) => state.makeEventSlice);
-  const [selectedCategory, setSelectedCategory] = useState();
-  const [listSelectedCategory, setListSelectedCategory] = useState([]);
-  const [lowestPrice, setLowestPrice] = useState("");
-  const [highestPrice, setHighestPrice] = useState("");
-  const { priceRange, status, isLoading } = useSelector(
+  const { priceRange, status, isLoading, error } = useSelector(
     (state) => state.productSlice
   );
+  const [selectedCategory, setSelectedCategory] = useState();
+  const [listSelectedCategory, setListSelectedCategory] = useState([]);
+  const [listSelectedVendor, setListSelectedVendor] = useState([]);
+  const [lowestPrice, setLowestPrice] = useState("");
+  const [highestPrice, setHighestPrice] = useState("");
+
+  const [tempLowestPrice, setTempLowestPrice] = useState("");
+  const [tempHighestPrice, setTempHighestPrice] = useState("");
+  const [vendorsAvailable, setVendorsAvailable] = useState(true);
 
   useEffect(() => {
     dispatch(loadCategories());
@@ -43,38 +48,74 @@ const MakeEventChooseVendor = () => {
 
   const handleCategoryChange = (itemValue) => {
     setSelectedCategory(itemValue);
-    console.log(itemValue);
+    console.log("selectedCategory", selectedCategory);
+    console.log("itemValue", itemValue);
     const data = {
-      province: "East Java",
-      city: "Malang",
-      participant: 10,
-      categoryId: "0e739ec0-8609-4038-98b0-3c9c8f26b30b",
+      province: makeEventData.province,
+      city: makeEventData.city,
+      participant: makeEventData.participant,
+      startDate: makeEventData.startDate,
+      endDate: makeEventData.endDate,
+      categoryId: itemValue,
     };
-    // dispatch(getPriceRange(data));
-    console.log(priceRange);
+    console.log("data", data);
+    dispatch(getPriceRange(data));
   };
 
   useEffect(() => {
-    if (status === "succeeded" && priceRange.length > 0) {
-      // setLowestPrice(priceRange[0].lowestPrice.toString());
-      // setHighestPrice(priceRange[0].highestPrice.toString());
-      console.log(priceRange);
+    if (status === "succeeded" && priceRange) {
+      if (priceRange.lowestPrice === null || priceRange.highestPrice === null) {
+        setVendorsAvailable(false);
+        setLowestPrice(""); // Reset to default value
+        setHighestPrice(""); // Reset to default value
+      } else {
+        setLowestPrice(priceRange.lowestPrice.toString());
+        setHighestPrice(priceRange.highestPrice.toString());
+        setVendorsAvailable(true); // Reset to true if vendors are available
+      }
+    } else if (status === "failed") {
+      setVendorsAvailable(false);
+      setLowestPrice(""); // Reset to default value
+      setHighestPrice(""); // Reset to default value
     }
   }, [status, priceRange]);
 
   const handleMakeEvent = () => {
+    console.log("listSelectedVendor", listSelectedVendor);
     const newEventData = {
-      ...makeEventData,
+      // ...makeEventData,
+      // customerId: "05e2c49d-ee52-4d35-9ab8-6d8564f328bd",
+      // categoryProduct: listSelectedVendor,
+      // previousProduct: [],
+      name: "Flower Fest 2025",
+      description:
+        "A festival in Malang city where every florist or farmer in Malang region gather and show of their work in flower arrangement and intricate gardening skill",
+      startDate: "2025-01-02",
+      endDate: "2025-01-05",
+      startTime: "07:00:00",
+      endTime: "18:00:00",
+      province: "JAWA TIMUR",
+      city: "KOTA MALANG",
+      district: "Lowokwaru",
+      address: "Malang city, Klojen district",
+      theme: "Flower festival",
+      participant: 100,
       customerId: "05e2c49d-ee52-4d35-9ab8-6d8564f328bd",
-      categoryProduct: JSON.stringify(listSelectedCategory), 
-      previousProduct: JSON.stringify([]),
+      categoryProduct: [
+        {
+          categoryId: "f666d1e6-6f36-4ea4-8533-84a2a79a7d7b",
+          minCost: 9000,
+          maxCost: 50000000,
+        },
+      ],
+      previousProduct: [],
     };
     console.log("newEventData", newEventData);
     dispatch(makeEvent(newEventData));
   };
 
   const uniqueCategories = categories.reduce((acc, category) => {
-    if (!acc.some((item) => item.mainCategory === category.mainCategory)) {
+    if (!acc.some((item) => item.name === category.name)) {
       acc.push(category);
     }
     return acc;
@@ -86,9 +127,17 @@ const MakeEventChooseVendor = () => {
 
   const handleAddCategory = () => {
     if (selectedCategory && lowestPrice && highestPrice) {
-      const selectedCategoryData = uniqueCategories.find(
+      const selectedCategoryData = categories.find(
         (category) => category.id === selectedCategory
       );
+
+      const newCategory = {
+        categoryId: selectedCategory,
+        minCost: parseInt(lowestPrice, 10),
+        maxCost: parseInt(highestPrice, 10),
+      };
+
+      setListSelectedVendor((prevList) => [...prevList, newCategory]);
 
       setListSelectedCategory((prevList) => [
         ...prevList,
@@ -113,23 +162,25 @@ const MakeEventChooseVendor = () => {
     );
   };
 
-  const handleLowestPriceChange = (value) => {
-    const numericValue = parseInt(value.replace(/[^0-9]/g, ""), 10);
-    if (
-      numericValue >= parseInt(lowestPrice, 10) &&
-      numericValue <= parseInt(highestPrice, 10)
-    ) {
-      setLowestPrice(value);
+  const handleLowestPriceBlur = () => {
+    const numericValue = parseInt(tempLowestPrice.replace(/[^0-9]/g, ""), 10);
+    if (numericValue < parseInt(lowestPrice, 10)) {
+      setTempLowestPrice(lowestPrice.toString());
+    } else if (numericValue > parseInt(highestPrice, 10)) {
+      setTempLowestPrice(highestPrice.toString());
+    } else {
+      setLowestPrice(tempLowestPrice);
     }
   };
 
-  const handleHighestPriceChange = (value) => {
-    const numericValue = parseInt(value.replace(/[^0-9]/g, ""), 10);
-    if (
-      numericValue >= parseInt(lowestPrice, 10) &&
-      numericValue <= parseInt(highestPrice, 10)
-    ) {
-      setHighestPrice(value);
+  const handleHighestPriceBlur = () => {
+    const numericValue = parseInt(tempHighestPrice.replace(/[^0-9]/g, ""), 10);
+    if (numericValue < parseInt(lowestPrice, 10)) {
+      setTempHighestPrice(lowestPrice.toString());
+    } else if (numericValue > parseInt(highestPrice, 10)) {
+      setTempHighestPrice(highestPrice.toString());
+    } else {
+      setHighestPrice(tempHighestPrice);
     }
   };
 
@@ -175,8 +226,9 @@ const MakeEventChooseVendor = () => {
               className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
               placeholder={`Min: ${lowestPrice}`}
               keyboardType="numeric"
-              value={lowestPrice}
-              onChangeText={setLowestPrice}
+              value={tempLowestPrice}
+              onChangeText={setTempLowestPrice}
+              onBlur={handleLowestPriceBlur}
             />
           </View>
           <View style={[tailwind`w-[40%]`]}>
@@ -184,9 +236,10 @@ const MakeEventChooseVendor = () => {
             <TextInput
               className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
               placeholder={`Max: ${highestPrice}`}
-              value={highestPrice}
+              value={tempHighestPrice}
               keyboardType="numeric"
-              onChangeText={setHighestPrice}
+              onChangeText={setTempHighestPrice}
+              onBlur={handleHighestPriceBlur}
             />
           </View>
           <TouchableOpacity
@@ -201,6 +254,11 @@ const MakeEventChooseVendor = () => {
             />
           </TouchableOpacity>
         </View>
+        {!vendorsAvailable && (
+          <Text className="text-red-500 mt-2">
+            No vendors available. Please try a different category.
+          </Text>
+        )}
       </View>
 
       <ScrollView style={[tailwind`mt-5`]} className="vendor-choosen">

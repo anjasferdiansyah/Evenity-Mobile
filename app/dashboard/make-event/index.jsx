@@ -8,12 +8,14 @@ import { registMakeEvent } from "@/redux/slices/makeEventSlice";
 
 const MakeEventName = () => {
   const [eventName, setEventName] = useState("");
+  const [description, setDescription] = useState("");
   const dispatch = useDispatch();
 
   const handleMakeEvent = () => {
     dispatch(
       registMakeEvent({
         name: eventName,
+        description: description,
       })
     );
   };
@@ -41,6 +43,15 @@ const MakeEventName = () => {
             placeholder="Enter your event name"
             value={eventName}
             onChangeText={setEventName}
+          />
+        </View>
+        <View className="flex flex-col gap-2">
+          <Text className="font-outfitRegular">Description</Text>
+          <TextInput
+            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+            placeholder="Enter your event name"
+            value={description}
+            onChangeText={setDescription}
           />
         </View>
       </View>

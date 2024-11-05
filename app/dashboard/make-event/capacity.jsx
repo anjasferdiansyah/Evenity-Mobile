@@ -13,7 +13,7 @@ const MakeEventCapacity = () => {
   const handleMakeEvent = () => {
     dispatch(
       registMakeEvent({
-        participant: capacityEvent,
+        participant: parseInt(capacityEvent),
       })
     );
   };
