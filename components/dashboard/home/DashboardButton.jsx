@@ -2,12 +2,14 @@ import {Text, TouchableOpacity, View} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import React from "react";
 import {ROLE as ROLES} from "@/constant/USER";
+import { FontAwesome6, Fontisto, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 function ButtonMakeEvent({role, onPress}) {
     return <TouchableOpacity onPress={onPress}
                              className={role === ROLES.CUSTOMER ? "w-full p-5 h-[190px] bg-[#00F279] rounded-xl flex flex-col justify-between" : "w-1/2 p-5 h-[190px] bg-[#78F3B5] rounded-xl flex flex-col justify-between"}>
         <View className="p-4 bg-white rounded-full max-w-[60px]">
-            <MaterialCommunityIcons name="cart" size={30}/>
+           { role === ROLES.CUSTOMER && <MaterialCommunityIcons name="cart" size={30}/>}
+           { role === ROLES.VENDOR && <Fontisto name="shopping-bag-1" size={30} />}
         </View>
 
         <View>
@@ -25,14 +27,14 @@ function ButtonListRequests({onPress, role}) {
     return <TouchableOpacity onPress={onPress}
                              className={role === ROLES.CUSTOMER ? "hidden" : "w-1/2 p-5 h-[190px] bg-[#00F279] rounded-xl flex flex-col justify-between"}>
         <View className="p-4 bg-white rounded-full max-w-[60px]">
-            <MaterialCommunityIcons name="cart" size={30}/>
+            <FontAwesome6 name="list" size={30} />
         </View>
 
         <View>
             <Text className="text-white font-outfitBold text-2xl text-wrap">
                 List
             </Text>
-            <Text className="text-white font-outfitBold text-4xl text-wrap">
+            <Text className="text-white font-outfitBold text-3xl text-wrap">
                 Requests
             </Text>
         </View>
@@ -44,15 +46,15 @@ function ButtonListTransactions(props) {
         onPress={props.onPress}
         className="w-1/2 p-5 h-[190px]  bg-[#00F279] rounded-xl flex flex-col justify-between">
         <View className="p-4 bg-white rounded-full max-w-[60px]">
-            <MaterialCommunityIcons name="cart" size={30}/>
+        <MaterialIcons name="account-balance-wallet" size={30}  />
         </View>
 
         <View>
             <Text className="text-white font-outfitBold text-2xl text-wrap">
-                List
+                Orders
             </Text>
             <Text className="text-white font-outfitBold text-4xl text-wrap">
-                Orders
+                History
             </Text>
         </View>
     </TouchableOpacity>;
@@ -63,7 +65,7 @@ function ButtonSettingProfile(props) {
         onPress={props.onPress}
         className="w-1/2 p-5 h-[190px] bg-[#78F3B5]  rounded-xl flex flex-col justify-between">
         <View className="p-4 bg-white rounded-full max-w-[60px]">
-            <MaterialCommunityIcons name="cart" size={30}/>
+        <Ionicons size={28} name={"person"} />
         </View>
 
         <View>

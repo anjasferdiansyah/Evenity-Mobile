@@ -45,14 +45,14 @@ export default function DashboardLayout() {
                 options={{
                     title: 'Request',
                     href: role === ROLE.CUSTOMER ? null : "/dashboard/request",
-                    tabBarIcon: ({color}) => <FontAwesome6 name="book" size={24} color={color} />
+                    tabBarIcon: ({color}) => <FontAwesome6 name="list" size={24} color={color} />
                 }}
             />
             <Tabs.Screen
                 name="transaction"
                 options={{
                     title: 'Transaction',
-                    tabBarIcon: ({color}) => <MaterialIcons name="account-balance-wallet" size={24} color={color} />
+                    tabBarIcon: ({color}) => <FontAwesome6 name="book" size={24} color={color} />
                 }}
             />
             <Tabs.Screen

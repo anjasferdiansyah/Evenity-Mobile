@@ -5,6 +5,9 @@ import withdrawHistorySlice from "./slices/withdrawHistorySlice";
 import makeEventSlice from "./slices/makeEventSlice";
 import categorySlice from "./slices/categorySlice";
 import productSlice from "./slices/productSlice";
+import productVendorSlice from "./slices/productVendorSlice";
+import requesListVendorSlice from "./slices/requestListVendorSlice"
+import orderHistoryVendorSlice from "./slices/orderHistoryVendor"
 
 export default configureStore({
   reducer: {
@@ -14,6 +17,8 @@ export default configureStore({
     makeEventSlice: makeEventSlice,
     categorySlice: categorySlice,
     productSlice: productSlice,
-    product : productSlice
+    productVendor : productVendorSlice,
+    requestListVendor : requesListVendorSlice,
+    orderHistoryVendor : orderHistoryVendorSlice
   },
 });

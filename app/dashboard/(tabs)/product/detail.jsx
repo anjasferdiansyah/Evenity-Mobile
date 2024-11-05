@@ -9,10 +9,8 @@ import { getProduct } from '@/redux/slices/productSlice'
 const ProductDetail = () => {
 
 
-    const dispatch = useDispatch()
 
-
-    const {selectedProduct} = useSelector((state) => state.product)
+const {selectedProduct} = useSelector((state) => state.productVendor)
 
 
   return (
