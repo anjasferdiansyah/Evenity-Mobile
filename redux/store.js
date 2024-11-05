@@ -14,6 +14,5 @@ export default configureStore({
     makeEventSlice: makeEventSlice,
     categorySlice: categorySlice,
     productSlice: productSlice,
-    product : productSlice
   },
 });

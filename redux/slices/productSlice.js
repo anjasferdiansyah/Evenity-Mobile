@@ -7,21 +7,27 @@ export const getPriceRange = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const token = await asyncStorage.getItem("token");
-      console.log("token" ,token)
-      console.log("data" ,data)
-      const response = await axios.get("/product/price/range", {
+      console.log("token", token);
+      console.log("data", data);
+      const response = await axios.post("/product/price/range", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        params: data,
       });
-      console.log("response" ,response)
+      console.log("response", response.data.data);
       if (response.status !== 200) {
         return rejectWithValue(response.data.message);
       }
       return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.message);
+      if (axios.isAxiosError(error)) {
+        // If the error is an Axios error, extract the message
+        return rejectWithValue(
+          error.response?.data?.message || "An error occurred"
+        );
+      }
+      // For any other type of error, return a generic message
+      return rejectWithValue("An unexpected error occurred");
     }
   }
 );
@@ -30,8 +36,9 @@ const ProductSlice = createSlice({
   name: "product",
   initialState: {
     isLoading: false,
-    priceRange: [],
+    priceRange: null,
     status: "idle",
+    error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -44,7 +51,7 @@ const ProductSlice = createSlice({
       .addCase(getPriceRange.rejected, (state) => {
         state.status = "failed";
         state.isLoading = false;
-        console.log("error fetching");
+        state.error = "error fetching";
       })
       .addCase(getPriceRange.pending, (state) => {
         state.status = "loading";
