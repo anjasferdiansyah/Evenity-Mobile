@@ -40,14 +40,18 @@ export default function WithdrawHistoryScreen() {
                 <View className="h-[60%] w-full overflow-visible">
                     <FlatList
                         data={withdrawHistory}
-                        renderItem={({item}) => (
-                            <View className="p-5 bg-[#00F279] rounded-2xl mb-4" style={[tailwind`shadow-2xl`]}>
-                                <Text className="text-xl font-outfitSemiBold text-white">{formatDate(item.date)}</Text>
-                                <Text className="text-3xl font-outfitBold text-white">{formatAmount(item.amount)}</Text>
-                                <Text className="text-xl font-outfitSemiBold text-white">{item.status}</Text>
-                                <Text className="text-xl font-outfitSemiBold text-white py-2">{item.account}</Text>
-                            </View>
-                        )}/>
+                        renderItem={({item}) => {
+                            if (item.amount > 0) return (
+                                <View className="p-5 bg-[#00F279] rounded-2xl mb-4" style={[tailwind`shadow-2xl`]}>
+                                    <Text
+                                        className="text-xl font-outfitSemiBold text-white">{formatDate(item.date)}</Text>
+                                    <Text
+                                        className="text-3xl font-outfitBold text-white">{formatAmount(item.amount)}</Text>
+                                    <Text className="text-xl font-outfitSemiBold text-white">{item.status}</Text>
+                                    <Text className="text-xl font-outfitSemiBold text-white py-2">{item.account}</Text>
+                                </View>
+                            )
+                        }}/>
                 </View>
             </View>
         </View>

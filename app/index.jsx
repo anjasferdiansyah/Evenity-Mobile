@@ -5,24 +5,13 @@ import {router} from "expo-router";
 import {setupAxios} from "@/config/axiosConfig";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 import {loadUser} from "@/redux/slices/authSlice";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {ROUTES} from "@/constant/ROUTES";
 
 export default function SplashScreen() {
+    setupAxios()
 
     const dispatch = useDispatch()
-    const {isLoggedIn} = useSelector(state => state.auth)
-    useEffect(() => {
-        setupAxios()
-        setTimeout(() => {
-            if (isLoggedIn) {
-                router.replace(ROUTES.DASHBOARD.INDEX)
-            } else {
-                router.replace(ROUTES.WELCOME)
-            }
-        }, 3000)
-    }, [])
-
 
     useEffect(() => {
         const getToken = async () => {
@@ -32,7 +21,14 @@ export default function SplashScreen() {
             }
         }
         getToken()
-    }, []);
+    }, [dispatch]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            router.replace(ROUTES.WELCOME)
+        }, 3000)
+    }, [])
+
 
     return (
         <View className="flex-1 items-center justify-center bg-white">
