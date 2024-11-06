@@ -1,19 +1,11 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
-import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 
 export const historyOrderCustomer = createAsyncThunk(
     "request/loadRequestDetail",
     async (id, {rejectWithValue}) => {
-        const customerId = "71447de8-c5b4-4c09-b0c2-a8b659c8ba59";
-        
-        const token = await asyncStorage.getItem("token");
         const response = await axios
-            .get(`event/customer/${customerId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
+            .get(`event/customer/${id}`)
             .catch((e) => e.response);
 
         if (response.status !== 200) return rejectWithValue(response.data.message);
@@ -21,20 +13,25 @@ export const historyOrderCustomer = createAsyncThunk(
     }
 );
 
-const RequestDetailSlice = createSlice({
+const orderUserSlice = createSlice({
     name: "requestDetail",
     initialState: {
         isLoading: false,
-        requestDetail: [],
+        ordersUser: [],
+        selectedOrder: null,
         status: "idle",
         error: null,
     },
-    reducers: {},
+    reducers: {
+        setSelectedOrderUser: (state, action) => {
+            state.selectedOrder = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(historyOrderCustomer.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.requestDetail = action.payload;
+                state.ordersUser = action.payload;
                 state.status = "success";
             })
             .addCase(historyOrderCustomer.rejected, (state) => {
@@ -46,4 +43,5 @@ const RequestDetailSlice = createSlice({
     },
 });
 
-export default RequestDetailSlice.reducer;
+export const {setSelectedOrderUser} = orderUserSlice.actions;
+export default orderUserSlice.reducer;

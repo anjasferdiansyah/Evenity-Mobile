@@ -1,4 +1,5 @@
 import {
+  FlatList,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -10,18 +11,22 @@ import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import tailwind from "twrnc";
 import { router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
-import { historyOrderCustomer } from "@/redux/slices/request-requestDetail-slice";
+import { historyOrderCustomer, setSelectedOrderUser } from "@/redux/slices/orderUserSlice";
 import Animated, {
   useSharedValue,
   withTiming,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import moment from "moment";
 
 const OrderHistoryUser = () => {
   const dispatch = useDispatch();
-  const { isLoading, requestDetail, status, error } = useSelector(
-    (state) => state.requestDetail
-  );
+
+  const { id } = useSelector((state) => state.auth)
+  const { ordersUser  } = useSelector((state) => state.orderUser)
+ 
+
+
   const { width } = useWindowDimensions();
 
   const [selected, setSelected] = useState("All");
@@ -40,82 +45,65 @@ const OrderHistoryUser = () => {
   }));
 
   useEffect(() => {
-    dispatch(historyOrderCustomer());
+    dispatch(historyOrderCustomer(id));
   }, [dispatch]);
 
-  const historyItems = [
-    {
-      id: 1,
-      date: "20/12/2024",
-      location: "Malang, Indonesia",
-      status: "Success",
-    },
-    {
-      id: 2,
-      date: "21/12/2024",
-      location: "Jakarta, Indonesia",
-      status: "Failed",
-    },
-    {
-      id: 3,
-      date: "22/12/2024",
-      location: "Surabaya, Indonesia",
-      status: "Success",
-    },
-    {
-      id: 4,
-      date: "23/12/2024",
-      location: "Bandung, Indonesia",
-      status: "Success",
-    },
-    {
-      id: 5,
-      date: "24/12/2024",
-      location: "Bali, Indonesia",
-      status: "Failed",
-    },
-    {
-      id: 6,
-      date: "25/12/2024",
-      location: "Yogyakarta, Indonesia",
-      status: "Success",
-    },
-    {
-      id: 7,
-      date: "26/12/2024",
-      location: "Solo, Indonesia",
-      status: "Success",
-    },
-    {
-      id: 8,
-      date: "27/12/2024",
-      location: "Malang, Indonesia",
-      status: "Failed",
-    },
-    {
-      id: 9,
-      date: "28/12/2024",
-      location: "Jakarta, Indonesia",
-      status: "Success",
-    },
-    {
-      id: 10,
-      date: "29/12/2024",
-      location: "Surabaya, Indonesia",
-      status: "Failed",
-    },
-    {
-      id: 11,
-      date: "30/12/2024",
-      location: "Bandung, Indonesia",
-      status: "Failed",
-    },
-  ];
+
 
   const filteredItems =
     selected === "All"
-      ? historyItems
-      : historyItems.filter((item) => item.status === selected);
+      ? ordersUser
+      : ordersUser.filter((item) => item.status === selected);
+
+  console.log(ordersUser)
+
+  const formatedDate = (date) => {
+    return moment(date).format('DD MMM YYYY')
+}
+
+const handleSelectedDetail = (item) => {
+  dispatch(setSelectedOrderUser(item))
+  router.push("/dashboard/transaction/detail")
+}
+
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+    onPress={() => handleSelectedDetail(item)}
+    key={item.id}
+    style={{
+      shadowColor: "#000",
+      shadowOpacity: 0.2,
+      shadowOffset: { width: 0, height: 2 },
+      shadowRadius: 4,
+      elevation: 4,
+      padding: 10,
+    }}
+  >
+    <View
+      className={`flex flex-row justify-between items-center p-5 ${
+        item.status === "Success" ? "bg-[#DFF7E6]" : "bg-[#FDE4E1]"
+      } rounded-xl`}
+    >
+      <View>
+        <Text className="text-xl font-outfitBold text-gray-800">
+          {item.name}
+        </Text>
+        <Text className="text-sm font-outfitRegular text-gray-500">
+          {formatedDate(item.startDate)}
+        </Text>
+      </View>
+
+      <View className="p-3 bg-white rounded-full">
+        <AntDesignIcons
+          name="right"
+          size={24}
+          color={item.status === "Success" ? "#00AA55" : "red"}
+        />
+      </View>
+    </View>
+  </TouchableOpacity>
+  )
 
   return (
     <View className="flex-1 bg-gray-50">
@@ -183,47 +171,15 @@ const OrderHistoryUser = () => {
           </View>
         </View>
 
-        <ScrollView className="mt-6">
-          <View className="list-history space-y-4">
-            {filteredItems.map((item) => (
-              <TouchableOpacity
-                onPress={() => router.push("/dashboard/transaction/detail")}
-                key={item.id}
-                style={{
-                  shadowColor: "#000",
-                  shadowOpacity: 0.2,
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowRadius: 4,
-                  elevation: 4,
-                  padding: 10,
-                }}
-              >
-                <View
-                  className={`flex flex-row justify-between items-center p-5 ${
-                    item.status === "Success" ? "bg-[#DFF7E6]" : "bg-[#FDE4E1]"
-                  } rounded-xl`}
-                >
-                  <View>
-                    <Text className="text-xl font-outfitBold text-gray-800">
-                      {item.date}
-                    </Text>
-                    <Text className="text-sm font-outfitRegular text-gray-500">
-                      {item.location}
-                    </Text>
-                  </View>
 
-                  <View className="p-3 bg-white rounded-full">
-                    <AntDesignIcons
-                      name="right"
-                      size={24}
-                      color={item.status === "Success" ? "#00AA55" : "red"}
-                    />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            ))}
+          <View className="list-history space-y-4 mt-6">
+              <FlatList
+              data={filteredItems}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index}
+              />
           </View>
-        </ScrollView>
+
       </View>
     </View>
   );

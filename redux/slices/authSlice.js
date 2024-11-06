@@ -70,6 +70,7 @@ export const loadUser = createAsyncThunk(
 
             setupAxios(token);
             const response = await axios.get("/auth/user/info");
+            console.log("response", response.data.data);
             return response.data.data;
         } catch (error) {
             asyncStorage.removeItem("token");
@@ -140,7 +141,10 @@ const AuthSlice = createSlice({
                 };
             })
             .addCase(loadUser.fulfilled, (state, action) => {
-                state.id = action.payload.detail.id;
+                
+                console.log("Customer ID", action.payload.detail.customerId)
+                state.id = action.payload.detail.id || action.payload.detail.customerId;
+                console.log("State ID", state.id)
                 state.status = "success";
                 state.isLoggedIn = true;
                 state.user = action.payload;
