@@ -7,99 +7,114 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import ListChooseVendor from "@/components/ListChooseVendor-user";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
 import { useDispatch, useSelector } from "react-redux";
-import { registMakeEvent, makeEvent } from "@/redux/slices/makeEventSlice";
+import {
+  regenerateEvent,
+  acceptAndMakeEvent,
+} from "@/redux/slices/makeEventSlice";
+import { router } from "expo-router";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const MakeEventTransactionNote = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const { makeEventData } = useSelector((state) => state.makeEventSlice);
-
-  const handleAccept = () => {
-    setModalVisible(true);
-  };
+  const { makeEventData, recommendedList, makeEventRegist, listSelected } =
+    useSelector((state) => state.makeEventSlice);
 
   useEffect(() => {
-    console.log("makeEventData", makeEventData);
-  }, [makeEventData]);
+    console.log("listSelectedPas", listSelected);
+  }, [listSelected]);
+  const [modalDetailVisible, setModalDetailVisible] = useState(false);
+  const [selectedVendor, setSelectedVendor] = useState(null);
 
-  const handleRegenerateVendor = () => {
-    // console.log("listSelectedVendor", listSelectedVendor);
-    const newEventData = {
-      // ...makeEventData,
-      // customerId: "05e2c49d-ee52-4d35-9ab8-6d8564f328bd",
-      // categoryProduct: listSelectedVendor,
-      // previousProduct: [],
-      name: "Flower Fest 2025",
-      description:
-        "A festival in Malang city where every florist or farmer in Malang region gather and show of their work in flower arrangement and intricate gardening skill",
-      startDate: "2025-01-02",
-      endDate: "2025-01-05",
-      startTime: "07:00:00",
-      endTime: "18:00:00",
-      province: "JAWA TIMUR",
-      city: "KOTA MALANG",
-      district: "Lowokwaru",
-      address: "Malang city, Klojen district",
-      theme: "Flower festival",
-      participant: 100,
-      customerId: "05e2c49d-ee52-4d35-9ab8-6d8564f328bd",
-      categoryProduct: [
-        {
-          categoryId: "f666d1e6-6f36-4ea4-8533-84a2a79a7d7b",
-          minCost: 9000,
-          maxCost: 50000000,
-        },
-      ],
-      previousProduct: ["edf13a67-53d3-4b2b-8146-e84f8e4b8412"],
-    };
-    console.log("newEventData", newEventData);
-    dispatch(makeEvent(newEventData));
+  const handleVendorPress = (vendor) => {
+    setSelectedVendor(vendor); // Set selected vendor data
+    setModalDetailVisible(true); // Open modal
   };
 
-  // const handleConfirm = () => {
-  //   setModalVisible(false);
-  //   navigation.navigate("Home");
-  // };
+  const handleRegenerateVendor = () => {
+    console.log("recommendedListTrx", recommendedList);
+    const recommendedArray = Object.values(recommendedList);
+    const previousProductIds = recommendedArray.map(
+      (vendor) => vendor.vendorId
+    );
 
-  // const entertainmentItems = [
-  //   { id: 1, name: "Joko Horeg", price: "10.000.000" },
-  //   { id: 2, name: "Andi Mc", price: "15.000.000" },
-  //   { id: 3, name: "Soni Catering enak sekali", price: "15.000.000" },
-  //   { id: 4, name: "Gelora bung karno", price: "15.000.000" },
-  //   { id: 5, name: "Gelora bung karno", price: "15.000.000" },
-  //   { id: 6, name: "Gelora bung karno", price: "15.000.000" },
-  //   { id: 7, name: "Gelora bung karno", price: "15.000.000" },
-  // ];
+    const newEventData = {
+      ...makeEventRegist,
+      customerId: "05e2c49d-ee52-4d35-9ab8-6d8564f328bd",
+      categoryProduct: listSelected,
+      previousProduct: previousProductIds,
+    };
+    console.log("newEventData", newEventData);
+    dispatch(regenerateEvent(newEventData));
+  };
+
+  const acceptMakeEvent = () => {
+    //  if (!recommendedList || Object.keys(recommendedList).length === 0) {
+    //    console.warn("recommendedList belum tersedia.");
+    //    return;
+    //  }
+
+    console.log("recommendedListTrx2", recommendedList);
+
+    const recommendedArray = Object.values(recommendedList);
+    const newEventData = recommendedArray.map((vendor) => ({
+      productId: vendor.productId || "defaultProductId",
+      qty: vendor.qty || 1,
+      unit: vendor.unit || "PCS",
+      notes: vendor.notes || "No specific notes",
+      cost: vendor.cost || 0,
+    }));
+
+    console.log("newEventData to accept", newEventData);
+
+    // Salin `makeEventData` lalu hapus `recommendedList`
+    const eventDataCopy = { ...makeEventData };
+    delete eventDataCopy.recommendedList;
+
+    // Tambahkan eventDetail ke dalam salinan `makeEventData`
+    const eventData = {
+      ...eventDataCopy,
+      eventDetail: newEventData,
+    };
+
+    dispatch(acceptAndMakeEvent(eventData));
+    router.push(`/dashboard/(tabs)/transaction`);
+  };
 
   return (
     <MakeEventLayout
       progress={100}
       nextRoute="transaction"
-      handleAccept={handleRegenerateVendor}
-
+      handleRegenerateVendor={handleRegenerateVendor}
+      handleAccept={acceptMakeEvent}
+      nextInfor="Make Event"
     >
       <View className="px-10" style={[tailwind`my-2 mx-auto`]}>
         <Text className="font-outfitSemiBold text-2xl" style={[tailwind`mb-3`]}>
           Vendor Generated
         </Text>
       </View>
-
       <ScrollView style={[tailwind`mt-2 `]} className="vendor-choosen">
         {makeEventData &&
         makeEventData.recommendedList &&
         makeEventData.recommendedList.length > 0 ? (
           makeEventData.recommendedList.map((item) => (
-            <ListChooseVendor key={item.productId} item={item} radius="xl" />
+            // <ListChooseVendor key={item.productId} item={item} radius="xl" />
+            <TouchableOpacity
+              key={item.productId}
+              onPress={() => handleVendorPress(item)}
+            >
+              <ListChooseVendor item={item} radius="xl" />
+            </TouchableOpacity>
           ))
         ) : (
           <Text>No recommended vendors available.</Text>
         )}
       </ScrollView>
-
       <View className="flex flex-row gap-4 w-full mt-12 px-10 items-center">
         <View
           className="flex flex-row gap-2"
@@ -114,7 +129,6 @@ const MakeEventTransactionNote = () => {
           </Text>
         </View>
       </View>
-
       <Modal
         animationType="slide"
         transparent={true}
@@ -129,7 +143,7 @@ const MakeEventTransactionNote = () => {
               Confirm Payment
             </Text>
             <TouchableOpacity
-              onPress={handleAccept}
+              // onPress={handleAccept}
               className=" mx-auto items-center justify-center  py-3 rounded-full"
               style={[tailwind`w-full bg-[#19ff8c] w-52 mb-2`]}
             >
@@ -146,6 +160,90 @@ const MakeEventTransactionNote = () => {
                 Later
               </Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* modal detail vendor */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalDetailVisible}
+        onRequestClose={() => {
+          setModalDetailVisible(false);
+        }}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+        
+            <TouchableOpacity
+              style={{
+                position: "absolute",
+                top: 25,
+                right: 20,
+                backgroundColor: "red",
+                borderRadius: 50,
+                padding: 7,
+              }}
+              onPress={() => setModalDetailVisible(!modalDetailVisible)}
+            >
+              <MaterialCommunityIcons name="close" size={20} color="white" />
+            </TouchableOpacity>
+            <Text style={styles.modalText} className="text-3xl font-outfitBold">
+              Detail Vendor
+            </Text>
+            <View className="h-[85%] w-[90%]">
+              <ScrollView>
+                <View className="py-4">
+                  <Text className="text-xl font-outfitRegular text-gray-500">
+                    Date Event
+                  </Text>
+                  <Text className="text-xl font-outfitSemiBold">
+                    20 November - 21 November
+                  </Text>
+                </View>
+                <View className="py-4">
+                  <Text className="text-xl font-outfitRegular text-gray-500">
+                    Days
+                  </Text>
+                  <Text className="text-xl font-outfitSemiBold">2</Text>
+                </View>
+                <View className="py-4">
+                  <Text className="text-xl font-outfitRegular text-gray-500">
+                    Quantity (pcs)
+                  </Text>
+                  <Text className="text-xl font-outfitSemiBold">2</Text>
+                </View>
+                <View className="py-4">
+                  <Text className="text-lg font-outfitRegular text-gray-500">
+                    Product Name
+                  </Text>
+                  <Text className="text-lg font-outfitSemiBold">Catering</Text>
+                </View>
+                <View className="py-4">
+                  <Text className="text-lg font-outfitRegular text-gray-500">
+                    Event Name
+                  </Text>
+                  <Text className="text-lg font-outfitSemiBold">Halloween</Text>
+                </View>
+                <View className="py-4">
+                  <Text className="text-lg font-outfitRegular text-gray-500">
+                    Address
+                  </Text>
+                  <Text className="text-lg font-outfitSemiBold">
+                    Jalan Sekartaji 1 No 20 Malang, Jawa Timur
+                  </Text>
+                </View>
+                <View className="py-4">
+                  <Text className="text-lg font-outfitRegular text-gray-500">
+                    Note
+                  </Text>
+                  <Text className="text-lg font-outfitSemiBold">
+                    Harus Pedess Lurrr!
+                  </Text>
+                </View>
+              </ScrollView>
+            </View>
           </View>
         </View>
       </Modal>
@@ -173,6 +271,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    width: "80%",
+    height: "80%"
   },
   button: {
     borderRadius: 20,

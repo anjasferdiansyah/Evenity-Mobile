@@ -8,27 +8,24 @@ import {
 } from "react-native";
 import tailwind from "twrnc";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import ListChooseVendor from "@/components/ListChooseVendor-user";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
-import { registMakeEvent, makeEvent } from "@/redux/slices/makeEventSlice";
+// import { registMakeEvent, makeEvent, addListSelected } from "../../redux/slices/makeEventSlice";
+import { makeEvent, addListSelected } from "@/redux/slices/makeEventSlice";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Picker } from "@react-native-picker/picker";
 import { loadCategories } from "@/redux/slices/categorySlice";
 import { getPriceRange } from "@/redux/slices/productSlice";
 import { set } from "zod";
+import ListVendor from "@/components/ListVendors";
 
-const entertainmentItems = [
-  { id: 1, name: "Entertainment 1", price: "10.000.000" },
-  { id: 2, name: "Entertainment 2", price: "15.000.000" },
-  { id: 3, name: "Entertainment 2", price: "15.000.000" },
-  { id: 4, name: "Entertainment 2", price: "15.000.000" },
-];
 
 const MakeEventChooseVendor = () => {
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.categorySlice);
-  const { makeEventData } = useSelector((state) => state.makeEventSlice);
+  const { makeEventData, makeEventRegist } = useSelector(
+    (state) => state.makeEventSlice
+  );
   const { priceRange, status, isLoading, error } = useSelector(
     (state) => state.productSlice
   );
@@ -51,11 +48,11 @@ const MakeEventChooseVendor = () => {
     console.log("selectedCategory", selectedCategory);
     console.log("itemValue", itemValue);
     const data = {
-      province: makeEventData.province,
-      city: makeEventData.city,
-      participant: makeEventData.participant,
-      startDate: makeEventData.startDate,
-      endDate: makeEventData.endDate,
+      province: makeEventRegist.province,
+      city: makeEventRegist.city,
+      participant: makeEventRegist.participant,
+      startDate: makeEventRegist.startDate,
+      endDate: makeEventRegist.endDate,
       categoryId: itemValue,
     };
     console.log("data", data);
@@ -82,35 +79,18 @@ const MakeEventChooseVendor = () => {
 
   const handleMakeEvent = () => {
     console.log("listSelectedVendor", listSelectedVendor);
+    // dispatch(addListSelected(listSelectedVendor));
     const newEventData = {
-      // ...makeEventData,
-      // customerId: "05e2c49d-ee52-4d35-9ab8-6d8564f328bd",
-      // categoryProduct: listSelectedVendor,
-      // previousProduct: [],
-      name: "Flower Fest 2025",
-      description:
-        "A festival in Malang city where every florist or farmer in Malang region gather and show of their work in flower arrangement and intricate gardening skill",
-      startDate: "2025-01-02",
-      endDate: "2025-01-05",
-      startTime: "07:00:00",
-      endTime: "18:00:00",
-      province: "JAWA TIMUR",
-      city: "KOTA MALANG",
-      district: "Lowokwaru",
-      address: "Malang city, Klojen district",
-      theme: "Flower festival",
-      participant: 100,
+      ...makeEventRegist,
       customerId: "05e2c49d-ee52-4d35-9ab8-6d8564f328bd",
-      categoryProduct: [
-        {
-          categoryId: "f666d1e6-6f36-4ea4-8533-84a2a79a7d7b",
-          minCost: 9000,
-          maxCost: 50000000,
-        },
-      ],
+      categoryProduct: listSelectedVendor,
       previousProduct: [],
     };
     console.log("newEventData", newEventData);
+    //get categoryProduct
+    console.log("naps", newEventData.categoryProduct);
+    dispatch(addListSelected(newEventData.categoryProduct));
+
     dispatch(makeEvent(newEventData));
   };
 
@@ -137,6 +117,8 @@ const MakeEventChooseVendor = () => {
         maxCost: parseInt(highestPrice, 10),
       };
 
+      console.log("newCategory", newCategory);
+
       setListSelectedVendor((prevList) => [...prevList, newCategory]);
 
       setListSelectedCategory((prevList) => [
@@ -149,6 +131,8 @@ const MakeEventChooseVendor = () => {
           maxCost: parseInt(highestPrice, 10),
         },
       ]);
+
+      console.log("listSelectedCategory", listSelectedCategory);
 
       setSelectedCategory("");
       setLowestPrice("");
@@ -263,7 +247,7 @@ const MakeEventChooseVendor = () => {
 
       <ScrollView style={[tailwind`mt-5`]} className="vendor-choosen">
         {listSelectedCategory.map((item) => (
-          <ListChooseVendor
+          <ListVendor
             key={item.id}
             item={item}
             radius="xl"
