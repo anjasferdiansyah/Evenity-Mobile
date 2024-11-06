@@ -6,14 +6,20 @@ import {ROLE} from "@/constant/USER";
 import {StyleSheet} from 'react-native';
 
 export default function DashboardLayout() {
-    const {isLoggedIn, user, isInitialized} = useSelector(state => state.auth);
+    const {isLoggedIn, isInitialized, user} = useSelector(state => state.auth);
     const role = user?.role
 
     useEffect(() => {
-        if (isInitialized && !isLoggedIn) {
+        if (!isLoggedIn) {
             router.replace("/auth")
         }
-    }, [isInitialized, isLoggedIn]);
+    }, [isLoggedIn]);
+
+    useEffect(() => {
+        if (!isInitialized) {
+            router.replace("/welcome")
+        }
+    }, [isInitialized]);
 
     return (
         <Tabs screenOptions={{
@@ -83,9 +89,9 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         bottom: 30,
         elevation: 3,
-        height: 80,
-        left: 20,
+        height: 70,
+        left: 30,
         position: 'absolute',
-        right: 20,
+        right: 30,
     },
 })

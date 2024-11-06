@@ -2,18 +2,23 @@ import {Image, Text, TouchableOpacity, View} from "react-native";
 import React, {useEffect} from "react";
 import hero from "@/assets/hero.png";
 import {useRouter} from "expo-router";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {ROUTES} from "@/constant/ROUTES";
+import {initializeAuth} from "@/redux/slices/authSlice";
 
 export default function WelcomeScreen() {
     const router = useRouter();
-    const {isLoggedIn} = useSelector(state => state.auth);
+    const dispatch = useDispatch();
+    const {isLoggedIn, isInitialized} = useSelector(state => state.auth);
 
     useEffect(() => {
+        if (!isInitialized) {
+            dispatch(initializeAuth());
+        }
         if (isLoggedIn) {
             router.replace(ROUTES.DASHBOARD.INDEX);
         }
-    }, [isLoggedIn, router]);
+    }, [dispatch, isInitialized, isLoggedIn, router]);
 
     // If user is logged in, don't render anything
     if (isLoggedIn) {

@@ -1,11 +1,11 @@
 import {ActivityIndicator, Alert, Text, TextInput, TouchableOpacity, View} from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import RNPickerSelect from 'react-native-picker-select';
 import {router} from "expo-router";
-import { useDispatch, useSelector } from 'react-redux';
-import { getBankAccount, getListBank } from '@/redux/slices/withdrawHistorySlice';
-import { useForm, Controller } from 'react-hook-form';
+import {useDispatch, useSelector} from 'react-redux';
+import {getBankAccount, getListBank} from '@/redux/slices/withdrawHistorySlice';
+import {Controller, useForm} from 'react-hook-form';
 
 export default function WithdrawNextScreen() {
 
@@ -16,12 +16,12 @@ export default function WithdrawNextScreen() {
 
     const [isVerifying, setIsVerifying] = useState(false);
 
-    const { control, handleSubmit, formState: { errors } } = useForm();
+    const {control, handleSubmit, formState: {errors}} = useForm();
 
     useEffect(() => {
         dispatch(getListBank())
-        
-    }, [])
+
+    }, [dispatch])
 
     const mapToLabelAndValue = (list) => {
         return list.map((item) => ({
@@ -50,7 +50,6 @@ export default function WithdrawNextScreen() {
             setIsVerifying(false);
         }
     };
-    
 
 
     return (
@@ -64,18 +63,18 @@ export default function WithdrawNextScreen() {
                     <View className="flex flex-col gap-2">
                         <Text className="text-xl font-outfitRegular text-gray-500 mt-12">Bank</Text>
                         {status === "loading" ? (
-                                <ActivityIndicator size="small" color="#00F279" />
-                            ) : (
-                                <Controller
+                            <ActivityIndicator size="small" color="#00F279"/>
+                        ) : (
+                            <Controller
                                 name="selectedBank"
                                 control={control}
-                                rules={{ required: "Bank selection is required" }}
-                                render={({ field: { onChange, value } }) => (
+                                rules={{required: "Bank selection is required"}}
+                                render={({field: {onChange, value}}) => (
                                     <View className="rounded-xl border-[0.5px] border-gray-400">
                                         <RNPickerSelect
                                             onValueChange={(value) => onChange(value)}
                                             items={mapToLabelAndValue(listBank)}
-                                            placeholder={{ label: "Select your bank", value: null }}
+                                            placeholder={{label: "Select your bank", value: null}}
                                             value={value}
                                         />
                                     </View>
@@ -97,7 +96,7 @@ export default function WithdrawNextScreen() {
                                     message: "Account number must contain only numbers",
                                 },
                             }}
-                            render={({ field: { onChange, value } }) => (
+                            render={({field: {onChange, value}}) => (
                                 <TextInput
                                     className="py-2 px-4 rounded-xl border-[0.5px] border-gray-400"
                                     placeholder="Enter card number"
@@ -117,7 +116,7 @@ export default function WithdrawNextScreen() {
                     className="bg-[#00F279] self-end w-[30%] mt-12 items-center px-8 py-3 rounded-full"
                 >
                     {isVerifying ? (
-                        <ActivityIndicator size="small" color="white" />
+                        <ActivityIndicator size="small" color="white"/>
                     ) : (
                         <Text className="text-white text-xl font-bold">Next</Text>
                     )}
