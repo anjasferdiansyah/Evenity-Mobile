@@ -18,14 +18,16 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import moment from "moment";
+import { loadInvoiceOrderCustomer, setSelectedInvoiceCustomer } from "@/redux/slices/invoiceCustomerSlice";
 
 const OrderHistoryUser = () => {
   const dispatch = useDispatch();
 
   const { id } = useSelector((state) => state.auth)
-  const { ordersUser  } = useSelector((state) => state.orderUser)
- 
+  // const { ordersUser  } = useSelector((state) => state.orderUser)
+  const { invoiceCustomer } = useSelector((state) => state.invoiceCustomer)
 
+  console.log("invoiceCustomer", invoiceCustomer)
 
   const { width } = useWindowDimensions();
 
@@ -44,27 +46,41 @@ const OrderHistoryUser = () => {
     transform: [{ translateX: slideAnim.value }],
   }));
 
-  useEffect(() => {
-    dispatch(historyOrderCustomer(id));
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(historyOrderCustomer(id));
 
+  // }, []);
 
+useEffect(() => {
+  dispatch(loadInvoiceOrderCustomer(id))
+}, [])
 
-  const filteredItems =
-    selected === "All"
-      ? ordersUser
-      : ordersUser.filter((item) => item.status === selected);
+const filteredItems =
+  selected === "All"
+    ? invoiceCustomer
+    : selected === "Approved"
+    ? invoiceCustomer.filter((item) =>
+        item.invoiceDetailResponseList.every(
+          (detail) => detail.approvalStatus === "APPROVED"
+        )
+      )
+    : invoiceCustomer.filter((item) =>
+        item.invoiceDetailResponseList.some(
+          (detail) => detail.approvalStatus !== "APPROVED"
+        )
+      );
 
-  console.log(ordersUser)
+  // console.log(invoiceCustomer)
 
   const formatedDate = (date) => {
     return moment(date).format('DD MMM YYYY')
 }
 
 const handleSelectedDetail = (item) => {
-  dispatch(setSelectedOrderUser(item))
+  dispatch(setSelectedInvoiceCustomer(item))
   router.push("/dashboard/transaction/detail")
 }
+
 
 
   const renderItem = ({ item }) => (
@@ -82,12 +98,12 @@ const handleSelectedDetail = (item) => {
   >
     <View
       className={`flex flex-row justify-between items-center p-5 ${
-        item.status === "Success" ? "bg-[#DFF7E6]" : "bg-[#FDE4E1]"
+        item.paymentStatus === "COMPLETE" ? "bg-[#DFF7E6]" : "bg-[#FDE4E1]"
       } rounded-xl`}
     >
       <View>
         <Text className="text-xl font-outfitBold text-gray-800">
-          {item.name}
+          {item.eventName}
         </Text>
         <Text className="text-sm font-outfitRegular text-gray-500">
           {formatedDate(item.startDate)}
@@ -98,12 +114,14 @@ const handleSelectedDetail = (item) => {
         <AntDesignIcons
           name="right"
           size={24}
-          color={item.status === "Success" ? "#00AA55" : "red"}
+          color={ item.paymentStatus === "COMPLETE" ? "#00AA55" : "red"}
         />
       </View>
     </View>
   </TouchableOpacity>
   )
+
+ 
 
   return (
     <View className="flex-1 bg-gray-50">
@@ -122,7 +140,7 @@ const handleSelectedDetail = (item) => {
 
         <View className="mt-6">
           <View className="flex flex-row justify-around relative bg-gray-100 p-4 rounded-full">
-            {["All", "Success", "Failed"].map((item, index) => (
+            {["All", "Approved", "Failed"].map((item, index) => (
               <TouchableOpacity
                 key={item}
                 onPress={() => handlePress(item, index)}
@@ -158,7 +176,7 @@ const handleSelectedDetail = (item) => {
                   left:
                     selected === "All"
                       ? 25
-                      : selected === "Success"
+                      : selected === ""
                       ? itemWidth - 109
                       : itemWidth - 120,
                   width: itemWidth - 30, // Adjust this value based on your design

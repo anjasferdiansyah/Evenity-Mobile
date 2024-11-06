@@ -1,9 +1,27 @@
 import {ScrollView, Text, TouchableOpacity, View} from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
+import { useDispatch, useSelector } from 'react-redux';
+import { getEventOnVendor } from '@/redux/slices/orderHistoryVendor';
+import moment from 'moment';
 
 const OrderDetailVendor = () => {
+
+    const { selectedOrderHistoryVendor, eventOnVendor } = useSelector((state) => state.orderHistoryVendor);
+    const dispatch = useDispatch();
+
+    useEffect(()=> {
+        dispatch(getEventOnVendor(selectedOrderHistoryVendor?.eventId))
+    }, [dispatch, selectedOrderHistoryVendor?.eventId])
+
+    console.log("eventOnVendor", eventOnVendor)
+
+    const formatDate = (date) => {
+        return moment(date).format('DD MMM YYYY')
+    }
+
+
     return (
         <View className="flex-1 items-start justify-center bg-white">
             <View className="w-full h-full pt-20 px-10">
@@ -20,7 +38,7 @@ const OrderDetailVendor = () => {
                                 Date Event
                             </Text>
                             <Text className="text-xl font-outfitSemiBold">
-                                20 November - 21 November
+                                {formatDate(eventOnVendor?.startDate)} - {formatDate(eventOnVendor?.endDate)}
                             </Text>
                         </View>
                         <View className="py-4">
@@ -28,15 +46,15 @@ const OrderDetailVendor = () => {
                                 Days
                             </Text>
                             <Text className="text-xl font-outfitSemiBold">
-                                2
+                                {selectedOrderHistoryVendor?.startDate - selectedOrderHistoryVendor?.endDate}
                             </Text>
                         </View>
                         <View className="py-4">
                             <Text className="text-xl font-outfitRegular text-gray-500">
-                                Quantity (pcs)
+                                Quantity ({selectedOrderHistoryVendor?.unit})
                             </Text>
                             <Text className="text-xl font-outfitSemiBold">
-                                2
+                                {selectedOrderHistoryVendor?.quantity}
                             </Text>
                         </View>
                         <View className="py-4">
@@ -52,7 +70,7 @@ const OrderDetailVendor = () => {
                                 Event Name
                             </Text>
                             <Text className="text-lg font-outfitSemiBold">
-                                Halloween
+                                {eventOnVendor?.name}
                             </Text>
                         </View>
                         <View className="py-4">
@@ -60,7 +78,7 @@ const OrderDetailVendor = () => {
                                 Address
                             </Text>
                             <Text className="text-lg font-outfitSemiBold">
-                                Jalan Sekartaji 1 No 20 Malang, Jawa Timur
+                                {eventOnVendor?.address}
                             </Text>
                         </View>
                         <View className="py-4">
@@ -68,7 +86,7 @@ const OrderDetailVendor = () => {
                                 Note
                             </Text>
                             <Text className="text-lg font-outfitSemiBold">
-                                Harus Pedess Lurrr!
+                                {selectedOrderHistoryVendor?.notes}
                             </Text>
                         </View>
 

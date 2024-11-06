@@ -5,18 +5,27 @@ const { createSlice, createAsyncThunk } = require("@reduxjs/toolkit");
 
 export const loadOrderHistoryVendor = createAsyncThunk(
     'orderHistoryVendor/loadorderHistoryVendor',
-    async () => {
-        const response = await axios.get("event/vendor/1833136a-c581-4661-87a9-df151ca56f6c")
+    async (id) => {
+        const response = await axios.get(`event/vendor/${id}`)
+        return response.data.data
+    }
+)
+
+export const getEventOnVendor = createAsyncThunk(
+    'orderHistoryVendor/getEventOnVendor',
+    async (eventId) => {
+        const response = await axios.get(`event/${eventId}`)
         return response.data.data
     }
 )
 
 
 const orderHistoryVendorSlice = createSlice({
-    name: "historyOrderVendor",
+    name: "orderHistoryVendor",
     initialState : {
         orderHistoryVendor : [],
         selectedOrderHistoryVendor: null,
+        eventOnVendor : null,
         status : ""
     },
     reducers: {
@@ -34,6 +43,9 @@ const orderHistoryVendorSlice = createSlice({
                 state.orderHistoryVendor = action.payload;
                 state.status = "success";
             })
+            .addCase(getEventOnVendor.fulfilled, (state, action) => {
+                state.eventOnVendor = action.payload;
+                        })
             .addMatcher((action) => action.type.endsWith("/rejected"), (state, action) => {
                 state.status = "failed";
             })

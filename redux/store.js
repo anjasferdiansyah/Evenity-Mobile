@@ -8,6 +8,7 @@ import productSlice from "./slices/productSlice";
 import productVendorSlice from "./slices/productVendorSlice";
 import requestSlice from "./slices/requestSlice"
 import orderHistoryVendorSlice from "./slices/orderHistoryVendor"
+import invoiceCustomerSlice from "./slices/invoiceCustomerSlice"
 
 export default configureStore({
     reducer: {
@@ -20,5 +21,6 @@ export default configureStore({
         productVendor: productVendorSlice,
         request: requestSlice,
         orderHistoryVendor: orderHistoryVendorSlice,
+        invoiceCustomer : invoiceCustomerSlice
     },
 });

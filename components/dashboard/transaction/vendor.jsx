@@ -11,7 +11,7 @@ import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import tailwind from "twrnc";
 import { router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
-import { historyOrderCustomer } from "@/redux/slices/request-requestDetail-slice";
+import { historyOrderCustomer } from "@/redux/slices/orderUserSlice";
 import Animated, {
   useSharedValue,
   withTiming,
@@ -19,7 +19,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
-import { loadOrderHistoryVendor } from "@/redux/slices/orderHistoryVendor";
+import { loadOrderHistoryVendor, setSelectedOrderHistoryVendor } from "@/redux/slices/orderHistoryVendor";
 
 export function OrderHistoryVendor() {
   const dispatch = useDispatch();
@@ -27,9 +27,15 @@ export function OrderHistoryVendor() {
     (state) => state.orderHistoryVendor
   );
 
+  console.log("Order History Vendor", orderHistoryVendor)
+
+  const {id, user} = useSelector((state) => state.auth);
+
+
   useEffect(() => {
-    dispatch(loadOrderHistoryVendor());
+    dispatch(loadOrderHistoryVendor(id));
   }, [dispatch]);
+
 
 
   const [userBalance, setUserBalance] = useState(0);
@@ -38,7 +44,7 @@ export function OrderHistoryVendor() {
     const fetchUserBalance = async () => {
       try {
         const response = await axios.get(
-          "transaction/balance/user/9daa0e0e-db69-4d87-b235-bc32f175f260"
+          `transaction/balance/user/${user.userId}`,
         );
         const { data } = response.data;
         setUserBalance(data.amount);
@@ -67,18 +73,21 @@ export function OrderHistoryVendor() {
     transform: [{ translateX: slideAnim.value }],
   }));
 
-  useEffect(() => {
-    dispatch(loadOrderHistoryVendor());
-  }, [dispatch]);
 
   const filteredItems =
     selected === "All"
       ? orderHistoryVendor
       : orderHistoryVendor.filter((item) => item.status === selected);
 
+
+  const handleSelectedDetail = (item) => {
+    dispatch(setSelectedOrderHistoryVendor(item))
+    router.push("/dashboard/transaction/detail");
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
-    onPress={() => router.push("/dashboard/transaction/detail")}
+    onPress={() => handleSelectedDetail(item)}
     key={item.id}
     style={{
       shadowColor: "#000",
@@ -96,10 +105,10 @@ export function OrderHistoryVendor() {
     >
       <View>
         <Text className="text-xl font-outfitBold text-gray-800">
-          {item.date}
+          {item.eventName}
         </Text>
         <Text className="text-sm font-outfitRegular text-gray-500">
-          {item.location}
+          {item.eventProgress}
         </Text>
       </View>
 
@@ -199,7 +208,7 @@ export function OrderHistoryVendor() {
             <FlatList
               data={filteredItems}
               renderItem={renderItem}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item, index) => index}
             />
           </View>
             </View>
