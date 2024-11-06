@@ -247,12 +247,6 @@ const MakeEventChooseVendor = () => {
 
       <ScrollView style={[tailwind`mt-5`]} className="vendor-choosen">
         {listSelectedCategory.map((item) => (
-          // <ListChooseVendor
-          //   key={item.id}
-          //   item={item}
-          //   radius="xl"
-          //   onRemove={() => handleRemoveCategory(item.id)}
-          // />
           <ListVendor
             key={item.id}
             item={item}

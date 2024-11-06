@@ -18,12 +18,12 @@ export default function ListChooseVendor({ item, radius, onRemove }) {
           {item.cost}
         </Text>
       </View>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         className="py-2 px-4 bg-red-500 rounded-full"
         onPress={onRemove}
       >
         <Text className="font-outfitSemiBold text-xl text-white">X</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
