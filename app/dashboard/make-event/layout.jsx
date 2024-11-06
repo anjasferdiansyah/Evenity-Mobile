@@ -14,7 +14,8 @@ const MakeEventLayout = ({
   handleNext,
   handleRegenerateVendor,
   nextInfor,
-  isInputValid
+  isInputValid,
+  resetRecommendedList,
 }) => {
   const dispatch = useDispatch();
 
@@ -29,7 +30,10 @@ const MakeEventLayout = ({
           borderRadius: 50,
           padding: 10,
         }}
-        onPress={() => router.back()}
+        onPress={() => {
+          resetRecommendedList();
+          router.back();
+        }}
       >
         <MaterialCommunityIcons name="close" size={24} color="white" />
       </TouchableOpacity>

@@ -11,7 +11,12 @@ import tailwind from "twrnc";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
 // import { registMakeEvent, makeEvent, addListSelected } from "../../redux/slices/makeEventSlice";
-import { makeEvent, addListSelected } from "@/redux/slices/makeEventSlice";
+import {
+  makeEvent,
+  addListSelected,
+  removeListSelected,
+  addDetailCategories,
+} from "@/redux/slices/makeEventSlice";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Picker } from "@react-native-picker/picker";
@@ -23,7 +28,7 @@ import ListVendor from "@/components/ListVendors";
 const MakeEventChooseVendor = () => {
   const dispatch = useDispatch();
   const { categories } = useSelector((state) => state.categorySlice);
-  const { makeEventData, makeEventRegist } = useSelector(
+  const { makeEventData, makeEventRegist, listSelected } = useSelector(
     (state) => state.makeEventSlice
   );
   const { priceRange, status, isLoading, error } = useSelector(
@@ -107,22 +112,42 @@ const MakeEventChooseVendor = () => {
       };
       console.log("newEventData", newEventData);
       console.log("naps", newEventData.categoryProduct);
-      dispatch(addListSelected(newEventData.categoryProduct));
+
+      dispatch(addDetailCategories(listSelectedVendor));
 
       dispatch(makeEvent(newEventData));
     }
   };
 
-  // const uniqueCategories = categories.reduce((acc, category) => {
-  //   if (!acc.some((item) => item.name === category.name)) {
-  //     acc.push(category);
-  //   }
-  //   return acc;
-  // }, []);
   const formatPriceInput = (value) => {
     let cleanValue = value.replace(/\D/g, "");
-
     return cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
+  const handleLowestPriceBlur = () => {
+    const numericValue = parseInt(tempLowestPrice.replace(/[^0-9]/g, ""), 10);
+    if (numericValue < parseInt(lowestPrice, 10)) {
+      // setTempLowestPrice(lowestPrice.toString());
+      setTempLowestPrice(formatPriceInput(numericValue));
+    } else if (numericValue > parseInt(highestPrice, 10)) {
+      // setTempLowestPrice(highestPrice.toString());
+      setTempLowestPrice(formatPriceInput(numericValue));
+    } else {
+      setLowestPrice(numericValue);
+    }
+  };
+
+  const handleHighestPriceBlur = () => {
+    const numericValue = parseInt(tempHighestPrice.replace(/[^0-9]/g, ""), 10);
+    if (numericValue < parseInt(lowestPrice, 10)) {
+      // setTempHighestPrice(lowestPrice.toString());
+      setTempHighestPrice(formatPriceInput(numericValue));
+    } else if (numericValue > parseInt(highestPrice, 10)) {
+      // setTempHighestPrice(highestPrice.toString());
+      setTempHighestPrice(formatPriceInput(numericValue));
+    } else {
+      setHighestPrice(numericValue);
+    }
   };
 
   const handleLowestPriceChange = (value) => {
@@ -155,8 +180,8 @@ const MakeEventChooseVendor = () => {
 
       const newCategory = {
         categoryId: selectedCategory,
-        minCost: parseInt(lowestPrice, 10),
-        maxCost: parseInt(highestPrice, 10),
+        minCost: parseInt(tempLowestPrice, 10),
+        maxCost: parseInt(tempHighestPrice, 10),
       };
 
       console.log("newCategory", newCategory);
@@ -169,8 +194,8 @@ const MakeEventChooseVendor = () => {
           id: selectedCategory + lowestPrice + highestPrice,
           categoryId: selectedCategory,
           name: selectedCategoryData.mainCategory,
-          minCost: parseInt(lowestPrice, 10),
-          maxCost: parseInt(highestPrice, 10),
+          minCost: parseInt(tempLowestPrice, 10),
+          maxCost: parseInt(tempHighestPrice, 10),
         },
       ]);
 
@@ -184,34 +209,13 @@ const MakeEventChooseVendor = () => {
 
   const handleRemoveCategory = (id) => {
     setListSelectedCategory((prevList) =>
-      prevList.filter((item) => item.id !== id)
+      prevList.filter((item) => item.categoryId !== id)
     );
-  };
 
-  const handleLowestPriceBlur = () => {
-    const numericValue = parseInt(tempLowestPrice.replace(/[^0-9]/g, ""), 10);
-    if (numericValue < parseInt(lowestPrice, 10)) {
-      // setTempLowestPrice(lowestPrice.toString());
-      setTempLowestPrice(formatPriceInput(lowestPrice));
-    } else if (numericValue > parseInt(highestPrice, 10)) {
-      // setTempLowestPrice(highestPrice.toString());
-      setTempLowestPrice(formatPriceInput(highestPrice));
-    } else {
-      setLowestPrice(tempLowestPrice);
-    }
-  };
-
-  const handleHighestPriceBlur = () => {
-    const numericValue = parseInt(tempHighestPrice.replace(/[^0-9]/g, ""), 10);
-    if (numericValue < parseInt(lowestPrice, 10)) {
-      // setTempHighestPrice(lowestPrice.toString());
-      setTempHighestPrice(formatPriceInput(lowestPrice));
-    } else if (numericValue > parseInt(highestPrice, 10)) {
-      // setTempHighestPrice(highestPrice.toString());
-      setTempHighestPrice(formatPriceInput(highestPrice));
-    } else {
-      setHighestPrice(tempHighestPrice);
-    }
+    setListSelectedVendor((prevList) =>
+      prevList.filter((item) => item.categoryId !== id)
+    );
+    dispatch(removeListSelected(id));
   };
 
   function formatPrice(price) {
@@ -308,7 +312,7 @@ const MakeEventChooseVendor = () => {
             key={item.id}
             item={item}
             radius="xl"
-            onRemove={() => handleRemoveCategory(item.id)}
+            onRemove={() => handleRemoveCategory(item.categoryId)}
           />
         ))}
       </ScrollView>
