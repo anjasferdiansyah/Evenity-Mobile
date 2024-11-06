@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import ListChooseVendor from "@/components/ListChooseVendor-user";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,30 +21,55 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 const MakeEventTransactionNote = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const { makeEventData, recommendedList, makeEventRegist, listSelected } =
-    useSelector((state) => state.makeEventSlice);
+  const {
+    makeEventData,
+    recommendedList,
+    makeEventRegist,
+    listSelected,
+    updateRecommendedList,
+    totalCost,
+  } = useSelector((state) => state.makeEventSlice);
 
   useEffect(() => {
     console.log("listSelectedPas", listSelected);
   }, [listSelected]);
+  const { id } = useSelector((state) => state.auth);
+
   const [modalDetailVisible, setModalDetailVisible] = useState(false);
   const [selectedVendor, setSelectedVendor] = useState(null);
 
   const handleVendorPress = (vendor) => {
     setSelectedVendor(vendor); // Set selected vendor data
     setModalDetailVisible(true); // Open modal
+    console.log("Selected vendor:", vendor);
+    console.log("Current makeEventData:", makeEventData);
+
+    //ini
+    const updatedVendorData = {
+      productId: vendor.productId,
+      newVendorData: {
+        // add necessary vendor fields, like cost, qty, etc.
+        qty: vendor.qty || 1,
+        cost: vendor.cost || 0,
+        notes: vendor.notes || "No specific notes",
+        mainCategory: vendor.mainCategory,
+      },
+    };
+    dispatch(updateRecommendedList(updatedVendorData));
+    // ini
   };
 
   const handleRegenerateVendor = () => {
+    console.log("id ", id);
     console.log("recommendedListTrx", recommendedList);
     const recommendedArray = Object.values(recommendedList);
     const previousProductIds = recommendedArray.map(
-      (vendor) => vendor.vendorId
+      (vendor) => vendor.productId
     );
 
     const newEventData = {
       ...makeEventRegist,
-      customerId: "05e2c49d-ee52-4d35-9ab8-6d8564f328bd",
+      customerId: id,
       categoryProduct: listSelected,
       previousProduct: previousProductIds,
     };
@@ -53,29 +78,23 @@ const MakeEventTransactionNote = () => {
   };
 
   const acceptMakeEvent = () => {
-    //  if (!recommendedList || Object.keys(recommendedList).length === 0) {
-    //    console.warn("recommendedList belum tersedia.");
-    //    return;
-    //  }
-
     console.log("recommendedListTrx2", recommendedList);
 
     const recommendedArray = Object.values(recommendedList);
+    console.log("recommendedArray", recommendedArray);
     const newEventData = recommendedArray.map((vendor) => ({
       productId: vendor.productId || "defaultProductId",
       qty: vendor.qty || 1,
-      unit: vendor.unit || "PCS",
+      unit: vendor.mainCategory === "CATERING" ? "PCS" : "DAY",
       notes: vendor.notes || "No specific notes",
       cost: vendor.cost || 0,
     }));
 
     console.log("newEventData to accept", newEventData);
 
-    // Salin `makeEventData` lalu hapus `recommendedList`
     const eventDataCopy = { ...makeEventData };
     delete eventDataCopy.recommendedList;
 
-    // Tambahkan eventDetail ke dalam salinan `makeEventData`
     const eventData = {
       ...eventDataCopy,
       eventDetail: newEventData,
@@ -115,17 +134,24 @@ const MakeEventTransactionNote = () => {
           <Text>No recommended vendors available.</Text>
         )}
       </ScrollView>
-      <View className="flex flex-row gap-4 w-full mt-12 px-10 items-center">
+      <View className="flex flex-row gap-4 w-full mt-12 items-center">
         <View
-          className="flex flex-row gap-2"
-          style={[tailwind`w-[90%] p-4 rounded-full`]}
+          className="flex flex-row gap-2 justify-center"
+          style={[tailwind` p-4 rounded-full`]}
         >
           <Text className="font-outfitSemiBold text-xl">Total</Text>
           <Text
             className="font-outfitRegular text-xl"
-            style={{ textAlign: "right", flex: 1, marginStart: 10 }}
+            style={{ textAlign: "right", flex: 1 }}
           >
-            10.000.000
+            {totalCost > 0
+              ? totalCost
+                  .toLocaleString("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                  })
+                  .replace("IDR", "")
+              : "Rp 0"}
           </Text>
         </View>
       </View>
@@ -175,7 +201,6 @@ const MakeEventTransactionNote = () => {
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-        
             <TouchableOpacity
               style={{
                 position: "absolute",
@@ -272,7 +297,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: "80%",
-    height: "80%"
+    height: "80%",
   },
   button: {
     borderRadius: 20,

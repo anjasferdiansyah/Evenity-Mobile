@@ -1,4 +1,4 @@
-import { Text, TextInput, View } from "react-native";
+import { Text, TextInput, View, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { registMakeEvent } from "@/redux/slices/makeEventSlice";
@@ -10,17 +10,40 @@ import MakeEventLayout from "@/app/dashboard/make-event/layout";
 const MakeEventTheme = () => {
   const [themeEvent, setThemeEvent] = useState();
   const dispatch = useDispatch();
+  const [isInputValid, setIsInputValid] = useState(false);
 
-  const handleMakeEvent = () => {
-    dispatch(
-      registMakeEvent({
-        theme: themeEvent,
-      })
-    );
+  const validateInputs = () => {
+    if (themeEvent) {
+      setIsInputValid(true);
+    } else {
+      setIsInputValid(false);
+    }
   };
 
+  const handleMakeEvent = () => {
+    if (!isInputValid) {
+      Alert.alert("Invalid Input", "Please enter a valid event theme.");
+      return;
+    } else {
+      dispatch(
+        registMakeEvent({
+          theme: themeEvent,
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
+    validateInputs();
+  }, [themeEvent]);
+
   return (
-    <MakeEventLayout progress={50} nextRoute="capacity" handleNext={handleMakeEvent}>
+    <MakeEventLayout
+      progress={50}
+      nextRoute="capacity"
+      handleNext={handleMakeEvent}
+      isInputValid={isInputValid}
+    >
       <View className="px-10" style={[tailwind`mt-5`]}>
         <Text className="text-6xl font-outfitSemiBold" style={[tailwind`mb-3`]}>
           What Event

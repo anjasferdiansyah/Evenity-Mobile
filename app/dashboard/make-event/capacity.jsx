@@ -1,4 +1,4 @@
-import { View, Text, TextInput } from "react-native";
+import { View, Text, TextInput, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import tailwind from "twrnc";
@@ -9,20 +9,41 @@ import { loadCategories } from "@/redux/slices/categorySlice";
 const MakeEventCapacity = () => {
   const [capacityEvent, setCapacityEvent] = useState(0);
   const dispatch = useDispatch();
+  const [isInputValid, setIsInputValid] = useState(false);
+
+  const validateInputs = () => {
+    if (capacityEvent) {
+      setIsInputValid(true);
+    } else {
+      setIsInputValid(false);
+    }
+  };
 
   const handleMakeEvent = () => {
-    dispatch(
-      registMakeEvent({
-        participant: parseInt(capacityEvent),
-      })
-    );
+    if (!capacityEvent || parseInt(capacityEvent) <= 0) {
+      setIsInputValid(false);
+      Alert.alert("Invalid Input", "Please enter a valid event capacity.");
+      return;
+    } else {
+      setIsInputValid(true);
+      dispatch(
+        registMakeEvent({
+          participant: parseInt(capacityEvent),
+        })
+      );
+    }
   };
+
+  useEffect(() => {
+    validateInputs();
+  }, [capacityEvent]);
 
   return (
     <MakeEventLayout
       progress={80}
       nextRoute="vendor"
       handleNext={handleMakeEvent}
+      isInputValid={isInputValid}
     >
       <View className="px-10" style={[tailwind`mt-5`]}>
         <Text className="text-6xl font-outfitSemiBold" style={[tailwind``]}>
