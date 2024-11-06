@@ -5,26 +5,47 @@ import tailwind from "twrnc";
 import {router} from "expo-router";
 import { useSelector } from "react-redux";
 import moment from "moment";
+import axios from "axios";
 
 const OrderDetailUser = () => {
 
-    const { selectedOrder, ordersUser } = useSelector((state) => state.orderUser);
+    const { selectedInvoiceCustomer, ordersUser } = useSelector((state) => state.invoiceCustomer);
 
-    const isAllApproved = ordersUser.every((item) =>
-      item.eventDetailResponseList.every(
-        (detail) => detail.approvalStatus === "APPROVED"
-      )
-    );
+    // const isAllApproved = ordersUser.every((item) =>
+    //   item.invoiceDetailResponseList.every(
+    //     (detail) => detail.approvalStatus === "APPROVED"
+    //   )
+    // );
  const formatDate = (date) => {
     return moment(date).format('DD MMM YYYY')
  }
 
- const calculateTotalCost = () => {
-  const totalCost = selectedOrder?.eventDetailResponseList.reduce(
-    (total, item) => total + (item.cost || 0), 0
-  );
-  return `Rp ${totalCost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`;
-};
+//  const calculateTotalCost = () => {
+//   const totalCost = selectedInvoiceCustomer?.invoiceDetailResponseList.reduce(
+//     (total, item) => total + (item.cost || 0), 0
+//   );
+//   return `Rp ${totalCost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`;
+// };
+
+const handlePayment  = async () => {
+
+  const invoiceId = selectedInvoiceCustomer?.invoiceId
+
+  console.log("invoiceId", invoiceId)
+
+  try {
+    const response = await axios.put(`/invoice/${invoiceId}`)
+    if(response.status !== 200) return
+    console.log("payment Response", response)
+    const midtransUrl = response.data.data.url
+    if(midtransUrl){
+      router.push({ pathname: '/payment', params: { url: midtransUrl } });
+    }
+   
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 
     return (
@@ -46,13 +67,21 @@ const OrderDetailUser = () => {
           {/* Scrollable Content */}
           <View className="h-[55%] mt-5">
             <ScrollView>
+            <View className="py-2">
+                <Text className="text-lg font-outfitRegular text-gray-500">
+                  Invoice ID
+                </Text>
+                <Text className="text-2xl font-outfitSemiBold text-gray-800">
+                  {selectedInvoiceCustomer?.invoiceId}
+                </Text>
+              </View>
               {/* Event Name */}
               <View className="py-2">
                 <Text className="text-lg font-outfitRegular text-gray-500">
                   Event Name
                 </Text>
                 <Text className="text-2xl font-outfitSemiBold text-gray-800">
-                  {selectedOrder?.name}
+                  {selectedInvoiceCustomer?.eventName}
                 </Text>
               </View>
               {/* Event Date */}
@@ -62,13 +91,13 @@ const OrderDetailUser = () => {
                 </Text>
                 <View className="flex flex-row gap-2">
                   <Text className="text-xl font-outfitSemiBold text-gray-800">
-                    {formatDate(selectedOrder?.startDate)}
+                    {formatDate(selectedInvoiceCustomer?.startDate)}
                   </Text>
                   <Text className="text-xl font-outfitSemiBold text-gray-800">
                     -
                   </Text>
                   <Text className="text-xl font-outfitSemiBold text-gray-800">
-                    {formatDate(selectedOrder?.endDate)}
+                    {formatDate(selectedInvoiceCustomer?.endDate)}
                   </Text>
                 </View>
               </View>
@@ -78,7 +107,7 @@ const OrderDetailUser = () => {
                   Participant
                 </Text>
                 <Text className="text-xl font-outfitSemiBold text-gray-800">
-                  {selectedOrder?.participant}
+                  {selectedInvoiceCustomer?.participant}
                 </Text>
               </View>
               {/* Address */}
@@ -87,17 +116,17 @@ const OrderDetailUser = () => {
                   Address
                 </Text>
                 <Text className="text-xl font-outfitSemiBold text-gray-800">
-                  {selectedOrder?.address}
+                  {selectedInvoiceCustomer?.address}
                 </Text>
               </View>
               {/* Status */}
               <View className="py-2">
                 <Text className="text-lg font-outfitRegular text-gray-500">
-                 Description
+                  Payment Status
                 </Text>
                 <View
                 >
-                  <Text className="text-xl font-outfitSemiBold text-gray-800">{selectedOrder?.description}</Text>
+                  <Text className="text-xl font-outfitSemiBold text-gray-800">{selectedInvoiceCustomer?.paymentStatus}</Text>
                 </View>
               </View>
               {/* List of Vendors */}
@@ -106,7 +135,7 @@ const OrderDetailUser = () => {
                   List Vendor Choose
                 </Text>
                 {
-                  selectedOrder?.eventDetailResponseList.map((item, index) => (
+                  selectedInvoiceCustomer?.invoiceDetailResponseList.map((item, index) => (
                     <View
                       key={index}
                       className="flex flex-row gap-4 w-full items-center mt-2"
@@ -132,20 +161,18 @@ const OrderDetailUser = () => {
                   Total Cost
                 </Text>
                 <Text className="text-4xl font-outfitBold text-gray-800">
-                  {calculateTotalCost()}
+                  {selectedInvoiceCustomer?.totalCost}
                 </Text>
               </View>
             </ScrollView>
           </View>
           {/* Action Buttons */}
       { 
-      selectedOrder &&
-      selectedOrder?.eventDetailResponseList.every(
-        (detail) => detail.approvalStatus === "APPROVED"
-      ) &&
+      selectedInvoiceCustomer &&
+      selectedInvoiceCustomer?.paymentStatus === "UNPAID" &&
       
       <View className="flex flex-col gap-2 w-full mt-5 items-center">
-            <TouchableOpacity className="bg-[#00F279] items-center justify-center px-8 py-3 rounded-full w-full" onPress={() => router.push('/payment')}>
+            <TouchableOpacity className="bg-[#00F279] items-center justify-center px-8 py-3 rounded-full w-full" onPress={handlePayment}>
               <Text className="text-white text-xl font-bold">Pay Now!</Text>
             </TouchableOpacity>
             <TouchableOpacity className="bg-red-500 items-center justify-center px-8 py-3 rounded-full w-full">

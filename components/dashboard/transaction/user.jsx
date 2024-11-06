@@ -18,16 +18,16 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import moment from "moment";
-import { loadInvoiceOrderCustomer } from "@/redux/slices/invoiceCustomerSlice";
+import { loadInvoiceOrderCustomer, setSelectedInvoiceCustomer } from "@/redux/slices/invoiceCustomerSlice";
 
 const OrderHistoryUser = () => {
   const dispatch = useDispatch();
 
   const { id } = useSelector((state) => state.auth)
-  const { ordersUser  } = useSelector((state) => state.orderUser)
-  // const { invoiceCustomer } = useSelector((state) => state.invoiceCustomer)
+  // const { ordersUser  } = useSelector((state) => state.orderUser)
+  const { invoiceCustomer } = useSelector((state) => state.invoiceCustomer)
 
-  // console.log("invoiceCustomer", invoiceCustomer)
+  console.log("invoiceCustomer", invoiceCustomer)
 
   const { width } = useWindowDimensions();
 
@@ -46,38 +46,38 @@ const OrderHistoryUser = () => {
     transform: [{ translateX: slideAnim.value }],
   }));
 
-  useEffect(() => {
-    dispatch(historyOrderCustomer(id));
+  // useEffect(() => {
+  //   dispatch(historyOrderCustomer(id));
 
-  }, []);
+  // }, []);
 
-// useEffect(() => {
-//   dispatch(loadInvoiceOrderCustomer(id))
-// }, [invoiceCustomer])
+useEffect(() => {
+  dispatch(loadInvoiceOrderCustomer(id))
+}, [])
 
 const filteredItems =
   selected === "All"
-    ? ordersUser
+    ? invoiceCustomer
     : selected === "Approved"
-    ? ordersUser.filter((item) =>
-        item.eventDetailResponseList.every(
+    ? invoiceCustomer.filter((item) =>
+        item.invoiceDetailResponseList.every(
           (detail) => detail.approvalStatus === "APPROVED"
         )
       )
-    : ordersUser.filter((item) =>
-        item.eventDetailResponseList.some(
+    : invoiceCustomer.filter((item) =>
+        item.invoiceDetailResponseList.some(
           (detail) => detail.approvalStatus !== "APPROVED"
         )
       );
 
-  console.log(ordersUser)
+  // console.log(invoiceCustomer)
 
   const formatedDate = (date) => {
     return moment(date).format('DD MMM YYYY')
 }
 
 const handleSelectedDetail = (item) => {
-  dispatch(setSelectedOrderUser(item))
+  dispatch(setSelectedInvoiceCustomer(item))
   router.push("/dashboard/transaction/detail")
 }
 
@@ -98,14 +98,12 @@ const handleSelectedDetail = (item) => {
   >
     <View
       className={`flex flex-row justify-between items-center p-5 ${
-        item?.eventDetailResponseList.every(
-          (detail) => detail.approvalStatus === "APPROVED"
-        ) ? "bg-[#DFF7E6]" : "bg-[#FDE4E1]"
+        item.paymentStatus === "COMPLETE" ? "bg-[#DFF7E6]" : "bg-[#FDE4E1]"
       } rounded-xl`}
     >
       <View>
         <Text className="text-xl font-outfitBold text-gray-800">
-          {item.name}
+          {item.eventName}
         </Text>
         <Text className="text-sm font-outfitRegular text-gray-500">
           {formatedDate(item.startDate)}
@@ -116,9 +114,7 @@ const handleSelectedDetail = (item) => {
         <AntDesignIcons
           name="right"
           size={24}
-          color={ item.eventDetailResponseList.every(
-            (detail) => detail.approvalStatus === "APPROVED"
-          )? "#00AA55" : "red"}
+          color={ item.paymentStatus === "COMPLETE" ? "#00AA55" : "red"}
         />
       </View>
     </View>

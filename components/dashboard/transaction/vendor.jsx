@@ -66,47 +66,44 @@ export function OrderHistoryVendor() {
         transform: [{translateX: slideAnim.value}],
     }));
 
-  useEffect(() => {
-    dispatch(loadOrderHistoryVendor());
-  }, [dispatch]);
 
     const filteredItems =
         selected === "All"
             ? orderHistoryVendor
             : orderHistoryVendor.filter((item) => item.status === selected);
 
-  
+
   const handleSelectedDetail = (item) => {
     dispatch(setSelectedOrderHistoryVendor(item))
     router.push("/dashboard/transaction/detail");
   };
 
-  const renderItem = ({item}) => (
-        <TouchableOpacity
-            onPress={() => handleSelectedDetail(item)}
-            key={item.id}
-            style={{
-                shadowColor: "#000",
-                shadowOpacity: 0.2,
-                shadowOffset: {width: 0, height: 2},
-                shadowRadius: 4,
-                elevation: 4,
-                padding: 10,
-            }}
-        >
-            <View
-                className={`flex flex-row justify-between items-center p-5 ${
-                    item.status === "Success" ? "bg-[#DFF7E6]" : "bg-[#FDE4E1]"
-                } rounded-xl`}
-            >
-                <View>
-                    <Text className="text-xl font-outfitBold text-gray-800">
-                        {item.eventName}
-                    </Text>
-                    <Text className="text-sm font-outfitRegular text-gray-500">
-                        {item.eventProgress}
-                    </Text>
-                </View>
+  const renderItem = ({ item }) => (
+    <TouchableOpacity
+    onPress={() => handleSelectedDetail(item)}
+    key={item.id}
+    style={{
+      shadowColor: "#000",
+      shadowOpacity: 0.2,
+      shadowOffset: { width: 0, height: 2 },
+      shadowRadius: 4,
+      elevation: 4,
+      padding: 10,
+    }}
+  >
+    <View
+      className={`flex flex-row justify-between items-center p-5 ${
+        item.status === "Success" ? "bg-[#DFF7E6]" : "bg-[#FDE4E1]"
+      } rounded-xl`}
+    >
+      <View>
+        <Text className="text-xl font-outfitBold text-gray-800">
+          {item.eventName}
+        </Text>
+        <Text className="text-sm font-outfitRegular text-gray-500">
+          {item.eventProgress}
+        </Text>
+      </View>
 
                 <View className="p-3 bg-white rounded-full">
                     <AntDesignIcons
