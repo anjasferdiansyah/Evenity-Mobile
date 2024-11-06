@@ -14,7 +14,7 @@ export const makeEvent = createAsyncThunk(
         },
       })
       .catch((e) => e.response);
-    console.log("response", response);
+    // console.log("response makeEvent", response);
     if (response.status !== 200) return rejectWithValue(response.data.message);
     return response.data.data;
   }
@@ -32,7 +32,27 @@ export const regenerateEvent = createAsyncThunk(
         },
       })
       .catch((e) => e.response);
-    console.log("response", response);
+    // console.log("response", response);
+    if (response.status !== 200) return rejectWithValue(response.data.message);
+    return response.data.data;
+  }
+);
+
+export const acceptAndMakeEvent = createAsyncThunk(
+  "makeEvent/acceptAndMakeEvent",
+  async (data, { rejectWithValue }) => {
+    // console.log("HITTTT!");
+    const token = await asyncStorage.getItem("token");
+    console.log("data", data);
+    const response = await axios
+      .post("/event", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .catch((e) => e.response);
+    // console.log("Hitt22");
+    // console.log("response", response);
     if (response.status !== 200) return rejectWithValue(response.data.message);
     return response.data.data;
   }
@@ -43,15 +63,22 @@ const MakeEventSlice = createSlice({
   initialState: {
     isLoading: false,
     status: "idle",
+    makeEventRegist: null,
     makeEventData: null,
-    recommendedList: [],
+    recommendedList: {},
+    listSelected: null,
   },
   reducers: {
     registMakeEvent: (state, action) => {
-      state.makeEventData = {
-        ...state.makeEventData,
+      state.makeEventRegist = {
+        ...state.makeEventRegist,
         ...action.payload,
       };
+    },
+    addListSelected: (state, action) => {
+      // state.listSelected.push(action.payload); // Add new item to listSelected array
+      // console.log("listSelected", state.listSelected);
+      state.listSelected = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -61,17 +88,56 @@ const MakeEventSlice = createSlice({
         state.status = "loading";
       })
       .addCase(makeEvent.fulfilled, (state, action) => {
+        console.log("Action Payload", state);
         state.isLoading = false;
         state.status = "succeeded";
         state.makeEventData = action.payload;
-        if (
-          action.payload.recommendedList &&
-          action.payload.recommendedList.length > 0
-        ) {
-          state.recommendedList.push(...action.payload.recommendedList);
+        if (action.payload.categoryProduct) {
+          state.listSelected = action.payload.categoryProduct;
         }
+        if (action.payload.recommendedList) {
+          action.payload.recommendedList.forEach((vendor) => {
+            state.recommendedList[vendor.vendorId] = vendor; // Use vendorId as key
+          });
+        }
+        console.log("recommendedList", state.recommendedList);
+        console.log("listSelected", state.listSelected);
       })
       .addCase(makeEvent.rejected, (state, action) => {
+        state.isLoading = false;
+        state.status = "failed";
+        console.log("error fetching");
+      })
+      .addCase(regenerateEvent.pending, (state) => {
+        state.isLoading = true;
+        state.status = "loading";
+      })
+      .addCase(regenerateEvent.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.status = "succeeded";
+        const { data } = action.payload;
+        state.makeEventData = data;
+        state.recommendedList = {};
+        state.makeEventData = null;
+        state.makeEventRegist = null;
+      })
+      .addCase(regenerateEvent.rejected, (state, action) => {
+        state.isLoading = false;
+        state.status = "failed";
+        console.log("error fetching");
+      })
+      .addCase(acceptAndMakeEvent.pending, (state) => {
+        state.isLoading = true;
+        state.status = "loading";
+      })
+      .addCase(acceptAndMakeEvent.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.status = "succeeded";
+        state.makeEventData = action.payload;
+        state.recommendedList = {};
+        state.listSelected = null;
+      })
+      .addCase(acceptAndMakeEvent.rejected, (state, action) => {
         state.isLoading = false;
         state.status = "failed";
         console.log("error fetching");
@@ -79,5 +145,5 @@ const MakeEventSlice = createSlice({
   },
 });
 
-export const { registMakeEvent } = MakeEventSlice.actions;
+export const { registMakeEvent, addListSelected } = MakeEventSlice.actions;
 export default MakeEventSlice.reducer;

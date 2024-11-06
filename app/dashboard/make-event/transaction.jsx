@@ -7,80 +7,91 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import ListChooseVendor from "@/components/ListChooseVendor-user";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
 import { useDispatch, useSelector } from "react-redux";
-import { registMakeEvent, makeEvent } from "@/redux/slices/makeEventSlice";
+import {
+  regenerateEvent,
+  acceptAndMakeEvent,
+} from "@/redux/slices/makeEventSlice";
+import { router } from "expo-router";
 
 const MakeEventTransactionNote = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
-  const { makeEventData } = useSelector((state) => state.makeEventSlice);
-
-  const handleAccept = () => {
-    setModalVisible(true);
-  };
+  const { makeEventData, recommendedList, makeEventRegist, listSelected } =
+    useSelector((state) => state.makeEventSlice);
 
   useEffect(() => {
-    console.log("makeEventData", makeEventData);
-  }, [makeEventData]);
+    console.log("listSelectedPas", listSelected);
+  }, [listSelected]);
+
+  // const handleAccept = () => {
+  //   setModalVisible(true);
+  // };
 
   const handleRegenerateVendor = () => {
     // console.log("listSelectedVendor", listSelectedVendor);
+    console.log("recommendedListTrx", recommendedList);
+    const recommendedArray = Object.values(recommendedList);
+    const previousProductIds = recommendedArray.map(
+      (vendor) => vendor.vendorId
+    );
+
     const newEventData = {
-      // ...makeEventData,
-      // customerId: "05e2c49d-ee52-4d35-9ab8-6d8564f328bd",
-      // categoryProduct: listSelectedVendor,
-      // previousProduct: [],
-      name: "Flower Fest 2025",
-      description:
-        "A festival in Malang city where every florist or farmer in Malang region gather and show of their work in flower arrangement and intricate gardening skill",
-      startDate: "2025-01-02",
-      endDate: "2025-01-05",
-      startTime: "07:00:00",
-      endTime: "18:00:00",
-      province: "JAWA TIMUR",
-      city: "KOTA MALANG",
-      district: "Lowokwaru",
-      address: "Malang city, Klojen district",
-      theme: "Flower festival",
-      participant: 100,
+      ...makeEventRegist,
       customerId: "05e2c49d-ee52-4d35-9ab8-6d8564f328bd",
-      categoryProduct: [
-        {
-          categoryId: "f666d1e6-6f36-4ea4-8533-84a2a79a7d7b",
-          minCost: 9000,
-          maxCost: 50000000,
-        },
-      ],
-      previousProduct: ["edf13a67-53d3-4b2b-8146-e84f8e4b8412"],
+      categoryProduct: listSelected,
+      previousProduct: previousProductIds,
     };
     console.log("newEventData", newEventData);
-    dispatch(makeEvent(newEventData));
+    dispatch(regenerateEvent(newEventData));
   };
 
-  // const handleConfirm = () => {
-  //   setModalVisible(false);
-  //   navigation.navigate("Home");
-  // };
 
-  // const entertainmentItems = [
-  //   { id: 1, name: "Joko Horeg", price: "10.000.000" },
-  //   { id: 2, name: "Andi Mc", price: "15.000.000" },
-  //   { id: 3, name: "Soni Catering enak sekali", price: "15.000.000" },
-  //   { id: 4, name: "Gelora bung karno", price: "15.000.000" },
-  //   { id: 5, name: "Gelora bung karno", price: "15.000.000" },
-  //   { id: 6, name: "Gelora bung karno", price: "15.000.000" },
-  //   { id: 7, name: "Gelora bung karno", price: "15.000.000" },
-  // ];
+ const acceptMakeEvent = () => {
+  //  if (!recommendedList || Object.keys(recommendedList).length === 0) {
+  //    console.warn("recommendedList belum tersedia.");
+  //    return;
+  //  }
+
+   console.log("recommendedListTrx2", recommendedList);
+
+   const recommendedArray = Object.values(recommendedList);
+   const newEventData = recommendedArray.map((vendor) => ({
+     productId: vendor.productId || "defaultProductId",
+     qty: vendor.qty || 1,
+     unit: vendor.unit || "PCS",
+     notes: vendor.notes || "No specific notes",
+     cost: vendor.cost || 0,
+   }));
+
+   console.log("newEventData to accept", newEventData);
+
+   // Salin `makeEventData` lalu hapus `recommendedList`
+   const eventDataCopy = { ...makeEventData };
+   delete eventDataCopy.recommendedList;
+
+   // Tambahkan eventDetail ke dalam salinan `makeEventData`
+   const eventData = {
+     ...eventDataCopy,
+     eventDetail: newEventData,
+   };
+
+   dispatch(acceptAndMakeEvent(eventData));
+   router.push(`/dashboard/(tabs)/transaction`);
+ };
+
+
 
   return (
     <MakeEventLayout
       progress={100}
       nextRoute="transaction"
-      handleAccept={handleRegenerateVendor}
-
+      handleRegenerateVendor={handleRegenerateVendor}
+      handleAccept={acceptMakeEvent}
+      nextInfor="Make Event"
     >
       <View className="px-10" style={[tailwind`my-2 mx-auto`]}>
         <Text className="font-outfitSemiBold text-2xl" style={[tailwind`mb-3`]}>
@@ -129,7 +140,7 @@ const MakeEventTransactionNote = () => {
               Confirm Payment
             </Text>
             <TouchableOpacity
-              onPress={handleAccept}
+              // onPress={handleAccept}
               className=" mx-auto items-center justify-center  py-3 rounded-full"
               style={[tailwind`w-full bg-[#19ff8c] w-52 mb-2`]}
             >

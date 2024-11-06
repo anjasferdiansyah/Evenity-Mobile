@@ -182,7 +182,7 @@ const MakeEventLocation = () => {
     </TouchableOpacity>
   );
 
-  const handleMakeEvent = (location) => {
+  const handleMakeEvent = () => {
     dispatch(
       registMakeEvent({
         province: provinceSearchText,

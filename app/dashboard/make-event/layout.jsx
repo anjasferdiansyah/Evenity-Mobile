@@ -12,6 +12,8 @@ const MakeEventLayout = ({
   nextRoute,
   handleAccept,
   handleNext,
+  handleRegenerateVendor,
+  nextInfor,
 }) => {
   const dispatch = useDispatch();
 
@@ -58,7 +60,7 @@ const MakeEventLayout = ({
             </Text>
           </TouchableOpacity>
         </View>
-      ) : nextRoute === "./makeEvent-capacityEvent" ? (
+      ) : nextInfor === "Make Event" ? (
         <View
           className="w-full px-10"
           style={[tailwind`my-3 flex flex-col gap-5`]}
@@ -73,11 +75,7 @@ const MakeEventLayout = ({
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            // onPress={() => {
-            //   handleAccept();
-            //   router.push(`/dashboard/make-event/${nextRoute}`);
-            // }}
-            onPress={handleAccept}
+            onPress={handleRegenerateVendor}
             className=" mx-auto items-center justify-center py-3 rounded-full"
             style={[tailwind`w-full bg-[#19ff8c]`]}
           >
