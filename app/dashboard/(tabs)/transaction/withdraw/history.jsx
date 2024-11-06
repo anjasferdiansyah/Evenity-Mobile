@@ -16,7 +16,7 @@ export default function WithdrawHistoryScreen() {
 
     useEffect(() => {
         dispatch(loadWithdrawHistory())
-    }, [])
+    }, [dispatch])
 
 
     const formatDate = (date) => {
@@ -42,7 +42,7 @@ export default function WithdrawHistoryScreen() {
                         data={withdrawHistory}
                         renderItem={({item}) => {
                             if (item.amount > 0) return (
-                                <View className="p-5 bg-[#00F279] rounded-2xl mb-4" style={[tailwind`shadow-2xl`]}>
+                                <View className="p-5 bg-[#00F279] rounded-2xl mb-4" style={tailwind`shadow-2xl`}>
                                     <Text
                                         className="text-xl font-outfitSemiBold text-white">{formatDate(item.date)}</Text>
                                     <Text
