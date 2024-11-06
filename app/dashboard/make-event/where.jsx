@@ -4,6 +4,7 @@ import {
   View,
   TouchableOpacity,
   FlatList,
+  Alert,
 } from "react-native";
 import tailwind from "twrnc";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
@@ -33,11 +34,25 @@ const MakeEventLocation = () => {
   const [districtSearchText, setDistrictSearchText] = useState("");
   const [filteredDistricts, setFilteredDistricts] = useState([]);
   const [availableDistricts, setAvailableDistricts] = useState([]); // ... previous state declarations ...
+  const [isInputValid, setIsInputValid] = useState(false);
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [addressEvent, setAddressEvent] = useState("");
+
+  const validateInputs = () => {
+    if (
+      citySearchText &&
+      provinceSearchText &&
+      districtSearchText &&
+      addressEvent
+    ) {
+      setIsInputValid(true);
+    } else {
+      setIsInputValid(false);
+    }
+  };
 
   useEffect(() => {
     let isMounted = true; // For cleanup
@@ -183,18 +198,35 @@ const MakeEventLocation = () => {
   );
 
   const handleMakeEvent = () => {
-    dispatch(
-      registMakeEvent({
-        province: provinceSearchText,
-        city: citySearchText,
-        district: districtSearchText,
-        address: addressEvent,
-      })
-    );
+    if (!isInputValid) {
+      Alert.alert(
+        "Invalid Input",
+        "Please enter a valid province, city, district and address."
+      );
+      return;
+    } else {
+      dispatch(
+        registMakeEvent({
+          province: provinceSearchText,
+          city: citySearchText,
+          district: districtSearchText,
+          address: addressEvent,
+        })
+      );
+    }
   };
 
+  useEffect(() => {
+    validateInputs();
+  }, [provinceSearchText, citySearchText, districtSearchText, addressEvent]);
+
   return (
-    <MakeEventLayout progress={40} nextRoute="when" handleNext={handleMakeEvent}>
+    <MakeEventLayout
+      progress={40}
+      nextRoute="when"
+      handleNext={handleMakeEvent}
+      isInputValid={isInputValid}
+    >
       <View className="px-10" style={[tailwind`mt-5`]}>
         <Text className="text-6xl font-outfitSemiBold" style={[tailwind``]}>
           Where's

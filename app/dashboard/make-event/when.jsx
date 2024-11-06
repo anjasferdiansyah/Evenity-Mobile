@@ -1,4 +1,4 @@
-import { Text, TextInput, View, TouchableOpacity } from "react-native";
+import { Text, TextInput, View, TouchableOpacity, Alert } from "react-native";
 import tailwind from "twrnc";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
 import React, { useEffect, useState } from "react";
@@ -15,6 +15,7 @@ const MakeEventDate = () => {
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
+  const [isInputValid, setIsInputValid] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -22,6 +23,19 @@ const MakeEventDate = () => {
   const showEndDatePickerHandler = () => setShowEndDatePicker(true);
   const showStartTimePickerHandler = () => setShowStartTimePicker(true);
   const showEndTimePickerHandler = () => setShowEndTimePicker(true);
+
+  const validateInputs = () => {
+    if (
+      startDate &&
+      endDate &&
+      startTime &&
+      endTime
+    ) {
+      setIsInputValid(true);
+    } else {
+      setIsInputValid(false);
+    }
+  };
 
   const onStartDateChange = (event, selectedDate) => {
     setShowStartDatePicker(false);
@@ -44,33 +58,43 @@ const MakeEventDate = () => {
   };
 
   const handleMakeEvent = () => {
-    dispatch(
-      registMakeEvent({
-        startDate:
-          typeof startDate === "string"
-            ? startDate.split("T")[0]
-            : startDate.toISOString().split("T")[0],
-        endDate:
-          typeof endDate === "string"
-            ? endDate.split("T")[0]
-            : endDate.toISOString().split("T")[0],
-        startTime:
-          typeof startTime === "string" && startTime.includes("T")
-            ? startTime.split("T")[1].split(".")[0]
-            : startTime.toISOString().split("T")[1].split(".")[0],
-        endTime:
-          typeof endTime === "string" && endTime.includes("T")
-            ? endTime.split("T")[1].split(".")[0]
-            : endTime.toISOString().split("T")[1].split(".")[0],
-      })
-    );
+    if (!isInputValid) {
+      Alert.alert("Invalid Input", "Please enter a valid event date and time.");
+      return;
+    } else {
+      dispatch(
+        registMakeEvent({
+          startDate:
+            typeof startDate === "string"
+              ? startDate.split("T")[0]
+              : startDate.toISOString().split("T")[0],
+          endDate:
+            typeof endDate === "string"
+              ? endDate.split("T")[0]
+              : endDate.toISOString().split("T")[0],
+          startTime:
+            typeof startTime === "string" && startTime.includes("T")
+              ? startTime.split("T")[1].split(".")[0]
+              : startTime.toISOString().split("T")[1].split(".")[0],
+          endTime:
+            typeof endTime === "string" && endTime.includes("T")
+              ? endTime.split("T")[1].split(".")[0]
+              : endTime.toISOString().split("T")[1].split(".")[0],
+        })
+      );
+    }
   };
+
+  useEffect(() => {
+    validateInputs();
+  }, [startDate, endDate, startTime, endTime]);
 
   return (
     <MakeEventLayout
       progress={40}
       nextRoute="theme"
       handleNext={handleMakeEvent}
+      isInputValid={isInputValid}
     >
       <View className="px-10" style={[tailwind`mt-5`]}>
         <Text className="text-6xl font-outfitSemiBold" style={[tailwind``]}>

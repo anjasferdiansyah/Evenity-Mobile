@@ -14,6 +14,7 @@ const MakeEventLayout = ({
   handleNext,
   handleRegenerateVendor,
   nextInfor,
+  isInputValid
 }) => {
   const dispatch = useDispatch();
 
@@ -34,7 +35,12 @@ const MakeEventLayout = ({
       </TouchableOpacity>
       <View
         className={`w-[90%] px-10 ${
-          nextRoute === "where"
+          // nextRoute === "where"
+          //   ? "mt-2"
+          //   : nextRoute === "./makeEvent-capacityEvent"
+          //   ? "mt-10"
+          //   : "mt-6"
+          nextRoute === "description"
             ? "mt-2"
             : nextRoute === "./makeEvent-capacityEvent"
             ? "mt-10"
@@ -46,14 +52,17 @@ const MakeEventLayout = ({
       <View className="px-10" style={tailwind`mt-1 h-[60%] mt-4`}>
         {nextRoute === "when" ? children : <ScrollView>{children}</ScrollView>}
       </View>
-      {nextRoute === "where" ? (
+      {nextRoute === "description" ? (
         <View className="w-full px-10 mt-10">
           <TouchableOpacity
             onPress={() => {
               handleNext();
               router.push(`/dashboard/make-event/${nextRoute}`);
             }}
-            className="bg-[#00AA55] mx-auto w-full mt-14 items-center justify-center py-3 rounded-full"
+            className={`bg-[#00AA55] mx-auto w-full mt-14 items-center justify-center py-3 rounded-full ${
+              !isInputValid && "opacity-50"
+            }`}
+            disabled={!isInputValid}
           >
             <Text className="text-white text-xl font-outfitBold py-1.5">
               Next
@@ -105,7 +114,10 @@ const MakeEventLayout = ({
               handleNext();
               router.push(`/dashboard/make-event/${nextRoute}`);
             }}
-            className="bg-[#00AA55] mx-auto w-[60%] mt-14 items-center justify-center py-3 rounded-full"
+            className={`bg-[#00AA55] mx-auto w-[60%] mt-14 items-center justify-center py-3 rounded-full ${
+              !isInputValid && "opacity-50"
+            }`}
+            disabled={!isInputValid}
           >
             <Text className="text-white text-xl font-outfitBold py-1.5">
               Next
