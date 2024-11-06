@@ -18,14 +18,16 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import moment from "moment";
+import { loadInvoiceOrderCustomer } from "@/redux/slices/invoiceCustomerSlice";
 
 const OrderHistoryUser = () => {
   const dispatch = useDispatch();
 
   const { id } = useSelector((state) => state.auth)
   const { ordersUser  } = useSelector((state) => state.orderUser)
- 
+  // const { invoiceCustomer } = useSelector((state) => state.invoiceCustomer)
 
+  // console.log("invoiceCustomer", invoiceCustomer)
 
   const { width } = useWindowDimensions();
 
@@ -46,14 +48,27 @@ const OrderHistoryUser = () => {
 
   useEffect(() => {
     dispatch(historyOrderCustomer(id));
-  }, [dispatch]);
 
+  }, []);
 
+// useEffect(() => {
+//   dispatch(loadInvoiceOrderCustomer(id))
+// }, [invoiceCustomer])
 
-  const filteredItems =
-    selected === "All"
-      ? ordersUser
-      : ordersUser.filter((item) => item.status === selected);
+const filteredItems =
+  selected === "All"
+    ? ordersUser
+    : selected === "Approved"
+    ? ordersUser.filter((item) =>
+        item.eventDetailResponseList.every(
+          (detail) => detail.approvalStatus === "APPROVED"
+        )
+      )
+    : ordersUser.filter((item) =>
+        item.eventDetailResponseList.some(
+          (detail) => detail.approvalStatus !== "APPROVED"
+        )
+      );
 
   console.log(ordersUser)
 
@@ -65,6 +80,7 @@ const handleSelectedDetail = (item) => {
   dispatch(setSelectedOrderUser(item))
   router.push("/dashboard/transaction/detail")
 }
+
 
 
   const renderItem = ({ item }) => (
@@ -82,7 +98,9 @@ const handleSelectedDetail = (item) => {
   >
     <View
       className={`flex flex-row justify-between items-center p-5 ${
-        item.status === "Success" ? "bg-[#DFF7E6]" : "bg-[#FDE4E1]"
+        item?.eventDetailResponseList.every(
+          (detail) => detail.approvalStatus === "APPROVED"
+        ) ? "bg-[#DFF7E6]" : "bg-[#FDE4E1]"
       } rounded-xl`}
     >
       <View>
@@ -98,12 +116,16 @@ const handleSelectedDetail = (item) => {
         <AntDesignIcons
           name="right"
           size={24}
-          color={item.status === "Success" ? "#00AA55" : "red"}
+          color={ item.eventDetailResponseList.every(
+            (detail) => detail.approvalStatus === "APPROVED"
+          )? "#00AA55" : "red"}
         />
       </View>
     </View>
   </TouchableOpacity>
   )
+
+ 
 
   return (
     <View className="flex-1 bg-gray-50">
@@ -122,7 +144,7 @@ const handleSelectedDetail = (item) => {
 
         <View className="mt-6">
           <View className="flex flex-row justify-around relative bg-gray-100 p-4 rounded-full">
-            {["All", "Success", "Failed"].map((item, index) => (
+            {["All", "Approved", "Failed"].map((item, index) => (
               <TouchableOpacity
                 key={item}
                 onPress={() => handlePress(item, index)}
@@ -158,7 +180,7 @@ const handleSelectedDetail = (item) => {
                   left:
                     selected === "All"
                       ? 25
-                      : selected === "Success"
+                      : selected === ""
                       ? itemWidth - 109
                       : itemWidth - 120,
                   width: itemWidth - 30, // Adjust this value based on your design

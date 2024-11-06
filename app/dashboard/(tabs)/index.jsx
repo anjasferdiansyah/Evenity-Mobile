@@ -1,5 +1,5 @@
 import {Text, View} from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import {router} from "expo-router";
 import {useSelector} from "react-redux";
 import {

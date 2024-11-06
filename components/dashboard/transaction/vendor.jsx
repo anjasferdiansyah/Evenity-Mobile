@@ -1,38 +1,50 @@
 import {FlatList, Text, TouchableOpacity, useWindowDimensions, View,} from "react-native";
 import React, {useEffect, useState} from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
-import {router} from "expo-router";
-import {useDispatch, useSelector} from "react-redux";
-import Animated, {useAnimatedStyle, useSharedValue, withTiming,} from "react-native-reanimated";
-import {MaterialIcons} from "@expo/vector-icons";
+import tailwind from "twrnc";
+import { router } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { historyOrderCustomer } from "@/redux/slices/orderUserSlice";
+import Animated, {
+  useSharedValue,
+  withTiming,
+  useAnimatedStyle,
+} from "react-native-reanimated";
+import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
-import {loadOrderHistoryVendor} from "@/redux/slices/orderHistoryVendor";
+import { loadOrderHistoryVendor, setSelectedOrderHistoryVendor } from "@/redux/slices/orderHistoryVendor";
 
 export function OrderHistoryVendor() {
-    const dispatch = useDispatch();
-    const {orderHistoryVendor} = useSelector(
-        (state) => state.orderHistoryVendor
-    );
+  const dispatch = useDispatch();
+  const { orderHistoryVendor } = useSelector(
+    (state) => state.orderHistoryVendor
+  );
 
-    useEffect(() => {
-        dispatch(loadOrderHistoryVendor());
-    }, [dispatch]);
+  console.log("Order History Vendor", orderHistoryVendor)
+
+  const {id, user} = useSelector((state) => state.auth);
+
+
+  useEffect(() => {
+    dispatch(loadOrderHistoryVendor(id));
+  }, [dispatch]);
+
 
 
     const [userBalance, setUserBalance] = useState(0);
 
-    useEffect(() => {
-        const fetchUserBalance = async () => {
-            try {
-                const response = await axios.get(
-                    "transaction/balance/user/9daa0e0e-db69-4d87-b235-bc32f175f260"
-                );
-                const {data} = response.data;
-                setUserBalance(data.amount);
-            } catch (error) {
-                console.error("Error fetching user balance:", error);
-            }
-        };
+  useEffect(() => {
+    const fetchUserBalance = async () => {
+      try {
+        const response = await axios.get(
+          `transaction/balance/user/${user.userId}`,
+        );
+        const { data } = response.data;
+        setUserBalance(data.amount);
+      } catch (error) {
+        console.error("Error fetching user balance:", error);
+      }
+    };
 
         fetchUserBalance();
     }, []);
@@ -54,18 +66,24 @@ export function OrderHistoryVendor() {
         transform: [{translateX: slideAnim.value}],
     }));
 
-    useEffect(() => {
-        dispatch(loadOrderHistoryVendor());
-    }, [dispatch]);
+  useEffect(() => {
+    dispatch(loadOrderHistoryVendor());
+  }, [dispatch]);
 
     const filteredItems =
         selected === "All"
             ? orderHistoryVendor
             : orderHistoryVendor.filter((item) => item.status === selected);
 
-    const renderItem = ({item}) => (
+  
+  const handleSelectedDetail = (item) => {
+    dispatch(setSelectedOrderHistoryVendor(item))
+    router.push("/dashboard/transaction/detail");
+  };
+
+  const renderItem = ({item}) => (
         <TouchableOpacity
-            onPress={() => router.push("/dashboard/transaction/detail")}
+            onPress={() => handleSelectedDetail(item)}
             key={item.id}
             style={{
                 shadowColor: "#000",
@@ -83,10 +101,10 @@ export function OrderHistoryVendor() {
             >
                 <View>
                     <Text className="text-xl font-outfitBold text-gray-800">
-                        {item.date}
+                        {item.eventName}
                     </Text>
                     <Text className="text-sm font-outfitRegular text-gray-500">
-                        {item.location}
+                        {item.eventProgress}
                     </Text>
                 </View>
 
@@ -161,34 +179,34 @@ export function OrderHistoryVendor() {
                             </TouchableOpacity>
                         ))}
 
-                        <Animated.View
-                            style={[
-                                animatedIndicatorStyle,
-                                {
-                                    position: "absolute",
-                                    bottom: -2,
-                                    left:
-                                        selected === "All"
-                                            ? 25
-                                            : selected === "Success"
-                                                ? itemWidth - 109
-                                                : itemWidth - 120,
-                                    width: itemWidth - 30, // Adjust this value based on your design
-                                    height: 3,
-                                    backgroundColor: "#00AA55",
-                                    borderRadius: 2,
-                                },
-                            ]}
-                        />
-                    </View>
-                </View>
-                <View className="list-history space-y-4 mt-6">
-                    <FlatList
-                        data={filteredItems}
-                        renderItem={renderItem}
-                        keyExtractor={(item) => item.id}
-                    />
-                </View>
+            <Animated.View
+              style={[
+                animatedIndicatorStyle,
+                {
+                  position: "absolute",
+                  bottom: -2,
+                  left:
+                    selected === "All"
+                      ? 25
+                      : selected === "Success"
+                      ? itemWidth - 109
+                      : itemWidth - 120,
+                  width: itemWidth - 30, // Adjust this value based on your design
+                  height: 3,
+                  backgroundColor: "#00AA55",
+                  borderRadius: 2,
+                },
+              ]}
+            />
+          </View>
+        </View>
+          <View className="list-history space-y-4 mt-6">
+            <FlatList
+              data={filteredItems}
+              renderItem={renderItem}
+              keyExtractor={(item, index) => index}
+            />
+          </View>
             </View>
         </View>
     );

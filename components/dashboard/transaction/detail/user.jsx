@@ -8,8 +8,13 @@ import moment from "moment";
 
 const OrderDetailUser = () => {
 
-    const { selectedOrder } = useSelector((state) => state.orderUser);
+    const { selectedOrder, ordersUser } = useSelector((state) => state.orderUser);
 
+    const isAllApproved = ordersUser.every((item) =>
+      item.eventDetailResponseList.every(
+        (detail) => detail.approvalStatus === "APPROVED"
+      )
+    );
  const formatDate = (date) => {
     return moment(date).format('DD MMM YYYY')
  }
@@ -44,7 +49,7 @@ const OrderDetailUser = () => {
               {/* Event Name */}
               <View className="py-2">
                 <Text className="text-lg font-outfitRegular text-gray-500">
-                  Nama Event
+                  Event Name
                 </Text>
                 <Text className="text-2xl font-outfitSemiBold text-gray-800">
                   {selectedOrder?.name}
@@ -107,11 +112,15 @@ const OrderDetailUser = () => {
                       className="flex flex-row gap-4 w-full items-center mt-2"
                     >
                       <View className="flex flex-row gap-2 bg-slate-200 p-4 rounded-xl w-full">
+                        <View>
                         <Text className="font-outfitSemiBold text-xl">
                           {item.productName}
                         </Text>
+                        <Text className="font-outfitRegular text-sm">Approval Status by Vendor : {item.approvalStatus}</Text>
+                        </View>
+                       
                         <Text className="font-outfitRegular text-xl text-right flex-1">
-                          {item.cost}
+                          {`Rp ${item.cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}
                         </Text>
                       </View>
                     </View>
@@ -129,14 +138,20 @@ const OrderDetailUser = () => {
             </ScrollView>
           </View>
           {/* Action Buttons */}
-          <View className="flex flex-col gap-2 w-full mt-5 items-center">
+      { 
+      selectedOrder &&
+      selectedOrder?.eventDetailResponseList.every(
+        (detail) => detail.approvalStatus === "APPROVED"
+      ) &&
+      
+      <View className="flex flex-col gap-2 w-full mt-5 items-center">
             <TouchableOpacity className="bg-[#00F279] items-center justify-center px-8 py-3 rounded-full w-full" onPress={() => router.push('/payment')}>
               <Text className="text-white text-xl font-bold">Pay Now!</Text>
             </TouchableOpacity>
             <TouchableOpacity className="bg-red-500 items-center justify-center px-8 py-3 rounded-full w-full">
               <Text className="text-white text-xl font-bold">Cancel Order</Text>
             </TouchableOpacity>
-          </View>
+          </View>}
         </View>
       </View>
     );
