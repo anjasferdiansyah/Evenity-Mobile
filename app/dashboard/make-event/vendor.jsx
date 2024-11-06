@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import tailwind from "twrnc";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import ListChooseVendor from "@/components/ListChooseVendor-user";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
 // import { registMakeEvent, makeEvent, addListSelected } from "../../redux/slices/makeEventSlice";
 import { makeEvent, addListSelected } from "@/redux/slices/makeEventSlice";
@@ -18,13 +17,8 @@ import { Picker } from "@react-native-picker/picker";
 import { loadCategories } from "@/redux/slices/categorySlice";
 import { getPriceRange } from "@/redux/slices/productSlice";
 import { set } from "zod";
+import ListVendor from "@/components/ListVendors";
 
-const entertainmentItems = [
-  { id: 1, name: "Entertainment 1", price: "10.000.000" },
-  { id: 2, name: "Entertainment 2", price: "15.000.000" },
-  { id: 3, name: "Entertainment 2", price: "15.000.000" },
-  { id: 4, name: "Entertainment 2", price: "15.000.000" },
-];
 
 const MakeEventChooseVendor = () => {
   const dispatch = useDispatch();
@@ -253,7 +247,13 @@ const MakeEventChooseVendor = () => {
 
       <ScrollView style={[tailwind`mt-5`]} className="vendor-choosen">
         {listSelectedCategory.map((item) => (
-          <ListChooseVendor
+          // <ListChooseVendor
+          //   key={item.id}
+          //   item={item}
+          //   radius="xl"
+          //   onRemove={() => handleRemoveCategory(item.id)}
+          // />
+          <ListVendor
             key={item.id}
             item={item}
             radius="xl"

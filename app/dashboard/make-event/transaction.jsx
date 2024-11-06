@@ -27,12 +27,8 @@ const MakeEventTransactionNote = () => {
     console.log("listSelectedPas", listSelected);
   }, [listSelected]);
 
-  // const handleAccept = () => {
-  //   setModalVisible(true);
-  // };
 
   const handleRegenerateVendor = () => {
-    // console.log("listSelectedVendor", listSelectedVendor);
     console.log("recommendedListTrx", recommendedList);
     const recommendedArray = Object.values(recommendedList);
     const previousProductIds = recommendedArray.map(
@@ -105,6 +101,7 @@ const MakeEventTransactionNote = () => {
         makeEventData.recommendedList.length > 0 ? (
           makeEventData.recommendedList.map((item) => (
             <ListChooseVendor key={item.productId} item={item} radius="xl" />
+            // <ListVendor key={item.productId} item={item} radius="xl" />
           ))
         ) : (
           <Text>No recommended vendors available.</Text>
