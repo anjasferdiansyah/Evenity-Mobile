@@ -4,12 +4,14 @@ import WebView from 'react-native-webview'
 import { ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-const MidtransSnapScreen = () => {
+const MidtransSnapScreen = ({url}) => {
+
+
   return (
     <SafeAreaView className="flex-1">
      <WebView
         source={{
-            uri : "https://app.sandbox.midtrans.com/snap/v4/redirection/3e20bb6d-2acb-4bc3-923a-f7e3ca215075"
+            uri : url
         }}
         startInLoadingState={true}
         renderLoading={() => (
