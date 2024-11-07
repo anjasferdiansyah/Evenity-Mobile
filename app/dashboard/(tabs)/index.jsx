@@ -1,7 +1,7 @@
 import {Text, View} from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import {router} from "expo-router";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
     ButtonListRequests,
     ButtonListTransactions,
@@ -9,6 +9,7 @@ import {
     ButtonSettingProfile
 } from "@/components/dashboard/home/DashboardButton";
 import {ROLE as ROLES} from "@/constant/USER";
+import { fetchUserProfile } from "@/redux/slices/profileSlice";
 
 
 export default function HomeScreen() {
@@ -22,6 +23,14 @@ export default function HomeScreen() {
         }
     }
 
+    const { userInfo } = useSelector(state => state.profile)
+    const dispatch = useDispatch()
+    useEffect(() => {
+        if(!userInfo){
+            dispatch(fetchUserProfile())
+        }
+    }, [dispatch, userInfo])
+
     const {user} = useSelector(state => state.auth)
     const role = user?.role
     console.log("role", role)
@@ -31,15 +40,20 @@ export default function HomeScreen() {
                 You are not logged in
             </Text>
         </View>
-    }
+    
+}
+
+console.log("userInfo", userInfo)
+
+
     return (
         <View className="flex-1 items-center justify-center bg-white">
             <View className="w-full h-full px-10 justify-center">
                 <View className="flex flex-row gap-4 justify-between px-5">
                     <View>
-                        <Text className="text-6xl font-outfitBold">
-                            Hi, <Text className="text-[#00AA55]">Joko!</Text>
-                        </Text>
+                       { userInfo?.detail && <Text className="text-6xl font-outfitBold">
+                            Hi, <Text className="text-[#00AA55]">{userInfo?.detail.fullName || userInfo?.detail.name}</Text>
+                        </Text>}
                         <Text className="text-gray-500 font-outfitRegular">
                             {new Date().toDateString()}
                         </Text>

@@ -3,6 +3,7 @@ import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getProduct, setSelectedProduct} from "@/redux/slices/productVendorSlice";
 import {router} from "expo-router";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function ProductScreen() {
     const dispatch = useDispatch();
@@ -43,10 +44,13 @@ export default function ProductScreen() {
     return (
         <View className="flex-1 justify-center bg-white">
             <View className="w-full px-10">
-                <View className="mt-10 border-b border-gray-300 w-full px-5">
+                <View className="mt-10 border-b border-gray-300 w-full px-5 flex flex-row items-center justify-between" >
                     <Text className="w-full text-5xl font-outfitBold pb-4">
                         List Products
                     </Text>
+                    <TouchableOpacity onPress={() => router.push("dashboard/product/newProduct")}>
+                <AntDesign name="pluscircle" size={24} color="black" />
+                </TouchableOpacity>
                 </View>
 
                 {status === "loading" && (
@@ -66,6 +70,7 @@ export default function ProductScreen() {
                         />
                     </View>
                 )}
+   
             </View>
         </View>
     );

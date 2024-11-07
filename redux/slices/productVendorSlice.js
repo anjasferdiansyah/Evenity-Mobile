@@ -14,6 +14,21 @@ export const getProduct = createAsyncThunk(
     }
 );
 
+export const createNewProduct = createAsyncThunk(
+    "product/createNewProduct",
+    async (data, { rejectWithValue }) => {
+        console.log(data)
+        try {
+            const response = await axios.post("/product", data);
+            console.log("response create product", response);
+            return response.data.data;
+        } catch (error) {
+            console.error("Error creating product:", error);
+            return rejectWithValue(error.response?.data?.message || "Failed to create product");
+        }
+    }
+)
+
 const initialState = {
     products: [],
     selectedProduct: null,
