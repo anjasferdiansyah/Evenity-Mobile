@@ -6,7 +6,7 @@ import { router } from "expo-router";
 import { useSelector } from "react-redux";
 import moment from "moment";
 
-const OrderDetailUser = () => {
+const InvoiceDetailUser = () => {
   const { selectedHistoryEvent } = useSelector((state) => state.historyEvent);
 
   const formatDate = (date) => {
@@ -117,6 +117,9 @@ const OrderDetailUser = () => {
             <Text className="text-lg font-outfitRegular text-gray-500">
               List Vendor Choose
             </Text>
+
+        
+                
             {selectedHistoryEvent?.eventDetailResponseList.map(
               (item, index) => (
                 <View
@@ -169,4 +172,4 @@ const OrderDetailUser = () => {
   );
 };
 
-export default OrderDetailUser;
+export default InvoiceDetailUser;
