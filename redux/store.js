@@ -17,15 +17,15 @@ export default configureStore({
     reducer: {
         auth: authSlice,
         withdrawHistory: withdrawHistorySlice,
-        orderUser : orderUserSlice,
+        orderUser: orderUserSlice,
         makeEventSlice: makeEventSlice,
         categorySlice: categorySlice,
         productSlice: productSlice,
         productVendor: productVendorSlice,
         request: requestSlice,
         orderHistoryVendor: orderHistoryVendorSlice,
-        invoiceCustomer : invoiceCustomerSlice,
-        historyEvent : historyEventSlice
-        profile : profileSlice
+        invoiceCustomer: invoiceCustomerSlice,
+        historyEvent: historyEventSlice,
+        profile: profileSlice
     },
 });
