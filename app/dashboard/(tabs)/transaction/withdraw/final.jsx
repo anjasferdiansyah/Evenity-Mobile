@@ -15,7 +15,7 @@ export default function WithdrawScreen() {
         <View className="flex-1 items-center justify-center bg-white">
             <View className="w-full h-full pt-20 px-10">
                 <TouchableOpacity onPress={() => router.back()}
-                                  className="p-2 bg-[#00F279] rounded-full self-start">
+                    className="p-2 bg-[#00F279] rounded-full self-start">
                     <AntDesignIcons name='arrowleft' size={20} color={'white'}/>
                 </TouchableOpacity>
                 <View className="mt-14">

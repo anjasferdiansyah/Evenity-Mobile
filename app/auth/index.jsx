@@ -31,7 +31,7 @@ export default function AuthScreen() {
                 <Image className="w-[450px] h-[450px] object-cover mx-auto" source={hero} resizeMode='contain'/>
                 <View className="flex flex-col gap-2">
                     <TouchableOpacity onPress={() => router.replace('auth/login')}
-                                      className="bg-[#00AA55] mx-auto w-[60%] items-center justify-center px-8 py-3 rounded-full">
+                        className="bg-[#00AA55] mx-auto w-[60%] items-center justify-center px-8 py-3 rounded-full">
                         <Text className="text-white text-xl font-outfitBold">
                             Login!
                         </Text>

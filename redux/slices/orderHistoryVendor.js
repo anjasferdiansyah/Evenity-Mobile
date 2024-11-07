@@ -45,7 +45,7 @@ const orderHistoryVendorSlice = createSlice({
             })
             .addCase(getEventOnVendor.fulfilled, (state, action) => {
                 state.eventOnVendor = action.payload;
-                        })
+            })
             .addMatcher((action) => action.type.endsWith("/rejected"), (state, action) => {
                 state.status = "failed";
             })
