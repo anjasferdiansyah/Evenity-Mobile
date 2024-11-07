@@ -31,7 +31,9 @@ const MakeEventLayout = ({
           padding: 10,
         }}
         onPress={() => {
-          resetRecommendedList();
+          {
+            nextRoute === "transaction" ? resetRecommendedList() : null;
+          }
           router.back();
         }}
       >

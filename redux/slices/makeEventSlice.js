@@ -105,6 +105,7 @@ const MakeEventSlice = createSlice({
 
     resetRecommendedList: (state) => {
       state.recommendedList = {};
+      console.log("ke hit reset")
     },
   },
   extraReducers: (builder) => {
@@ -114,6 +115,7 @@ const MakeEventSlice = createSlice({
         state.status = "loading";
       })
       .addCase(makeEvent.fulfilled, (state, action) => {
+        state.totalCost = 0;
         console.log("Action Payload", state);
         state.isLoading = false;
         state.status = "succeeded";
@@ -153,6 +155,7 @@ const MakeEventSlice = createSlice({
         state.status = "loading";
       })
       .addCase(regenerateEvent.fulfilled, (state, action) => {
+        state.totalCost = 0;
         console.log("Before recommendedList:", state.recommendedList);
         console.log("Before makeEventData:", state.makeEventData);
         console.log("Action Payload", action.payload);
@@ -167,6 +170,12 @@ const MakeEventSlice = createSlice({
           (vendor) => vendor.productId
         );
         state.listSelected = [...state.listSelected, ...newProductIds];
+
+        const totalCost = Object.values(state.recommendedList)
+          .map((vendor) => vendor.cost || 0)
+          .reduce((a, b) => a + b, 0);
+
+        state.totalCost = totalCost;
 
         console.log("Updated recommendedList:", state.recommendedList);
         console.log("Updated makeEventData:", state.makeEventData);

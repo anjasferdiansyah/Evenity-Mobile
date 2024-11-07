@@ -120,7 +120,7 @@ const MakeEventChooseVendor = () => {
   };
 
   const formatPriceInput = (value) => {
-    let cleanValue = value.replace(/\D/g, "");
+    let cleanValue = String(value).replace(/\D/g, "");
     return cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   };
 
@@ -128,10 +128,10 @@ const MakeEventChooseVendor = () => {
     const numericValue = parseInt(tempLowestPrice.replace(/[^0-9]/g, ""), 10);
     if (numericValue < parseInt(lowestPrice, 10)) {
       // setTempLowestPrice(lowestPrice.toString());
-      setTempLowestPrice(formatPriceInput(numericValue));
+      setTempLowestPrice(formatPriceInput(lowestPrice));
     } else if (numericValue > parseInt(highestPrice, 10)) {
       // setTempLowestPrice(highestPrice.toString());
-      setTempLowestPrice(formatPriceInput(numericValue));
+      setTempLowestPrice(formatPriceInput(highestPrice));
     } else {
       setLowestPrice(numericValue);
     }
@@ -141,10 +141,10 @@ const MakeEventChooseVendor = () => {
     const numericValue = parseInt(tempHighestPrice.replace(/[^0-9]/g, ""), 10);
     if (numericValue < parseInt(lowestPrice, 10)) {
       // setTempHighestPrice(lowestPrice.toString());
-      setTempHighestPrice(formatPriceInput(numericValue));
+      setTempHighestPrice(formatPriceInput(lowestPrice));
     } else if (numericValue > parseInt(highestPrice, 10)) {
       // setTempHighestPrice(highestPrice.toString());
-      setTempHighestPrice(formatPriceInput(numericValue));
+      setTempHighestPrice(formatPriceInput(highestPrice));
     } else {
       setHighestPrice(numericValue);
     }
@@ -180,8 +180,8 @@ const MakeEventChooseVendor = () => {
 
       const newCategory = {
         categoryId: selectedCategory,
-        minCost: parseInt(tempLowestPrice, 10),
-        maxCost: parseInt(tempHighestPrice, 10),
+        minCost: parseInt(tempLowestPrice.replace(/[^0-9]/g, ""), 10),
+        maxCost: parseInt(tempHighestPrice.replace(/[^0-9]/g, ""), 10),
       };
 
       console.log("newCategory", newCategory);
@@ -202,6 +202,8 @@ const MakeEventChooseVendor = () => {
       console.log("listSelectedCategory", listSelectedCategory);
 
       setSelectedCategory("");
+      setTempLowestPrice("");
+      setTempHighestPrice("");
       setLowestPrice("");
       setHighestPrice("");
     }
