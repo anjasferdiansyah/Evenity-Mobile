@@ -15,10 +15,13 @@ export default function WelcomeScreen() {
         if (!isInitialized) {
             dispatch(initializeAuth());
         }
+    }, [dispatch, isInitialized]);
+
+    useEffect(() => {
         if (isLoggedIn) {
             router.replace(ROUTES.DASHBOARD.INDEX);
         }
-    }, [dispatch, isInitialized, isLoggedIn, router]);
+    }, [isLoggedIn, router]);
 
     // If user is logged in, don't render anything
     if (isLoggedIn) {

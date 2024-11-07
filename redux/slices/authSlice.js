@@ -27,7 +27,7 @@ export const login = createAsyncThunk(
                 const {token} = response.data.data;
                 await asyncStorage.setItem("token", token);
                 setupAxios(token);
-                dispatch(loadUser());
+                await dispatch(loadUser());
                 return response.data.data;
             }
             return rejectWithValue("Invalid credentials");
@@ -72,7 +72,6 @@ export const loadUser = createAsyncThunk(
             const response = await axios.get("/auth/user/info");
             return response.data.data;
         } catch (error) {
-            asyncStorage.removeItem("token");
             return rejectWithValue(error.response?.data?.message || "Failed to load user");
         }
     }
@@ -112,13 +111,20 @@ const AuthSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(initializeAuth.pending, (state) => {
+                state.status = "loading";
+            })
             .addCase(initializeAuth.fulfilled, (state, action) => {
-                state.isLoggedIn = action.payload;
                 state.isInitialized = true;
+                state.status = "idle";
             })
             .addCase(initializeAuth.rejected, (state) => {
-                state.isLoggedIn = false;
                 state.isInitialized = true;
+                state.status = "idle";
+            })
+            .addCase(login.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
             })
             .addCase(login.fulfilled, (state) => {
                 state.status = "logged in";
@@ -127,11 +133,28 @@ const AuthSlice = createSlice({
                 state.registerData = null;
                 state.registerAs = null;
             })
+            .addCase(login.rejected, (state, action) => {
+                state.status = "failed";
+                state.isLoggedIn = false;
+                state.error = action.payload || "Login failed";
+            })
+            .addCase(completingRegisterVendor.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
             .addCase(completingRegisterVendor.fulfilled, (state) => {
                 return {
                     ...initialState,
                     status: "registered"
                 };
+            })
+            .addCase(completingRegisterVendor.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload || "Vendor registration failed";
+            })
+            .addCase(completingRegisterUser.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
             })
             .addCase(completingRegisterUser.fulfilled, (state) => {
                 return {
@@ -139,11 +162,16 @@ const AuthSlice = createSlice({
                     status: "registered"
                 };
             })
+            .addCase(completingRegisterUser.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.payload || "User registration failed";
+            })
+            .addCase(loadUser.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
             .addCase(loadUser.fulfilled, (state, action) => {
-                
-                console.log("Customer ID", action.payload.detail.customerId)
                 state.id = action.payload.detail.id || action.payload.detail.customerId;
-                console.log("State ID", state.id)
                 state.status = "success";
                 state.isLoggedIn = true;
                 state.user = action.payload;
@@ -151,22 +179,14 @@ const AuthSlice = createSlice({
                 state.registerData = null;
                 state.registerAs = null;
             })
-            .addMatcher(
-                (action) => action.type.endsWith("/rejected"),
-                (state, action) => {
-                    state.status = "failed";
-                    state.isLoggedIn = false;
-                    state.user = null;
-                    state.error = action.payload || "Something went wrong";
-                }
-            )
-            .addMatcher(
-                (action) => action.type.endsWith("/pending"),
-                (state) => {
-                    state.status = "loading";
-                    state.error = null;
-                }
-            );
+            .addCase(loadUser.rejected, (state, action) => {
+                asyncStorage.removeItem("token");
+                state.status = "failed";
+                state.isLoggedIn = false;
+                state.user = null;
+                state.id = null;
+                state.error = action.payload || "Failed to load user";
+            });
     },
 });
 
