@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import OrderDetailUser from "@/components/dashboard/transaction/detail/user";
-import OrderDetailVendor from "@/components/dashboard/transaction/detail/vendor";
+import InvoiceDetailUser from "@/components/dashboard/transaction/detail/invoiceDetail-user";
 import { ROLE as ROLES } from "@/constant/USER";
 import { View, Text } from "react-native";
 
@@ -18,7 +17,12 @@ export default function HistoryOrderDetailScreen() {
   }
 
   if (role === ROLES.CUSTOMER) {
-    
-    return <OrderDetailUser />;
-  } else return <OrderDetailVendor />;
+    return <InvoiceDetailUser />;
+  } else {
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <Text className="text-2xl font-outfitBold">You are not logged in</Text>
+      </View>
+    );
+  }
 }
