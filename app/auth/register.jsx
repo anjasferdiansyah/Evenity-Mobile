@@ -6,14 +6,8 @@ import {useDispatch} from "react-redux";
 import {register} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
 import RNPickerSelect from "react-native-picker-select";
-
-const provinceData = [
-    {label: "JAWA BARAT", value: "32", name: "JAWA BARAT"},
-    {label: "JAWA TENGAH", value: "33", name: "JAWA TENGAH"},
-    {label: "JAWA TIMUR", value: "35", name: "JAWA TIMUR"},
-    {label: "DKI JAKARTA", value: "31", name: "DKI JAKARTA"},
-    {label: "D.I YOGYAKARTA", value: "34", name: "D.I YOGYAKARTA"},
-];
+import {fetchCities, fetchDistricts, provinceData} from "@/helper/location";
+import {ROUTES} from "@/constant/ROUTES";
 
 export default function RegisterScreen() {
     // User credentials
@@ -40,38 +34,7 @@ export default function RegisterScreen() {
 
     useEffect(() => {
         let isMounted = true; // For cleanup
-        const fetchCities = async () => {
-            // Reset error state
-            setError(null);
-            setIsLoading(true);
-
-            try {
-                if (!selectedProvinceId) return;
-                const response = await fetch(
-                    `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvinceId}.json`
-                );
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                if (isMounted) {
-                    setAvailableCities(data);
-                }
-            } catch (error) {
-                if (isMounted) {
-                    setError(`Error fetching cities: ${error.message}`);
-                    console.error("Error fetching cities:", error);
-                }
-            } finally {
-                if (isMounted) {
-                    setIsLoading(false);
-                }
-            }
-        };
-
-        fetchCities();
-
-        // Cleanup function
+        fetchCities({setError, setIsLoading, selectedProvinceId, setAvailableCities, isMounted});
         return () => {
             isMounted = false;
         };
@@ -79,36 +42,7 @@ export default function RegisterScreen() {
 
     useEffect(() => {
         let isMounted = true;
-        const fetchDistricts = async () => {
-            setError(null);
-            setIsLoading(true);
-
-            try {
-                if (!selectedCityId) return;
-                const response = await fetch(
-                    `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedCityId}.json`
-                );
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                if (isMounted) {
-                    setAvailableDistricts(data);
-                }
-            } catch (error) {
-                if (isMounted) {
-                    setError(`Error fetching districts: ${error.message}`);
-                    console.error("Error fetching districts:", error);
-                }
-            } finally {
-                if (isMounted) {
-                    setIsLoading(false);
-                }
-            }
-        };
-
-        fetchDistricts();
-
+        fetchDistricts({setError, setIsLoading, selectedCityId, isMounted, setAvailableDistricts});
         return () => {
             isMounted = false;
         };
@@ -182,7 +116,7 @@ export default function RegisterScreen() {
             })
         );
 
-        router.push("auth/completing-register");
+        router.push(ROUTES.AUTH.COMPLETING_REGISTER);
     };
     const handleCitySelection = (selectedCity) => {
         setCitySearchText(selectedCity.name);

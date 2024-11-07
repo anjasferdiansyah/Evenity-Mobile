@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import {completingRegisterVendor, resetError, resetStatus} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
+import {ROUTES} from "@/constant/ROUTES";
 
 const CompletingRegisterVendor = () => {
     const [vendorName, setVendorName] = useState("");
@@ -16,16 +17,16 @@ const CompletingRegisterVendor = () => {
         if (status === "registered") {
             dispatch(resetStatus())
             alert("Registered successfully, please login")
-            router.push("/auth/login")
+            router.push(ROUTES.AUTH.LOGIN)
         }
-    }, [status]);
+    }, [dispatch, status]);
 
     useEffect(() => {
         if (error) {
             dispatch(resetError())
             alert(error)
         }
-    }, [error])
+    }, [dispatch, error])
 
     const handleRegister = () => {
         const newRegisterData = {
@@ -79,7 +80,7 @@ const CompletingRegisterVendor = () => {
                         />
                     </View>
                     <TouchableOpacity onPress={() => handleRegister()}
-                                      className="bg-[#00AA55] mx-auto w-[90%] mt-12 items-center justify-center px-8 py-3 rounded-full">
+                        className="bg-[#00AA55] mx-auto w-[90%] mt-12 items-center justify-center px-8 py-3 rounded-full">
                         <Text className="text-white text-xl font-bold">Register</Text>
                     </TouchableOpacity>
                     <Text className="text-center text-gray-500 text-sm mt-4">

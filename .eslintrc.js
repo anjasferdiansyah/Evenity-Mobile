@@ -35,6 +35,7 @@ module.exports = {
     },
     rules: {
         'import-x/named': 'off',
-        'import/no-unresolved': 'off'
+        'import/no-unresolved': 'off',
+        'indent': ['error', 4],
     }
 };

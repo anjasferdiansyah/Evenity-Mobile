@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {completingRegisterUser, resetError, resetStatus,} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
+import {ROUTES} from "@/constant/ROUTES";
 
 const CompletingRegisterUser = () => {
     const [userName, setUserName] = useState("");
@@ -16,20 +17,16 @@ const CompletingRegisterUser = () => {
         if (status === "registered") {
             dispatch(resetStatus());
             alert("Registered successfully, please login");
-            router.push("/auth/login");
+            router.push(ROUTES.AUTH.LOGIN);
         }
-    }, [status]);
+    }, [dispatch, status]);
 
     useEffect(() => {
         if (error) {
             dispatch(resetError());
             alert(error);
         }
-    }, [error]);
-
-    const handleAccept = () => {
-        setModalVisible(false);
-    };
+    }, [dispatch, error]);
 
     const handleRegister = () => {
         const newRegisterData = {
