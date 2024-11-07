@@ -1,5 +1,5 @@
 import {Text, View} from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import {router} from "expo-router";
 import {useSelector} from "react-redux";
 import {
@@ -24,7 +24,7 @@ export default function HomeScreen() {
 
     const {user} = useSelector(state => state.auth)
     const role = user?.role
-    console.log(user)
+    console.log("role", role)
     if (!role) {
         return <View className="flex-1 items-center justify-center bg-white">
             <Text className="text-2xl font-outfitBold">
@@ -41,7 +41,7 @@ export default function HomeScreen() {
                             Hi, <Text className="text-[#00AA55]">Joko!</Text>
                         </Text>
                         <Text className="text-gray-500 font-outfitRegular">
-                           {new Date().toDateString()}
+                            {new Date().toDateString()}
                         </Text>
                     </View>
                 </View>
