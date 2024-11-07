@@ -94,11 +94,11 @@ export default function DetailRequest() {
 
                 <View className="flex flex-row gap-8 w-full mt-3 items-center justify-center">
                     <TouchableOpacity className="bg-[#00F279] items-center justify-center px-8 py-3 rounded-full"
-                                      onPress={handleApprove(selectedRequest?.eventDetailId)}>
+                        onPress={handleApprove(selectedRequest?.eventDetailId)}>
                         <Text className="text-white text-xl font-bold">Approve</Text>
                     </TouchableOpacity>
                     <TouchableOpacity className="bg-red-500 items-center justify-center px-8 py-3 rounded-full"
-                                      onPress={handleReject(selectedRequest?.eventDetailId)}>
+                        onPress={handleReject(selectedRequest?.eventDetailId)}>
                         <Text className="text-white text-xl font-bold">Reject</Text>
                     </TouchableOpacity>
                 </View>

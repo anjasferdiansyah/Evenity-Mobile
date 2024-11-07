@@ -14,8 +14,8 @@ export const loadWithdrawHistory = createAsyncThunk(
 export const getListBank = createAsyncThunk(
     'withdrawHistory/getListBank',
     async () => {
-       try{ const response = await axios.get("https://api-rekening.lfourr.com/listBank")
-        return response.data} catch (error) {
+        try{ const response = await axios.get("https://api-rekening.lfourr.com/listBank")
+            return response.data} catch (error) {
             console.log(error)
         }
     }
@@ -24,9 +24,9 @@ export const getListBank = createAsyncThunk(
 export const getBankAccount = createAsyncThunk(
     'withdrawHistory/getBankAccount',
     async ({bankCode, accountNumber}, {rejectWithValue}) => {
-       { const response = await axios.get(`https://api-rekening.lfourr.com/getBankAccount?bankCode=${bankCode}&accountNumber=${accountNumber}`)
+        { const response = await axios.get(`https://api-rekening.lfourr.com/getBankAccount?bankCode=${bankCode}&accountNumber=${accountNumber}`)
         
-        return response.data}
+            return response.data}
     }
 )
 

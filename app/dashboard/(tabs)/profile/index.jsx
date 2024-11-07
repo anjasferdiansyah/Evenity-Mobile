@@ -128,7 +128,7 @@ export default function ProfileScreen() {
                     <View className="px-14">
                         <View className="py-4 border-b border-white ">
                             <TouchableOpacity className="flex flex-row gap-4 items-center"
-                                              onPress={() => dispatch(logout())}>
+                                onPress={() => dispatch(logout())}>
                                 <AntDesign name="logout" size={24} color="red"/>
                                 <Text className="text-xl text-red-500 font-outfitBold">
                                     Logout
@@ -139,7 +139,7 @@ export default function ProfileScreen() {
                         </View>
                         <View className="py-4 border-b border-white ">
                             <TouchableOpacity className="flex flex-row gap-4 items-center"
-                                              onPress={() => router.push("/dashboard/profile/edit")}>
+                                onPress={() => router.push("/dashboard/profile/edit")}>
                                 <FontAwesome name="gear" size={24} color="gray"/>
                                 <Text className="text-xl text-gray-500 font-outfitBold">
                                     Edit Profile

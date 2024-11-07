@@ -21,16 +21,16 @@ export default function EditProfileVendor() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-      dispatch(fetchUserProfile())
+        dispatch(fetchUserProfile())
     }, [dispatch]);
 
     useEffect(() => {
         if (userInfo)
         {
-          setName(userInfo?.detail.name|| "")
-          setPhoneNumber(userInfo?.detail.phoneNumber|| "")
-          setAddress(userInfo?.detail.address || "")
-          setOwnerName(userInfo?.detail.owner || "")
+            setName(userInfo?.detail.name|| "")
+            setPhoneNumber(userInfo?.detail.phoneNumber|| "")
+            setAddress(userInfo?.detail.address || "")
+            setOwnerName(userInfo?.detail.owner || "")
         }
         
     }, [userInfo, dispatch]);
@@ -49,77 +49,77 @@ export default function EditProfileVendor() {
         }
 
         try {
-          dispatch(editVendorProfile({  updatedVendorProfile: newRegisterData, id : userInfo?.detail.id }))
-          dispatch(clearProfile())
-          router.back()
+            dispatch(editVendorProfile({  updatedVendorProfile: newRegisterData, id : userInfo?.detail.id }))
+            dispatch(clearProfile())
+            router.back()
         } catch (error) {
-          console.log(error)
+            console.log(error)
         }
 
     }
 
     return (
-      <View className="flex-1 items-center justify-center bg-white">
-      <View className="w-full p-10">
-          <Text className="text-2xl font-outfitBold w-full">
+        <View className="flex-1 items-center justify-center bg-white">
+            <View className="w-full p-10">
+                <Text className="text-2xl font-outfitBold w-full">
               Edit Profile
-          </Text>
-          <View className="flex flex-col gap-4 py-safe-or-12">
-              <View className="flex flex-col gap-2">
-                  <Text className="font-outfitRegular text-gray-500">Name</Text>
-                  <TextInput
-                      className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                      placeholder="Enter name.."
-                      onChangeText={(text) => setName(text)}
-                      value={name}
+                </Text>
+                <View className="flex flex-col gap-4 py-safe-or-12">
+                    <View className="flex flex-col gap-2">
+                        <Text className="font-outfitRegular text-gray-500">Name</Text>
+                        <TextInput
+                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
+                            placeholder="Enter name.."
+                            onChangeText={(text) => setName(text)}
+                            value={name}
 
-                  />
-              </View>
-              <View className="flex flex-col gap-2">
-                  <Text className="font-outfitRegular text-gray-500">
+                        />
+                    </View>
+                    <View className="flex flex-col gap-2">
+                        <Text className="font-outfitRegular text-gray-500">
                       Phone Number
-                  </Text>
-                  <TextInput
+                        </Text>
+                        <TextInput
       
-                      className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                      placeholder="Enter phone number"
-                      onChangeText={(text) => setPhoneNumber(text)}
-                      value={phoneNumber}
-                  />
-              </View>
-              <View className="flex flex-col gap-2">
-                  <Text className="font-outfitRegular text-gray-500">
+                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
+                            placeholder="Enter phone number"
+                            onChangeText={(text) => setPhoneNumber(text)}
+                            value={phoneNumber}
+                        />
+                    </View>
+                    <View className="flex flex-col gap-2">
+                        <Text className="font-outfitRegular text-gray-500">
                       Address
-                  </Text>
-                  <TextInput
+                        </Text>
+                        <TextInput
                      
-                      className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                      placeholder="Enter address detail"
-                      onChangeText={(text) => setAddress(text)}
-                      value={address}
-                  />
-              </View>
-              <View className="flex flex-col gap-2">
-                  <Text className="font-outfitRegular text-gray-500">
+                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
+                            placeholder="Enter address detail"
+                            onChangeText={(text) => setAddress(text)}
+                            value={address}
+                        />
+                    </View>
+                    <View className="flex flex-col gap-2">
+                        <Text className="font-outfitRegular text-gray-500">
                       Owner Name
-                  </Text>
-                  <TextInput
+                        </Text>
+                        <TextInput
                      
-                      className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                      placeholder="Enter address detail"
-                      onChangeText={(text) => setOwnerName(text)}
-                      value={ownerName}
-                  />
-              </View>
-              <TouchableOpacity
-                  onPress={handleEditProfile}
-                  className="bg-[#00AA55] mx-auto w-[90%] mt-12 items-center justify-center px-8 py-3 rounded-full"
+                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
+                            placeholder="Enter address detail"
+                            onChangeText={(text) => setOwnerName(text)}
+                            value={ownerName}
+                        />
+                    </View>
+                    <TouchableOpacity
+                        onPress={handleEditProfile}
+                        className="bg-[#00AA55] mx-auto w-[90%] mt-12 items-center justify-center px-8 py-3 rounded-full"
 
-              >
-                  <Text className="text-white text-xl font-outfitBold">Save</Text>
-              </TouchableOpacity>
-          </View>
-      </View>
-  </View>
+                    >
+                        <Text className="text-white text-xl font-outfitBold">Save</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
     )
 }

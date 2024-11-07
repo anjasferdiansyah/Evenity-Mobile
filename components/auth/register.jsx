@@ -150,7 +150,7 @@ const RegisterScreen = () => {
                             <RNPickerSelect onValueChange={value =>
                                 setSelectedProvince(value)
                             } placeholder={{label: 'Select province', value: ''}} useNativeAndroidPickerStyle={false}
-                                            pickerProps={{mode: 'dropdown'}} items={[
+                            pickerProps={{mode: 'dropdown'}} items={[
                                 {
                                     label: "JAWA BARAT",
                                     value: "32"
@@ -256,7 +256,7 @@ const RegisterScreen = () => {
                     </View>
                 </View>
                 <TouchableOpacity onPress={() => handleRegister()}
-                                  className="bg-[#00AA55] mx-auto w-[90%] mt-14 items-center justify-center px-8 py-3 rounded-full">
+                    className="bg-[#00AA55] mx-auto w-[90%] mt-14 items-center justify-center px-8 py-3 rounded-full">
                     <Text className="text-white text-xl font-outfitBold py-1.5">Register</Text>
                 </TouchableOpacity>
                 <Text className="text-center text-gray-500 text-xs mt-4 font-outfitRegular">

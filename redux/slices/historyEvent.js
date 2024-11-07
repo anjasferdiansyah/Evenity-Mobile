@@ -2,17 +2,17 @@ import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const historyEventCustomer = createAsyncThunk(
-  "historyEvent/loadHistoryEvent",
-  async (id, { rejectWithValue }) => {
+    "historyEvent/loadHistoryEvent",
+    async (id, { rejectWithValue }) => {
     // const id_check = "811d7a37-f598-4895-83b5-4809c635574b";
-    const response = await axios
-      .get(`event/customer/${id}`)
-      .catch((e) => e.response);
+        const response = await axios
+            .get(`event/customer/${id}`)
+            .catch((e) => e.response);
 
-    // console.log("response", response);
-    if (response.status !== 200) return rejectWithValue(response.data.message);
-    return response.data.data;
-  }
+        // console.log("response", response);
+        if (response.status !== 200) return rejectWithValue(response.data.message);
+        return response.data.data;
+    }
 );
 
 const historyEventSlice = createSlice({
