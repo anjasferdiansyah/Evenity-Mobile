@@ -14,7 +14,7 @@ export const makeEvent = createAsyncThunk(
         },
       })
       .catch((e) => e.response);
-    // console.log("response makeEvent", response);
+    console.log("response makeEvent", response);
     if (response.status !== 200) return rejectWithValue(response.data.message);
     return response.data.data;
   }
@@ -32,7 +32,7 @@ export const regenerateEvent = createAsyncThunk(
         },
       })
       .catch((e) => e.response);
-    console.log("response", response);
+    console.log("response regenerate", response);
     if (response.status !== 200) return rejectWithValue(response.data.message);
 
     return response.data.data;
@@ -67,7 +67,8 @@ const MakeEventSlice = createSlice({
     makeEventRegist: null,
     makeEventData: null,
     recommendedList: {},
-    listSelected: null,
+    listSelected: [],
+    selectedDetailCategories: null,
     totalCost: 0,
   },
   reducers: {
@@ -80,12 +81,30 @@ const MakeEventSlice = createSlice({
     addListSelected: (state, action) => {
       // state.listSelected.push(action.payload); // Add new item to listSelected array
       // console.log("listSelected", state.listSelected);
-      state.listSelected = action.payload;
+
+      state.listSelected = [...state.listSelected, action.payload];
     },
     updateRecommendedList: (state, action) => {
       // Misalnya, kita ingin update recommendedList berdasarkan vendorId
       const { productId, newVendorData } = action.payload;
       state.recommendedList[productId] = { ...newVendorData };
+    },
+    removeListSelected: (state, action) => {
+      console.log("action.payload", action.payload);
+      console.log("listSelected before", state.listSelected);
+      state.listSelected = state.listSelected.filter(
+        (item) => item !== action.payload
+      );
+      console.log("listSelected after", state.listSelected);
+    },
+    addDetailCategories: (state, action) => {
+      // state.selectedDetailCategories.push(action.payload);
+      state.selectedDetailCategories = action.payload;
+      console.log("selectedDetailCategories", state.selectedDetailCategories);
+    },
+
+    resetRecommendedList: (state) => {
+      state.recommendedList = {};
     },
   },
   extraReducers: (builder) => {
@@ -99,20 +118,26 @@ const MakeEventSlice = createSlice({
         state.isLoading = false;
         state.status = "succeeded";
         state.makeEventData = action.payload;
-        if (action.payload.categoryProduct) {
-          state.listSelected = action.payload.categoryProduct;
-        }
+        // if (action.payload.categoryProduct) {
+        //   state.listSelected = action.payload.categoryProduct;
+        // }
         if (action.payload.recommendedList) {
           action.payload.recommendedList.forEach((vendor) => {
             state.recommendedList[vendor.vendorId] = vendor; // Use vendorId as key
           });
         }
 
-        const totalCost = Object.values(state.recommendedList)
-          .map((vendor) => vendor.cost || 0) 
-          .reduce((a, b) => a + b, 0); 
+        if (action.payload.recommendedList) {
+          state.listSelected = action.payload.recommendedList.map(
+            (vendor) => vendor.productId
+          );
+        }
 
-        state.totalCost = totalCost; 
+        const totalCost = Object.values(state.recommendedList)
+          .map((vendor) => vendor.cost || 0)
+          .reduce((a, b) => a + b, 0);
+
+        state.totalCost = totalCost;
 
         console.log("totalCost", state.totalCost);
         console.log("recommendedList", state.recommendedList);
@@ -128,30 +153,20 @@ const MakeEventSlice = createSlice({
         state.status = "loading";
       })
       .addCase(regenerateEvent.fulfilled, (state, action) => {
+        console.log("Before recommendedList:", state.recommendedList);
+        console.log("Before makeEventData:", state.makeEventData);
+        console.log("Action Payload", action.payload);
         state.isLoading = false;
         state.status = "succeeded";
-        const { data } = action.payload;
-
-        state.recommendedList = {};
-        data.recommendedList.forEach((vendor) => {
+        state.makeEventData = action.payload;
+        state.makeEventData.recommendedList.forEach((vendor) => {
           state.recommendedList[vendor.productId] = vendor;
         });
 
-        // state.makeEventData = data;
-
-        // if (state.makeEventData && state.makeEventData.recommendedList) {
-        //   state.makeEventData.recommendedList = Object.values(
-        //     state.recommendedList
-        //   );
-        // }
-
-        //ini
-        state.makeEventData = {
-          ...data,
-          recommendedList: Object.values(state.recommendedList),
-        };
-
-        //ini
+        const newProductIds = state.makeEventData.recommendedList.map(
+          (vendor) => vendor.productId
+        );
+        state.listSelected = [...state.listSelected, ...newProductIds];
 
         console.log("Updated recommendedList:", state.recommendedList);
         console.log("Updated makeEventData:", state.makeEventData);
@@ -169,10 +184,17 @@ const MakeEventSlice = createSlice({
         state.isLoading = false;
         state.status = "succeeded";
         state.makeEventData = action.payload;
-        state.recommendedList = {};
-        state.listSelected = null;
 
         console.log("Accepted event data:", state.makeEventData);
+        // make all state back to default
+        state.makeEventRegist = null;
+        state.selectedDetailCategories = [];
+        state.makeEventData = null;
+        state.recommendedList = {};
+        state.listSelected = [];
+        state.totalCost = 0;
+        state.selectedDetailCategories = [];
+        console.log("after clear", state);
       })
       .addCase(acceptAndMakeEvent.rejected, (state, action) => {
         state.isLoading = false;
@@ -182,6 +204,12 @@ const MakeEventSlice = createSlice({
   },
 });
 
-export const { registMakeEvent, addListSelected, updateRecommendedList } =
-  MakeEventSlice.actions;
+export const {
+  registMakeEvent,
+  addListSelected,
+  updateRecommendedList,
+  resetRecommendedList,
+  removeListSelected,
+  addDetailCategories,
+} = MakeEventSlice.actions;
 export default MakeEventSlice.reducer;

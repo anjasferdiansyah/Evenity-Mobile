@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   regenerateEvent,
   acceptAndMakeEvent,
+  resetRecommendedList,
 } from "@/redux/slices/makeEventSlice";
 import { router } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -28,6 +29,7 @@ const MakeEventTransactionNote = () => {
     listSelected,
     updateRecommendedList,
     totalCost,
+    selectedDetailCategories,
   } = useSelector((state) => state.makeEventSlice);
 
   useEffect(() => {
@@ -41,8 +43,8 @@ const MakeEventTransactionNote = () => {
   const handleVendorPress = (vendor) => {
     setSelectedVendor(vendor); // Set selected vendor data
     setModalDetailVisible(true); // Open modal
-    console.log("Selected vendor:", vendor);
-    console.log("Current makeEventData:", makeEventData);
+    // console.log("Selected vendor:", vendor);
+    // console.log("Current makeEventData:", makeEventData);
 
     //ini
     const updatedVendorData = {
@@ -62,16 +64,21 @@ const MakeEventTransactionNote = () => {
   const handleRegenerateVendor = () => {
     console.log("id ", id);
     console.log("recommendedListTrx", recommendedList);
+    console.log("listSelected", listSelected);
+    console.log("makeEventData", makeEventData);
+    console.log("selectedDetailCategories", selectedDetailCategories);
     const recommendedArray = Object.values(recommendedList);
+    console.log("recommendedArray", recommendedArray);
     const previousProductIds = recommendedArray.map(
       (vendor) => vendor.productId
     );
+    console.log("previousProductIds", previousProductIds);
 
     const newEventData = {
       ...makeEventRegist,
       customerId: id,
-      categoryProduct: listSelected,
-      previousProduct: previousProductIds,
+      categoryProduct: selectedDetailCategories,
+      previousProduct: listSelected,
     };
     console.log("newEventData", newEventData);
     dispatch(regenerateEvent(newEventData));
@@ -100,9 +107,15 @@ const MakeEventTransactionNote = () => {
       eventDetail: newEventData,
     };
 
+    console.log("eventData body", eventData);
+
     dispatch(acceptAndMakeEvent(eventData));
     router.push(`/dashboard/(tabs)/transaction`);
   };
+
+  useEffect(() => {
+    console.log("makeEventData todays", makeEventData);
+  }, [makeEventData]);
 
   return (
     <MakeEventLayout
@@ -111,6 +124,7 @@ const MakeEventTransactionNote = () => {
       handleRegenerateVendor={handleRegenerateVendor}
       handleAccept={acceptMakeEvent}
       nextInfor="Make Event"
+      resetRecommendedList={resetRecommendedList}
     >
       <View className="px-10" style={[tailwind`my-2 mx-auto`]}>
         <Text className="font-outfitSemiBold text-2xl" style={[tailwind`mb-3`]}>
