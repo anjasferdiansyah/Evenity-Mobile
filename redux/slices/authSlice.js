@@ -70,7 +70,6 @@ export const loadUser = createAsyncThunk(
 
             setupAxios(token);
             const response = await axios.get("/auth/user/info");
-            console.log("response", response.data.data);
             return response.data.data;
         } catch (error) {
             asyncStorage.removeItem("token");
