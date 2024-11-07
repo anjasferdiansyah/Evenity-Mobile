@@ -11,6 +11,9 @@ const Product = () => {
                     presentation: 'modal',
                 }}
             />
+            <Stack.Screen
+                name="newProduct"
+            />
         </Stack>
     )
 }
