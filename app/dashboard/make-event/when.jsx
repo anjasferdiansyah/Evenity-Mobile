@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registMakeEvent } from "@/redux/slices/makeEventSlice";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import moment from "moment";
 
 const MakeEventDate = () => {
   const [startDate, setStartDate] = useState("");
@@ -25,26 +26,49 @@ const MakeEventDate = () => {
   const showEndTimePickerHandler = () => setShowEndTimePicker(true);
 
   const validateInputs = () => {
-    if (
-      startDate &&
-      endDate &&
-      startTime &&
-      endTime
-    ) {
+    if (startDate && endDate && startTime && endTime) {
       setIsInputValid(true);
     } else {
       setIsInputValid(false);
     }
   };
 
+  const validateDateRange = (selectedDate) => {
+    const today = new Date();
+    const selectedDateObj = new Date(selectedDate);
+
+    // Check if startDate is at least 7 days from today
+    const daysDifference = Math.floor(
+      (selectedDateObj - today) / (1000 * 60 * 60 * 24)
+    );
+    if (daysDifference < 7) {
+      Alert.alert(
+        "Invalid Date",
+        "Event must be scheduled at least 7 days in advance."
+      );
+      return false;
+    }
+    return true;
+  };
+
   const onStartDateChange = (event, selectedDate) => {
     setShowStartDatePicker(false);
-    if (selectedDate) setStartDate(selectedDate);
+    if (selectedDate) {
+      if (validateDateRange(selectedDate)) {
+        setStartDate(selectedDate);
+        validateInputs(); // Revalidate inputs after updating start date
+      }
+    }
   };
 
   const onEndDateChange = (event, selectedDate) => {
     setShowEndDatePicker(false);
-    if (selectedDate) setEndDate(selectedDate);
+    if (selectedDate) {
+      if (validateDateRange(selectedDate)) {
+        setEndDate(selectedDate);
+        validateInputs(); // Revalidate inputs after updating end date
+      }
+    }
   };
 
   const onStartTimeChange = (event, selectedTime) => {
@@ -58,10 +82,14 @@ const MakeEventDate = () => {
   };
 
   const handleMakeEvent = () => {
-    if (!isInputValid) {
-      Alert.alert("Invalid Input", "Please enter a valid event date and time.");
-      return;
-    } else {
+    // if (!isInputValid) {
+    //   Alert.alert("Invalid Input", "Please enter a valid event date and time.");
+    //   return;
+    // } else if (!validateDateRange()) {
+    //   return;
+    // }
+
+    try {
       dispatch(
         registMakeEvent({
           startDate:
@@ -81,6 +109,11 @@ const MakeEventDate = () => {
               ? endTime.split("T")[1].split(".")[0]
               : endTime.toISOString().split("T")[1].split(".")[0],
         })
+      );
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        "An error occurred while creating the event. Please try again."
       );
     }
   };
