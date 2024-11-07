@@ -27,7 +27,7 @@ const OrderHistoryUser = () => {
   // const { ordersUser  } = useSelector((state) => state.orderUser)
   const { invoiceCustomer } = useSelector((state) => state.invoiceCustomer)
 
-  console.log("invoiceCustomer", invoiceCustomer)
+  // console.log("invoiceCustomer", invoiceCustomer)
 
   const { width } = useWindowDimensions();
 
@@ -60,12 +60,12 @@ const filteredItems =
     ? invoiceCustomer
     : selected === "Approved"
     ? invoiceCustomer.filter((item) =>
-        item.invoiceDetailResponseList.every(
+        item.invoiceDetailResponseList?.every(
           (detail) => detail.approvalStatus === "APPROVED"
         )
       )
     : invoiceCustomer.filter((item) =>
-        item.invoiceDetailResponseList.some(
+        item.invoiceDetailResponseList?.some(
           (detail) => detail.approvalStatus !== "APPROVED"
         )
       );
