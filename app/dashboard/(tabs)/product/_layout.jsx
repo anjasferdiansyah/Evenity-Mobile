@@ -12,7 +12,7 @@ const Product = () => {
                 }}
             />
             <Stack.Screen
-                name="newProduct"
+                name="new"
             />
         </Stack>
     )

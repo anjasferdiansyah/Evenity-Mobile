@@ -29,7 +29,7 @@ export default function WelcomeScreen() {
     }
 
     const handleNext = () => {
-        router.replace("/auth");
+        router.replace(ROUTES.AUTH.INDEX);
     };
 
     return (

@@ -7,6 +7,7 @@ import Animated, {useAnimatedStyle, useSharedValue, withTiming,} from "react-nat
 import {MaterialIcons} from "@expo/vector-icons";
 import axios from "axios";
 import {loadOrderHistoryVendor, setSelectedOrderHistoryVendor} from "@/redux/slices/orderHistoryVendor";
+import {ROUTES} from "@/constant/ROUTES";
 
 export function OrderHistoryVendor() {
     const dispatch = useDispatch();
@@ -35,7 +36,7 @@ export function OrderHistoryVendor() {
                 const {data} = response.data;
                 setUserBalance(data.amount);
             } catch (error) {
-                console.error("Error fetching user balance:", error);
+                console.log("Error fetching user balance:", error);
             }
         };
 
@@ -68,7 +69,7 @@ export function OrderHistoryVendor() {
 
     const handleSelectedDetail = (item) => {
         dispatch(setSelectedOrderHistoryVendor(item))
-        router.push("/dashboard/transaction/detail");
+        router.push(ROUTES.DASHBOARD.TRANSACTION.DETAIL);
     };
 
     const renderItem = ({item}) => (
@@ -121,7 +122,7 @@ export function OrderHistoryVendor() {
                     </Text>
                     <View className="flex flex-row justify-center gap-4">
                         <TouchableOpacity
-                            onPress={() => router.push("dashboard/transaction/withdraw")}
+                            onPress={() => router.push(ROUTES.DASHBOARD.TRANSACTION.WITHDRAW.INDEX)}
                             className="bg-[#00F279] px-8 py-4 w-[40%] rounded-full flex flex-row items-center justify-center gap-4"
                         >
                             <MaterialIcons name="account-balance-wallet" size={20} color="white"/>
@@ -130,7 +131,7 @@ export function OrderHistoryVendor() {
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={() => router.push("dashboard/transaction/withdraw/history")}
+                            onPress={() => router.push(ROUTES.DASHBOARD.TRANSACTION.WITHDRAW.HISTORY)}
                             className="bg-[#00AA55] px-8 py-4 w-[40%] rounded-full"
                         >
                             <Text className="text-white text-center font-outfitBold">

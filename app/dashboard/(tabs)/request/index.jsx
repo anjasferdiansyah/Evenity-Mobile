@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {fetchRequestLists, setSelectedRequest} from '@/redux/slices/requestSlice';
 import moment from 'moment';
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
+import {ROUTES} from "@/constant/ROUTES";
 
 export default function ListRequestScreen() {
     const dispatch = useDispatch();
@@ -49,7 +50,7 @@ export default function ListRequestScreen() {
 
     const handleSelectedItem = useCallback((item) => {
         dispatch(setSelectedRequest(item));
-        router.push("/dashboard/request/detail");
+        router.push(ROUTES.DASHBOARD.REQUEST.DETAIL);
     }, [dispatch]);
 
     const renderItem = useCallback(({item}) => (

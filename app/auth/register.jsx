@@ -308,7 +308,7 @@ export default function RegisterScreen() {
                     Have an account?{" "}
                     <Text
                         className="text-blue-500"
-                        onPress={() => router.push("auth/login")}
+                        onPress={() => router.push(ROUTES.AUTH.LOGIN)}
                     >
                         Login
                     </Text>

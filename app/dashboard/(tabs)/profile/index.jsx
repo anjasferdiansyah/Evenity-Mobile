@@ -1,11 +1,15 @@
-import {Image, Text, TouchableOpacity, View} from "react-native";
+import {Image, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import React, {useEffect} from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {useDispatch, useSelector} from "react-redux";
 import {logout} from "@/redux/slices/authSlice";
-import {AntDesign, Entypo, FontAwesome, Fontisto} from "@expo/vector-icons";
+import {AntDesign, Entypo, FontAwesome, Fontisto, MaterialIcons} from "@expo/vector-icons";
 import {router} from "expo-router";
 import {fetchUserProfile} from "@/redux/slices/profileSlice";
+import {SafeAreaView} from "react-native-safe-area-context";
+import BottomPadding from "@/components/misc/BottomPadding";
+import {ROUTES} from "@/constant/ROUTES";
+import {ROLE} from "@/constant/USER";
 
 export default function ProfileScreen() {
     const dispatch = useDispatch();
@@ -22,19 +26,12 @@ export default function ProfileScreen() {
     const userDetail = userInfo?.detail;
 
     return (
-        <View className="flex-1 relative items-center justify-center bg-white">
-            <View className="w-full h-[85%]">
-                {/* <View className="flex flex-row justify-between px-10">
-                    <TouchableOpacity className="w-10 h-10 items-center justify-center bg-[#00AA55] rounded-full">
-                        <MaterialCommunityIcons name='arrow-left' size={20} color={'white'}/>
-                    </TouchableOpacity>
-                    <TouchableOpacity className="w-10 h-10 items-center justify-center bg-red-500 rounded-full"
-                                      onPress={() => dispatch(logout())}>
-                        <MaterialCommunityIcons color={'white'} name='exit-to-app' size={20}/>
-                    </TouchableOpacity>
-                </View> */}
+        <SafeAreaView className="flex-1 relative items-center justify-center bg-white">
+            <ScrollView className="w-full">
                 <View>
-                    <Text className="text-3xl text-center font-outfitBold">Profile</Text>
+                    <Text className="text-5xl font-outfitBold text-center text-[#00AA55] my-4">
+                        Profile
+                    </Text>
                     <View
                         className="flex flex-row items-center justify-center gap-6 bg-gray-100 w-[90%] mx-auto rounded-xl mt-4 shadow-md blur-md">
                         <Image
@@ -51,7 +48,7 @@ export default function ProfileScreen() {
                                 {userDetail?.fullName || userDetail?.name}
                             </Text>
                             <Text className="text-gray-500 text-xl font-outfitRegular text-center capitalize">
-                                {user?.role === "ROLE_VENDOR" ? "Vendor" : "Customer"}
+                                {user?.role === ROLE.VENDOR ? "Vendor" : "Customer"}
                             </Text>
                         </View>
 
@@ -59,9 +56,9 @@ export default function ProfileScreen() {
                 </View>
 
                 <View className="mt-4 mx-auto bg-gray-100 w-[90%] rounded-xl shadow-md">
-                    <View className="px-14 py-4">
+                    <View className="px-8 py-4">
                         <View className="py-4 border-b border-white flex flex-row gap-4 items-center">
-                            <Entypo name="location" size={24} className="w-10 text-center" color="black"/>
+                            <Entypo name="location" size={30} className="px-4 text-center" color="black"/>
                             <View>
                                 <Text className="text-lg text-gray-500 font-outfitBold">
                                     Location
@@ -73,7 +70,7 @@ export default function ProfileScreen() {
                             </View>
                         </View>
                         <View className="py-4 border-b border-white flex flex-row gap-4 items-center">
-                            <FontAwesome name="mobile-phone" className="w-10 text-center" size={24} color="black"/>
+                            <MaterialIcons className="px-4 text-center" name="contact-phone" size={30} color="black"/>
                             <View>
                                 <Text className="text-lg text-gray-500 font-outfitBold">
                                     Phone Number
@@ -85,7 +82,7 @@ export default function ProfileScreen() {
 
                         </View>
                         <View className="py-4 border-b border-white flex flex-row gap-4 items-center">
-                            <MaterialCommunityIcons name="email" className="w-10 text-center" size={24} color="black"/>
+                            <MaterialCommunityIcons name="email" className="px-4 text-center" size={30} color="black"/>
                             <View>
                                 <Text className="text-lg text-gray-500 font-outfitBold">
                                     Email
@@ -96,9 +93,9 @@ export default function ProfileScreen() {
                             </View>
 
                         </View>
-                        {user?.role === "ROLE_VENDOR" && (
+                        {user?.role === ROLE.VENDOR && (
                             <View className="py-4 border-b border-white flex flex-row gap-4 items-center">
-                                <Fontisto name="person" size={24} className="w-10 text-center" color="black"/>
+                                <Fontisto name="person" size={30} className="px-4 text-center" color="black"/>
                                 <View>
                                     <Text className="text-lg text-gray-500 font-outfitBold">
                                         Owner
@@ -111,7 +108,7 @@ export default function ProfileScreen() {
                             </View>
                         )}
                         <View className="py-4 border-b border-white flex flex-row gap-4 items-center">
-                            <Entypo name="address" size={24} className="w-10 text-center" color="black"/>
+                            <Entypo name="address" size={30} className="px-4 text-center" color="black"/>
                             <View>
                                 <Text className="text-lg text-gray-500 font-outfitBold">
                                     Address
@@ -125,40 +122,40 @@ export default function ProfileScreen() {
                 </View>
 
                 <View className="mt-10 mx-auto bg-gray-100 w-[90%] rounded-xl shadow-md ">
-                    <View className="px-14">
-                    <View className="py-4 border-b border-white ">
+                    <View className="px-8">
+                        <View className="py-4 border-b border-white ">
                             <TouchableOpacity className="flex flex-row gap-4 items-center"
-                                onPress={() => router.push("/dashboard/profile/edit")}>
-                                <FontAwesome name="gear" size={24} color="gray"/>
-                                <Text className="text-xl text-gray-500 font-outfitBold">
+                                onPress={() => router.push(ROUTES.DASHBOARD.PROFILE.EDIT)}>
+                                <FontAwesome className="w-10 text-center" name="gear" size={24} color="black"/>
+                                <Text className="text-xl text-black-500 font-outfitBold">
                                     Edit Profile
                                 </Text>
                             </TouchableOpacity>
                         </View>
                         <View className="py-4 border-b border-white ">
                             <TouchableOpacity className="flex flex-row gap-4 items-center"
-                                onPress={() => router.push("/dashboard/profile/changePassword")}>
-                                <MaterialCommunityIcons name="form-textbox-password" size={24} color="gray" />
-                                <Text className="text-xl text-gray-500 font-outfitBold">
+                                onPress={() => router.push(ROUTES.DASHBOARD.PROFILE.CHANGE_PASSWORD)}>
+                                <MaterialCommunityIcons className="w-10 text-center" name="form-textbox-password"
+                                    size={24}
+                                    color="black"/>
+                                <Text className="text-xl text-black-500 font-outfitBold">
                                     Change Password
                                 </Text>
                             </TouchableOpacity>
                         </View>
-                        <View className="py-4 border-b border-white ">
+                        <View className="py-4 border-b border-white">
                             <TouchableOpacity className="flex flex-row gap-4 items-center"
                                 onPress={() => dispatch(logout())}>
-                                <AntDesign name="logout" size={24} color="red"/>
+                                <AntDesign className="w-10 text-center" name="logout" size={24} color="red"/>
                                 <Text className="text-xl text-red-500 font-outfitBold">
                                     Logout
                                 </Text>
                             </TouchableOpacity>
-
-
                         </View>
-                       
                     </View>
                 </View>
-            </View>
-        </View>
+                <BottomPadding/>
+            </ScrollView>
+        </SafeAreaView>
     );
 }

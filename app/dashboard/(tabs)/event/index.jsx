@@ -6,6 +6,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {historyEventCustomer, setSelectedHistoryEvent,} from "@/redux/slices/historyEvent";
 import {useSharedValue, withTiming,} from "react-native-reanimated";
 import moment from "moment";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {ROUTES} from "@/constant/ROUTES";
 
 export default function CheckApprove() {
     const dispatch = useDispatch();
@@ -82,7 +84,7 @@ export default function CheckApprove() {
 
     const handleSelectedDetail = (item) => {
         dispatch(setSelectedHistoryEvent(item));
-        router.push("/dashboard/invoices/detailInvoice");
+        router.push(ROUTES.DASHBOARD.EVENT.DETAIL);
     };
 
     const getCityName = (city) => {
@@ -147,14 +149,14 @@ export default function CheckApprove() {
     }, [dispatch, id]);
 
     return (
-        <View className="flex-1 bg-gray-50">
-            <View className="w-full h-full pt-14 px-6">
+        <SafeAreaView className="flex-1 bg-gray-50">
+            <View className="w-full h-full px-6">
                 <View className="flex flex-col items-center">
-                    <Text className="text-2xl font-outfitBold text-center text-gray-800 mb-1">
+                    <Text className="text-3xl font-outfitBold text-center text-gray-800 mb-1">
                         List
                     </Text>
                     <View className="flex flex-col items-center">
-                        <Text className="text-4xl font-outfitBold text-center text-[#00AA55]">
+                        <Text className="text-5xl font-outfitBold text-center text-[#00AA55]">
                             Events
                         </Text>
                         {/* <View className="h-1 bg-[#00AA55] w-24 rounded-full mt-1" /> */}
@@ -210,6 +212,6 @@ export default function CheckApprove() {
                     />
                 </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }

@@ -3,14 +3,13 @@ import React, {useEffect} from 'react'
 import logo from '@/assets/evenity.png'
 import {router} from "expo-router";
 import {initializeAuth} from "@/redux/slices/authSlice";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {ROUTES} from "@/constant/ROUTES";
 
 export default function SplashScreen() {
     // setupAxios()
 
     const dispatch = useDispatch()
-    const {isInitialized, isLoggedIn} = useSelector((state) => state.auth);
 
     useEffect(() => {
         dispatch(initializeAuth());

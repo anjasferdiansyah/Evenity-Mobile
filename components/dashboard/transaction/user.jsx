@@ -6,6 +6,8 @@ import {useDispatch, useSelector} from "react-redux";
 import Animated, {useAnimatedStyle, useSharedValue, withTiming,} from "react-native-reanimated";
 import moment from "moment";
 import {loadInvoiceOrderCustomer, setSelectedInvoiceCustomer} from "@/redux/slices/invoiceCustomerSlice";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {ROUTES} from "@/constant/ROUTES";
 
 const OrderHistoryUser = () => {
     const dispatch = useDispatch();
@@ -65,7 +67,7 @@ const OrderHistoryUser = () => {
 
     const handleSelectedDetail = (item) => {
         dispatch(setSelectedInvoiceCustomer(item))
-        router.push("/dashboard/transaction/detail")
+        router.push(ROUTES.DASHBOARD.TRANSACTION.DETAIL)
     }
 
 
@@ -109,17 +111,16 @@ const OrderHistoryUser = () => {
 
 
     return (
-        <View className="flex-1 bg-gray-50">
-            <View className="w-full h-full pt-14 px-6">
+        <SafeAreaView className="flex-1 bg-gray-50">
+            <View className="w-full h-full px-6">
                 <View className="flex flex-col items-center">
-                    <Text className="text-2xl font-outfitBold text-center text-gray-800 mb-1">
+                    <Text className="text-3xl font-outfitBold text-center text-gray-800 mb-1">
                         History
                     </Text>
                     <View className="flex flex-col items-center">
-                        <Text className="text-4xl font-outfitBold text-center text-[#00AA55]">
+                        <Text className="text-5xl font-outfitBold text-center text-[#00AA55]">
                             Transactions
                         </Text>
-                        {/* <View className="h-1 bg-[#00AA55] w-24 rounded-full mt-1" /> */}
                     </View>
                 </View>
 
@@ -179,7 +180,7 @@ const OrderHistoryUser = () => {
                 </View>
 
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
 

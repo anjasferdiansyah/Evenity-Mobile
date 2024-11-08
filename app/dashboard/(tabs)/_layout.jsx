@@ -1,9 +1,17 @@
 import {router, Tabs} from "expo-router";
 import React, {useEffect} from "react";
-import {FontAwesome6, Fontisto, Ionicons, MaterialIcons,} from "@expo/vector-icons";
+import {
+    FontAwesome,
+    FontAwesome5,
+    FontAwesome6,
+    Ionicons,
+    MaterialCommunityIcons,
+    MaterialIcons,
+} from "@expo/vector-icons";
 import {useSelector} from "react-redux";
 import {ROLE} from "@/constant/USER";
 import {StyleSheet} from "react-native";
+import {ROUTES} from "@/constant/ROUTES";
 
 export default function DashboardLayout() {
     const {isLoggedIn, isInitialized, user} = useSelector(
@@ -13,13 +21,13 @@ export default function DashboardLayout() {
 
     useEffect(() => {
         if (!isLoggedIn) {
-            router.replace("/auth");
+            router.replace(ROUTES.AUTH.INDEX);
         }
     }, [isLoggedIn]);
 
     useEffect(() => {
         if (!isInitialized) {
-            router.replace("/welcome");
+            router.replace(ROUTES.WELCOME);
         }
     }, [isInitialized]);
 
@@ -45,9 +53,9 @@ export default function DashboardLayout() {
             <Tabs.Screen
                 name="product"
                 options={{
-                    href: role === ROLE.CUSTOMER ? null : "/dashboard/product",
+                    href: role === ROLE.CUSTOMER ? null : ROUTES.DASHBOARD.PRODUCT.INDEX,
                     title: "Product",
-                    tabBarIcon: ({color}) => <Fontisto name="shopping-bag-1" size={40} color={color}/>
+                    tabBarIcon: ({color}) => <FontAwesome5 name="store" size={38} color={color}/>
 
                 }}
             />
@@ -55,7 +63,7 @@ export default function DashboardLayout() {
                 name="request"
                 options={{
                     title: "Request",
-                    href: role === ROLE.CUSTOMER ? null : "/dashboard/request",
+                    href: role === ROLE.CUSTOMER ? null : ROUTES.DASHBOARD.REQUEST.INDEX,
                     tabBarIcon: ({color}) => <FontAwesome6 name="book" size={40} color={color}/>
 
                 }}
@@ -64,10 +72,8 @@ export default function DashboardLayout() {
                 name="event"
                 options={{
                     title: "Events",
-                    href: role === ROLE.CUSTOMER ? "/dashboard/event" : null,
-                    tabBarIcon: ({color}) => (
-                        <MaterialIcons name="account-balance-wallet" size={40} color={color}/>
-                    ),
+                    href: role === ROLE.CUSTOMER ? ROUTES.DASHBOARD.EVENT.INDEX : null,
+                    tabBarIcon: ({color}) => (<FontAwesome name="calendar" size={38} color={color}/>),
                 }}
             />
             <Tabs.Screen
@@ -75,8 +81,8 @@ export default function DashboardLayout() {
                 options={{
                     title: "Transaction",
                     tabBarIcon: ({color}) => {
-                        if (role === ROLE.CUSTOMER) return <MaterialIcons name="work-history" size={40} color={color}/>
-                        return <MaterialIcons name="account-balance-wallet" size={40} color={color}/>
+                        if (role === ROLE.CUSTOMER) return <MaterialIcons name="work-history" size={42} color={color}/>
+                        return <FontAwesome6 name="money-bill-transfer" size={40} color={color}/>
                     },
                 }}
             />
@@ -84,9 +90,7 @@ export default function DashboardLayout() {
                 name="profile"
                 options={{
                     title: "Profile",
-                    tabBarIcon: ({color}) => (
-                        <Ionicons size={40} name={"person"} color={color}/>
-                    ),
+                    tabBarIcon: ({color}) => (<MaterialCommunityIcons name="account-cog" size={45} color={color}/>),
                 }}
             />
         </Tabs>

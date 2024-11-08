@@ -1,0 +1,219 @@
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"></link>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+    const {useState, useEffect} = React;
+
+    const Dashboard = () => {
+        const [data, setData] = useState({
+            income: 50000,
+            withdrawal: 20000,
+            revenue: 30000,
+            eventsThisMonth: 5,
+            upcomingEvents: 3,
+            pastEvents: 10,
+            totalEvents: 18,
+            newVendorsThisMonth: 7,
+            approvedVendors: 20,
+            pendingVendors: 5,
+            rejectedVendors: 2,
+            totalVendors: 27,
+            newUsersThisMonth: 15,
+            activeUsers: 150,
+            disabledUsers: 10,
+            totalUsers: 175
+        });
+
+        useEffect(() => {
+            const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+            new Chart(ctxRevenue, {
+                type: 'line',
+                data: {
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [12000, 19000, 3000, 5000, 20000, 30000],
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            const ctxEvents = document.getElementById('eventsChart').getContext('2d');
+            new Chart(ctxEvents, {
+                type: 'bar',
+                data: {
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                    datasets: [{
+                        label: 'Events',
+                        data: [5, 10, 15, 20, 25, 30],
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            const ctxVendors = document.getElementById('vendorsChart').getContext('2d');
+            new Chart(ctxVendors, {
+                type: 'pie',
+                data: {
+                    labels: ['Approved', 'Pending', 'Rejected'],
+                    datasets: [{
+                        label: 'Vendors',
+                        data: [20, 5, 2],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(255, 99, 132, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+
+            const ctxUsers = document.getElementById('usersChart').getContext('2d');
+            new Chart(ctxUsers, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Active', 'Disabled'],
+                    datasets: [{
+                        label: 'Users',
+                        data: [150, 10],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true
+                }
+            });
+        }, []);
+
+        return (
+            <div className="min-h-screen bg-gray-100 p-6">
+                <h1 className="text-5xl font-bold mb-8 text-center text-gray-800">Admin Dashboard</h1>
+                <div className="space-y-8">
+                    <Section title="Financial Overview" special>
+                        <Card title="Total Income" value={`$${data.income}`} icon="fas fa-dollar-sign" priority/>
+                        <Card title="Total Withdrawal" value={`$${data.withdrawal}`} icon="fas fa-money-bill-wave"
+                              priority/>
+                        <Card title="Total Revenue" value={`$${data.revenue}`} icon="fas fa-chart-line" priority/>
+                    </Section>
+                    <Section title="Revenue Chart">
+                        <div className="bg-white p-4 rounded-lg shadow-lg">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </Section>
+                    <Section title="Event Management">
+                        <Card title="Events This Month" value={data.eventsThisMonth} icon="fas fa-calendar-alt"/>
+                        <Card title="Upcoming Events" value={data.upcomingEvents} icon="fas fa-calendar-plus"/>
+                        <Card title="Past Events" value={data.pastEvents} icon="fas fa-calendar-check"/>
+                        <Card title="Total Events" value={data.totalEvents} icon="fas fa-calendar"/>
+                    </Section>
+                    <Section title="Events Chart">
+                        <div className="bg-white p-4 rounded-lg shadow-lg">
+                            <canvas id="eventsChart"></canvas>
+                        </div>
+                    </Section>
+                    <Section title="Vendor Management">
+                        <Card title="New Vendors This Month" value={data.newVendorsThisMonth} icon="fas fa-user-plus"/>
+                        <Card title="Approved Vendors" value={data.approvedVendors} icon="fas fa-user-check"/>
+                        <Card title="Pending Vendors" value={data.pendingVendors} icon="fas fa-user-clock"/>
+                        <Card title="Rejected Vendors" value={data.rejectedVendors} icon="fas fa-user-times"/>
+                        <Card title="Total Vendors" value={data.totalVendors} icon="fas fa-users"/>
+                    </Section>
+                    <Section title="Vendors Chart">
+                        <div className="bg-white p-4 rounded-lg shadow-lg">
+                            <canvas id="vendorsChart"></canvas>
+                        </div>
+                    </Section>
+                    <Section title="User Management">
+                        <Card title="New Users This Month" value={data.newUsersThisMonth} icon="fas fa-user-plus"/>
+                        <Card title="Active Users" value={data.activeUsers} icon="fas fa-users"/>
+                        <Card title="Disabled Users" value={data.disabledUsers} icon="fas fa-user-slash"/>
+                        <Card title="Total Users" value={data.totalUsers} icon="fas fa-users"/>
+                    </Section>
+                    <Section title="Users Chart">
+                        <div className="bg-white p-4 rounded-lg shadow-lg">
+                            <canvas id="usersChart"></canvas>
+                        </div>
+                    </Section>
+                </div>
+            </div>
+        );
+    };
+
+    const Section = ({title, children, special}) => (
+        <section
+            className={`p-4 rounded-lg ${special ? 'bg-gradient-to-r from-green-500 to-green-700 text-black' : 'bg-white shadow-lg'}`}>
+            <h2 className={`text-2xl font-bold mb-4 ${special ? 'text-black' : 'text-gray-800'}`}>{title}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {children}
+            </div>
+        </section>
+    );
+
+    const Card = ({title, value, icon, priority}) => (
+        <div
+            className={`relative bg-white p-4 rounded-lg shadow-lg transform transition duration-500 hover:scale-105 ${priority ? 'col-span-1 md:col-span-2 lg:col-span-3' : ''}`}>
+            <div
+                className={`absolute -top-4 -left-4 bg-gradient-to-r from-green-500 to-green-700 text-white p-3 rounded-full ${priority ? 'text-4xl' : 'text-2xl'}`}>
+                <i className={icon}></i>
+            </div>
+            <div className="ml-16">
+                <h2 className={`text-lg ${priority ? 'text-2xl' : ''} font-bold mb-1`}>{title}</h2>
+                <p className={`text-gray-700 ${priority ? 'text-xl' : ''}`}>{value}</p>
+            </div>
+        </div>
+    );
+
+    ReactDOM.render(<Dashboard/>, document.getElementById('root'));
+</script>
+</body>
+</html>

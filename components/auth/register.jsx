@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {register} from "@/redux/slices/authSlice";
 import {router} from "expo-router";
 import RNPickerSelect from "react-native-picker-select";
+import {ROUTES} from "@/constant/ROUTES";
 
 const RegisterScreen = () => {
     const [email, setEmail] = useState("");
@@ -124,7 +125,7 @@ const RegisterScreen = () => {
                 city: selectedCity,
                 district: districtQuery
             }));
-            router.push("auth/completing-register");
+            router.push(ROUTES.AUTH.COMPLETING_REGISTER);
         }
     };
     return (
@@ -263,7 +264,7 @@ const RegisterScreen = () => {
                     Have an account?{" "}
                     <Text
                         className="text-blue-500"
-                        onPress={() => router.push("auth/login")}
+                        onPress={() => router.push(ROUTES.AUTH.LOGIN)}
                     >
                         Login
                     </Text>

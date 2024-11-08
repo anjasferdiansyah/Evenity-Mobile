@@ -5,6 +5,7 @@ import {ProgressBar} from "@/components/progress-bar";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import tailwind from "twrnc";
 import {useDispatch} from "react-redux";
+import {ROUTES} from "@/constant/ROUTES";
 
 const MakeEventLayout = ({
     progress,
@@ -60,7 +61,7 @@ const MakeEventLayout = ({
                     <TouchableOpacity
                         onPress={() => {
                             handleNext();
-                            router.push(`/dashboard/make-event/${nextRoute}`);
+                            router.push(ROUTES.DASHBOARD.EVENT.NEW.INDEX + "/" + nextRoute);
                         }}
                         className={`bg-[#00AA55] mx-auto w-full mt-14 items-center justify-center py-3 rounded-full ${
                             !isInputValid && "opacity-50"
