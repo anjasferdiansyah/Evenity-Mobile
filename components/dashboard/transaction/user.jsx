@@ -21,7 +21,7 @@ const OrderHistoryUser = () => {
     const [selected, setSelected] = useState("All");
 
     const slideAnim = useSharedValue(0);
-    const paddingHorizontal = 20;
+    const paddingHorizontal = 25;
     const itemWidth = (width - paddingHorizontal * 2) / 3;
 
     const handlePress = (item, index) => {
@@ -84,7 +84,7 @@ const OrderHistoryUser = () => {
         >
             <View
                 className={`flex flex-row justify-between items-center p-5 ${
-                    item.paymentStatus === "COMPLETE" ? "bg-[#DFF7E6]" : "bg-[#FDE4E1]"
+                    item.paymentStatus === "COMPLETE" ? "bg-green-400/20" : "bg-red-400/20"
                 } rounded-xl`}
             >
                 <View>
@@ -113,11 +113,11 @@ const OrderHistoryUser = () => {
             <View className="w-full h-full pt-14 px-6">
                 <View className="flex flex-col items-center">
                     <Text className="text-2xl font-outfitBold text-center text-gray-800 mb-1">
-                        Order
+                        History
                     </Text>
                     <View className="flex flex-col items-center">
                         <Text className="text-4xl font-outfitBold text-center text-[#00AA55]">
-                            History
+                            Transactions
                         </Text>
                         {/* <View className="h-1 bg-[#00AA55] w-24 rounded-full mt-1" /> */}
                     </View>
@@ -158,13 +158,8 @@ const OrderHistoryUser = () => {
                                 {
                                     position: "absolute",
                                     bottom: -2,
-                                    left:
-                                        selected === "All"
-                                            ? 25
-                                            : selected === ""
-                                                ? itemWidth - 109
-                                                : itemWidth - 120,
-                                    width: itemWidth - 30, // Adjust this value based on your design
+                                    left: selected === "All" ? 25 : itemWidth - 120,
+                                    width: itemWidth - 25, // Adjust this value based on your design
                                     height: 3,
                                     backgroundColor: "#00AA55",
                                     borderRadius: 2,

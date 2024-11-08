@@ -30,7 +30,7 @@ export function OrderHistoryVendor() {
         const fetchUserBalance = async () => {
             try {
                 const response = await axios.get(
-                    `transaction/balance/user/${user.userId}`,
+                    `transaction/balance/user/${user?.userId}`,
                 );
                 const {data} = response.data;
                 setUserBalance(data.amount);
@@ -40,7 +40,7 @@ export function OrderHistoryVendor() {
         };
 
         fetchUserBalance();
-    }, [user.userId]);
+    }, [user]);
 
     const {width} = useWindowDimensions();
 

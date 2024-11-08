@@ -61,6 +61,16 @@ export default function DashboardLayout() {
                 }}
             />
             <Tabs.Screen
+                name="event"
+                options={{
+                    title: "Events",
+                    href: role === ROLE.CUSTOMER ? "/dashboard/event" : null,
+                    tabBarIcon: ({color}) => (
+                        <MaterialIcons name="account-balance-wallet" size={40} color={color}/>
+                    ),
+                }}
+            />
+            <Tabs.Screen
                 name="transaction"
                 options={{
                     title: "Transaction",
@@ -68,16 +78,6 @@ export default function DashboardLayout() {
                         if (role === ROLE.CUSTOMER) return <MaterialIcons name="work-history" size={40} color={color}/>
                         return <MaterialIcons name="account-balance-wallet" size={40} color={color}/>
                     },
-                }}
-            />
-            <Tabs.Screen
-                name="invoices"
-                options={{
-                    title: "Invoice",
-                    href: role === ROLE.CUSTOMER ? "/dashboard/invoices" : null,
-                    tabBarIcon: ({color}) => (
-                        <MaterialIcons name="account-balance-wallet" size={40} color={color}/>
-                    ),
                 }}
             />
             <Tabs.Screen

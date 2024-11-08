@@ -151,11 +151,11 @@ export default function CheckApprove() {
             <View className="w-full h-full pt-14 px-6">
                 <View className="flex flex-col items-center">
                     <Text className="text-2xl font-outfitBold text-center text-gray-800 mb-1">
-                        History
+                        List
                     </Text>
                     <View className="flex flex-col items-center">
                         <Text className="text-4xl font-outfitBold text-center text-[#00AA55]">
-                            Transaction
+                            Events
                         </Text>
                         {/* <View className="h-1 bg-[#00AA55] w-24 rounded-full mt-1" /> */}
                     </View>
