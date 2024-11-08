@@ -126,6 +126,24 @@ export default function ProfileScreen() {
 
                 <View className="mt-10 mx-auto bg-gray-100 w-[90%] rounded-xl shadow-md ">
                     <View className="px-14">
+                    <View className="py-4 border-b border-white ">
+                            <TouchableOpacity className="flex flex-row gap-4 items-center"
+                                onPress={() => router.push("/dashboard/profile/edit")}>
+                                <FontAwesome name="gear" size={24} color="gray"/>
+                                <Text className="text-xl text-gray-500 font-outfitBold">
+                                    Edit Profile
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View className="py-4 border-b border-white ">
+                            <TouchableOpacity className="flex flex-row gap-4 items-center"
+                                onPress={() => router.push("/dashboard/profile/changePassword")}>
+                                <MaterialCommunityIcons name="form-textbox-password" size={24} color="gray" />
+                                <Text className="text-xl text-gray-500 font-outfitBold">
+                                    Change Password
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
                         <View className="py-4 border-b border-white ">
                             <TouchableOpacity className="flex flex-row gap-4 items-center"
                                 onPress={() => dispatch(logout())}>
@@ -137,15 +155,7 @@ export default function ProfileScreen() {
 
 
                         </View>
-                        <View className="py-4 border-b border-white ">
-                            <TouchableOpacity className="flex flex-row gap-4 items-center"
-                                onPress={() => router.push("/dashboard/profile/edit")}>
-                                <FontAwesome name="gear" size={24} color="gray"/>
-                                <Text className="text-xl text-gray-500 font-outfitBold">
-                                    Edit Profile
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
+                       
                     </View>
                 </View>
             </View>
