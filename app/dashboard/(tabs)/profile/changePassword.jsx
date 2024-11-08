@@ -13,10 +13,12 @@ export default function ChangePassword() {
     const [confirmPassword, setConfirmPassword] = useState('')
 
 
-    const {userInfo} = useSelector((state) => state.profile)
+
+
+    const { userInfo } = useSelector((state) => state.profile)
 
     const dispatch = useDispatch()
-
+    
     const handleChangePassword = async () => {
 
         if (newPassword !== confirmPassword) {
@@ -24,18 +26,15 @@ export default function ChangePassword() {
         } else {
 
             try {
-                dispatch(login({email: userInfo?.detail.email, password: oldPassword}))
-                if (login.rejected) {
-                    alert(login.error)
-                } else {
-                    const response = await axios.put(`auth/user/${userInfo?.detail.userId}/password`, {
-                        email: userInfo?.email,
-                        password: newPassword
-                    })
-                    console.log("response", response)
-                    if (response.status === 200) {
-                        alert("Password changed successfully")
-                        router.push(ROUTES.DASHBOARD.PROFILE.INDEX)
+                const login = await axios.post("auth/login", {email: userInfo?.email, password: oldPassword})
+                if(login.status === 401) {
+                    alert("Old password is not matched")
+                    } else {
+                        const response = await axios.put(`auth/user/${userInfo?.detail.userId}/password`, {email: userInfo?.email, password : newPassword })
+                        console.log("response", response)
+                        if (response.status === 200) {
+                            alert("Password changed successfully")
+                            router.push("/dashboard/profile")
                     }
                 }
             } catch (error) {

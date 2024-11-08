@@ -222,7 +222,7 @@ const MakeEventChooseVendor = () => {
                     Choose
                 </Text>
 
-                <Text className="text-6xl font-outfitExtraBold">Vendor?</Text>
+                <Text className="text-6xl font-outfitExtraBold">Service / Products?</Text>
             </View>
             <View
                 className="flex flex-col gap-4 w-full mt-12 px-10"

@@ -73,10 +73,14 @@ const MakeEventSlice = createSlice({
     },
     reducers: {
         registMakeEvent: (state, action) => {
+
+          
+
             state.makeEventRegist = {
                 ...state.makeEventRegist,
                 ...action.payload,
             };
+            console.log("make event Regist", state.makeEventRegist);
         },
         addListSelected: (state, action) => {
             // state.listSelected.push(action.payload); // Add new item to listSelected array
