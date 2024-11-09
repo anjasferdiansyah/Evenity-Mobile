@@ -1,66 +1,112 @@
-import {Image, Text, TouchableOpacity, View} from 'react-native'
-import React, {useEffect} from 'react'
-import hero from '@/assets/hero.png'
-import {router} from "expo-router";
-import {useDispatch, useSelector} from "react-redux";
-import {setRegisterAs} from "@/redux/slices/authSlice";
-import {ROUTES} from "@/constant/ROUTES";
-import {ROLE} from "@/constant/USER";
+import { Image, Text, TouchableOpacity, View, Dimensions } from 'react-native';
+import React, { useEffect } from 'react';
+import hero from '@/assets/login-ilustration.png';
+import { router } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { setRegisterAs } from "@/redux/slices/authSlice";
+import { ROUTES } from "@/constant/ROUTES";
+import { ROLE } from "@/constant/USER";
+import Animated, { Easing, useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+
+const { width } = Dimensions.get('window');
 
 export default function AuthScreen() {
-    // setupAxios()
-    const dispatch = useDispatch()
-    const {isLoggedIn, isInitialized} = useSelector((state) => state.auth);
+    const dispatch = useDispatch();
+    const { isLoggedIn, isInitialized } = useSelector((state) => state.auth);
 
     useEffect(() => {
         if (isInitialized && isLoggedIn) {
-            router.replace(ROUTES.DASHBOARD.INDEX)
+            router.replace(ROUTES.DASHBOARD.INDEX);
         }
     }, [isInitialized, isLoggedIn]);
 
     function handleRegister(role) {
         return () => {
-            dispatch(setRegisterAs(role))
-            router.push(ROUTES.AUTH.REGISTER)
+            dispatch(setRegisterAs(role));
+            router.push(ROUTES.AUTH.REGISTER);
         }
     }
 
+    // Animation values
+    const scale = useSharedValue(0);
+    const opacity = useSharedValue(0);
+
+    // Start animation
+    useEffect(() => {
+        scale.value = withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) });
+        opacity.value = withTiming(1, { duration: 800, easing: Easing.out(Easing.exp) });
+    }, [scale, opacity]);
+
+    // Animated styles
+    const animatedImageStyle = useAnimatedStyle(() => {
+        return {
+            transform: [{ scale: scale.value }],
+            opacity: opacity.value,
+        };
+    });
+
+    const animatedButtonStyle = useAnimatedStyle(() => {
+        return {
+            opacity: opacity.value,
+        };
+    });
+
     return (
-        <View className="pt-10 flex-1 items-center justify-center bg-white">
-            <View className="px-10 mt-4">
-                <Image className="w-[450px] h-[450px] object-cover mx-auto" source={hero} resizeMode='contain'/>
-                <View className="flex flex-col gap-2">
-                    <TouchableOpacity onPress={() => router.replace(ROUTES.AUTH.LOGIN)}
-                        className="bg-[#00AA55] mx-auto w-[60%] items-center justify-center px-8 py-3 rounded-full">
-                        <Text className="text-white text-xl font-outfitBold">
-                            Login!
+        <View className="flex-1 bg-[#F0FFF4]">
+            <View className="flex-1 items-center justify-center px-6">
+                <Animated.Image
+                    style={[{ 
+                        width: width * 0.8, 
+                        height: width * 0.8, 
+                        marginBottom: 20 
+                    }, animatedImageStyle]}
+                    source={hero}
+                    resizeMode='contain'
+                />
+                
+                <View className="w-full space-y-4">
+                    <Animated.View style={animatedButtonStyle}>
+                        <TouchableOpacity
+                            onPress={() => router.replace(ROUTES.AUTH.LOGIN)}
+                            className="bg-[#10B981] mx-auto w-full items-center justify-center py-4 rounded-full shadow-lg"
+                        >
+                            <Text className="text-white text-2xl font-outfitBold tracking-wider">
+                                Login
+                            </Text>
+                        </TouchableOpacity>
+                    </Animated.View>
+                    
+                    <View className="flex-row items-center justify-center my-4">
+                        <View className="flex-1 h-[1px] bg-gray-300 mr-3"></View>
+                        <Text className="text-gray-500 text-xs">
+                            Don't have an account?
                         </Text>
-                    </TouchableOpacity>
-                    <View className="flex flex-row gap-2 items-center justify-center overflow-hidden">
-                        <View className="h-[1px] w-1/4 bg-gray-300"></View>
-                        <View>
-                            <Text className="text-center text-gray-500 text-xs">Don't have an account?</Text>
-                        </View>
-                        <View className="h-[1px] w-1/4 bg-gray-300"></View>
+                        <View className="flex-1 h-[1px] bg-gray-300 ml-3"></View>
                     </View>
 
-                    <TouchableOpacity
-                        className="bg-[#00F279] mx-auto w-[60%] items-center justify-center px-8 py-3 rounded-full"
-                        onPress={handleRegister(ROLE.CUSTOMER)}>
-                        <Text className="text-white text-xl font-outfitBold">
-                            Register
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        className="bg-[#00F279] mx-auto w-[60%] items-center justify-center px-8 py-3 rounded-full"
-                        onPress={handleRegister(ROLE.VENDOR)}>
-                        <Text className="text-white text-xl font-outfitBold">
-                            Register as Vendor
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+                    <Animated.View style={animatedButtonStyle}>
+                        <TouchableOpacity
+                            className="bg-[#34D399] mx-auto w-full items-center justify-center py-4 rounded-full shadow-lg"
+                            onPress={handleRegister(ROLE.CUSTOMER)}
+                        >
+                            <Text className="text-white text-lg  font-outfitBold tracking-wider">
+                                Register
+                            </Text>
+                        </TouchableOpacity>
+                    </Animated.View>
 
+                    <Animated.View style={animatedButtonStyle}>
+                        <TouchableOpacity
+                            className="bg-[#34D399] mx-auto w-full items-center justify-center py-4 rounded-full mt-2"
+                            onPress={handleRegister(ROLE.VENDOR)}
+                        >
+                            <Text className="text-[#fff] text-lg tracking-wider font-outfitBold">
+                                Register as Vendor
+                            </Text>
+                        </TouchableOpacity>
+                    </Animated.View>
+                </View>
             </View>
         </View>
-    )
+    );
 }

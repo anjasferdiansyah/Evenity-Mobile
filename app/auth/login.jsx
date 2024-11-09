@@ -1,99 +1,189 @@
-import {Text, TextInput, TouchableOpacity, View} from "react-native";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
+import { 
+    Text, 
+    TextInput, 
+    TouchableOpacity, 
+    View, 
+    ScrollView, 
+    Dimensions 
+} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {validateUser} from "@/helper/validator/auth";
-import {useDispatch, useSelector} from "react-redux";
-import {login, resetError} from "@/redux/slices/authSlice";
-import {router} from "expo-router";
-import {ROUTES} from "@/constant/ROUTES";
+import { validateUser } from "@/helper/validator/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { login, resetError } from "@/redux/slices/authSlice";
+import { router } from "expo-router";
+import { ROUTES } from "@/constant/ROUTES";
+import Animated, { 
+    FadeInDown, 
+    FadeInUp, 
+    FadeIn, 
+    FadeOut 
+} from 'react-native-reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
+
+const { width } = Dimensions.get('window');
+
+const LoadingSpinner = () => {
+    return (
+        <View className="flex items-center justify-center">
+            <View 
+                className="w-16 h-16 rounded-full"
+                style={{
+                    borderWidth: 3,
+                    borderColor: 'rgba(16, 185, 129, 0.2)',
+                    borderTopColor: '#4A90E2',
+                    borderRightColor: '#4A90E2',
+                    transform: [{ rotate: '45deg' }],
+                    animation: 'spin 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite'
+                }}
+            />
+        </View>
+    );
+};
 
 export default function LoginScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [hidePassword, setHidePassword] = useState(true);
     const dispatch = useDispatch();
-    const {isLoggedIn, error} = useSelector((state) => state.auth);
+    const { isLoggedIn, error, status } = useSelector((state) => state.auth);
 
     useEffect(() => {
         if (isLoggedIn) {
-            router.replace(ROUTES.DASHBOARD.INDEX)
+            router.replace(ROUTES.DASHBOARD.INDEX);
         }
     }, [isLoggedIn]);
 
     useEffect(() => {
         if (error) {
-            alert(error)
-            dispatch(resetError())
+            alert(error);
+            dispatch(resetError());
         }
     }, [error, dispatch]);
 
     const handleLogin = () => {
-        const {success, data, error} = validateUser({email, password})
+        const { success, data, error } = validateUser({ email, password });
 
         if (!success) {
-            alert(error)
+            alert(error);
         } else {
-            dispatch(login(data))
+            dispatch(login(data));
         }
+    };
+
+    if (status === "loading") {
+        return (
+            <LinearGradient 
+                colors={['#F0F4F8', '#E6F1FF']} 
+                className="flex-1 justify-center items-center"
+            >
+                <Animated.View 
+                    entering={FadeIn} 
+                    exiting={FadeOut}
+                    className="items-center"
+                >
+                    <LoadingSpinner />
+                    <Animated.View entering={FadeInUp.delay(200)} className="mt-4">
+                        <Text className="text-lg text-gray-600 font-outfitRegular">
+                            Authenticating securely...
+                        </Text>
+                    </Animated.View>
+                </Animated.View>
+            </LinearGradient>
+        );
     }
-    // const [hidePassword, setHidePassword] = useState(false);
 
     return (
-        <View className="flex-1 items-center justify-center bg-white">
-            <View className="w-full h-[70%] px-10 flex-1 justify-center">
-                <Text className="text-5xl text-center my-16 font-outfitBold">
-                    Login
-                </Text>
+        <LinearGradient 
+            colors={['#F0FFF4', '#D4F0E1']} 
+            className="flex-1"
+        >
+            <ScrollView 
+                contentContainerStyle={{ flexGrow: 1 }} 
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+            >
+                <View className="w-full h-full px-6 flex-1 justify-center">
+                    <Animated.View entering={FadeInUp} className="mb-12 items-center">
+                        <Text className="text-5xl font-outfitBold text-gray-800">
+                            Login
+                        </Text>
+                        <Text className="text-gray-500 mt-2 text-center font-outfitLight">
+                            Your Event, Simplified with Us
+                        </Text>
+                    </Animated.View>
 
-                <View className="flex flex-col gap-4 w-full items-center">
-                    <View className="flex flex-col gap-2 w-[90%]">
-                        <Text className="font-outfitRegular">Email</Text>
-                        <TextInput
-                            value={email}
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                            placeholder="Enter your email address"
-                            onChangeText={setEmail}
-                        />
+                    <View className="bg-white/80 rounded-2xl shadow-md p-6">
+                        <Animated.View entering={FadeInDown.delay(200)} className="mb-4">
+                            <Text className="text-gray-600 mb-2 font-outfitRegular">Email Address</Text>
+                            <View className="border border-gray-200 rounded-lg">
+                                <TextInput
+                                    value={email}
+                                    className="py-3 px-4 text-base text-gray-700 font-outfitRegular"
+                                    placeholder="Enter your email"
+                                    onChangeText={setEmail}
+                                    autoCapitalize="none"
+                                    keyboardType="email-address"
+                                />
+                            </View>
+                        </Animated.View>
+
+                        <Animated.View entering={FadeInDown.delay(400)} className="mb-4 relative">
+                            <Text className="text-gray-600 mb-2 font-outfitRegular">Password</Text>
+                            <View className="border border-gray-200 rounded-lg">
+                                <TextInput
+                                    secureTextEntry={hidePassword}
+                                    value={password}
+                                    className="py-3 px-4 text-base text-gray-700 pr-12 font-outfitRegular"
+                                    placeholder="Enter your password"
+                                    maxLength={50}
+                                    onChangeText={setPassword}
+                                />
+                                <TouchableOpacity 
+                                    className="absolute right-4 top-1/2 transform -translate-y-1/2"
+                                    onPress={() => setHidePassword(!hidePassword)}
+                                >
+                                    <MaterialCommunityIcons
+                                        name={hidePassword ? "eye-off" : "eye"}
+                                        color="#000"
+                                        size={24}   
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        </Animated.View>
+
+                        {/* <TouchableOpacity className="self-end mb-4">
+                            <Text className="text-[#10B981] font-outfitRegular">
+                                Forgot Password?
+                            </Text>
+                        </TouchableOpacity> */}
+
+                        <Animated.View entering={FadeInDown.delay(600)}>
+                            <TouchableOpacity
+                                onPress={handleLogin}
+                                className="bg-[#10B981] items-center justify-center py-4 rounded-lg shadow-md"
+                            >
+                                <Text className="text-white text-lg font-outfitBold tracking-wider">
+                                    Login
+                                </Text>
+                            </TouchableOpacity>
+                        </Animated.View>
                     </View>
-                    <View className="flex flex-col gap-2 w-[90%]">
-                        <MaterialCommunityIcons
-                            className="absolute right-4 top-[38px] "
-                            name="eye"
-                            color={"gray"}
-                            size={20}
-                            // onPress={() => setHidePassword(!hidePassword)}
-                        />
-                        <Text className="font-outfitRegular">Password</Text>
-                        <TextInput
-                            secureTextEntry={true}
-                            autoCorrect={false}
-                            value={password}
-                            autoComplete="current-password"
-                            autoCapitalize="none"
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                            placeholder="Enter your password"
-                            maxLength={50}
-                            onChangeText={setPassword}
-                        />
+
+                    <View className="flex-row justify-center mt-6">
+                        <Text className="text-gray-600 font-outfitRegular">
+                            Don't have an account?{" "}
+                        </Text>
+                        <TouchableOpacity 
+                            onPress={() => router.replace(ROUTES.AUTH.REGISTER)}
+                        >
+                            <Text className="text-[#10B981] font-outfitBold">
+                                Register
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
-                <TouchableOpacity
-                    onPress={() => handleLogin()}
-                    className="bg-[#00AA55] mx-auto w-[90%] mt-20 items-center justify-center px-8 py-3 rounded-full"
-                >
-                    <Text className="text-white text-xl font-outfitBold py-1.5">
-                        Login
-                    </Text>
-                </TouchableOpacity>
-                <Text className="text-center text-gray-500 text-xs mt-4 font-outfitRegular">
-                    Don't have an account?{" "}
-                    <Text
-                        className="text-blue-500"
-                        onPress={() => router.replace(ROUTES.AUTH.REGISTER)}
-                    >
-                        Register
-                    </Text>
-                </Text>
-            </View>
-        </View>
+            </ScrollView>
+        </LinearGradient>
     );
-};
+}

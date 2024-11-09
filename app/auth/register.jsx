@@ -1,72 +1,96 @@
-import {FlatList, Text, TextInput, TouchableOpacity, View,} from "react-native";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
+import { 
+    FlatList, 
+    Text, 
+    TextInput, 
+    TouchableOpacity, 
+    View 
+} from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import {validateRegistration} from "@/helper/validator/auth";
-import {useDispatch} from "react-redux";
-import {register} from "@/redux/slices/authSlice";
-import {router} from "expo-router";
+import { useDispatch } from "react-redux";
+import { router } from "expo-router";
 import RNPickerSelect from "react-native-picker-select";
-import {fetchCities, fetchDistricts, provinceData} from "@/helper/location";
-import {ROUTES} from "@/constant/ROUTES";
+import { LinearGradient } from 'expo-linear-gradient';
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+
+// Import helper dan konstanta
+import { validateRegistration } from "@/helper/validator/auth";
+import { register } from "@/redux/slices/authSlice";
+import { fetchCities, fetchDistricts, provinceData } from "@/helper/location";
+import { ROUTES } from "@/constant/ROUTES";
 
 export default function RegisterScreen() {
-    // User credentials
+    // State Credentials
     const [userEmail, setUserEmail] = useState("");
     const [userPassword, setUserPassword] = useState("");
     const [userPasswordConfirmation, setUserPasswordConfirmation] = useState("");
-    // Location search - City
+    const [hidePassword, setHidePassword] = useState(true);
+    const [hidePasswordConfirmation, setHidePasswordConfirmation] = useState(true);
+
+    // State Location
+    const [selectedProvinceId, setSelectedProvinceId] = useState(null);
+    const [provinceSearchText, setProvinceSearchText] = useState("");
+    
     const [citySearchText, setCitySearchText] = useState("");
     const [filteredCities, setFilteredCities] = useState([]);
     const [availableCities, setAvailableCities] = useState([]);
     const [selectedCityId, setSelectedCityId] = useState(null);
-    // Location search - City
-    const [selectedProvinceId, setSelectedProvinceId] = useState(null);
-    const [provinceSearchText, setProvinceSearchText] = useState("");
-    // Location search - District
+    
     const [districtSearchText, setDistrictSearchText] = useState("");
     const [filteredDistricts, setFilteredDistricts] = useState([]);
-    const [availableDistricts, setAvailableDistricts] = useState([]); // ... previous state declarations ...
+    const [availableDistricts, setAvailableDistricts] = useState([]);
 
-    // Add loading and error states
+    // State Management
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        let isMounted = true; // For cleanup
-        fetchCities({setError, setIsLoading, selectedProvinceId, setAvailableCities, isMounted});
-        return () => {
-            isMounted = false;
-        };
-    }, [selectedProvinceId]);
-
+    // Fetch Cities when Province changes
     useEffect(() => {
         let isMounted = true;
-        fetchDistricts({setError, setIsLoading, selectedCityId, isMounted, setAvailableDistricts});
-        return () => {
-            isMounted = false;
-        };
+        fetchCities({
+            setError, 
+            setIsLoading, 
+            selectedProvinceId, 
+            setAvailableCities, 
+            isMounted
+        });
+        return () => { isMounted = false; };
+    }, [selectedProvinceId]);
+
+    // Fetch Districts when City changes
+    useEffect(() => {
+        let isMounted = true;
+        fetchDistricts({
+            setError, 
+            setIsLoading, 
+            selectedCityId, 
+            isMounted, 
+            setAvailableDistricts
+        });
+        return () => { isMounted = false; };
     }, [selectedCityId]);
 
+    // City Search Handler
     const handleCitySearch = (text) => {
         const newText = text.trim();
-
+    
+        // Reset city and district if text is reduced
         if (newText.length < citySearchText.length) {
-            setCitySearchText("");
+            setCitySearchText(newText);
             setSelectedCityId(null);
             setDistrictSearchText("");
             return;
         }
 
-        setCitySearchText(newText);
-
-        // Use the newText parameter directly for filtering
+        // Filter cities
         const filtered = availableCities.filter((city) =>
             city.name.toLowerCase().includes(newText.toLowerCase())
         );
         setFilteredCities(newText === "" ? [] : filtered);
     };
 
+    // District Search Handler
     const handleDistrictSearch = (text) => {
         const newText = text.trim();
 
@@ -77,13 +101,16 @@ export default function RegisterScreen() {
 
         setDistrictSearchText(newText);
 
-        // Use the newText parameter directly for filtering
+        // Filter districts
         const filtered = availableDistricts.filter((district) =>
             district.name.toLowerCase().includes(newText.toLowerCase())
         );
         setFilteredDistricts(newText === "" ? [] : filtered);
     };
 
+   
+
+    // Registration Handler
     const handleRegistration = () => {
         const formData = {
             userEmail,
@@ -94,85 +121,94 @@ export default function RegisterScreen() {
             districtSearchText,
         };
 
-        const {success, data, error} = validateRegistration(formData);
+        const { success, data, error } = validateRegistration(formData);
 
         if (!success) {
-            // Display first error message
-            if (error && error.length > 0) {
-                alert(error[0].message);
-                return;
-            }
+            alert(error[0]?.message || "Registration failed");
             return;
         }
 
-        // If validation passes, proceed with registration
-        dispatch(
-            register({
-                email: data.userEmail,
-                password: data.userPassword,
-                province: data.provinceSearchText,
-                city: data.citySearchText,
-                district: data.districtSearchText,
-            })
-        );
+        dispatch(register({
+            email: data.userEmail,
+            password: data.userPassword,
+            province: data.provinceSearchText,
+            city: data.citySearchText,
+            district: data.districtSearchText,
+        }));
 
         router.push(ROUTES.AUTH.COMPLETING_REGISTER);
     };
+
     const handleCitySelection = (selectedCity) => {
         setCitySearchText(selectedCity.name);
         setSelectedCityId(selectedCity.id);
         setFilteredCities([]);
+      
     };
 
+    // District Selection Handler
     const handleDistrictSelection = (selectedDistrict) => {
         setDistrictSearchText(selectedDistrict.name);
         setFilteredDistricts([]);
     };
-
-    const renderCityListItem = ({item}) => (
+    // Render Methods
+    const renderCityListItem = ({ item }) => (
         <TouchableOpacity
-            className="p-5 bg-white border-b border-gray-400 w-full"
+            className="p-3 bg-white border-b border-gray-200"
             onPress={() => handleCitySelection(item)}
         >
-            <Text className="text-sm font-outfitSemiBold">{item.name}</Text>
+            <Text className="text-sm font-outfitRegular">{item.name}</Text>
         </TouchableOpacity>
     );
 
-    const renderDistrictListItem = ({item}) => (
+    const renderDistrictListItem = ({ item }) => (
         <TouchableOpacity
-            className="p-5 bg-white border-b border-gray-400 w-full"
+            className="p-3 bg-white border-b border-gray-200"
             onPress={() => handleDistrictSelection(item)}
         >
-            <Text className="text-sm font-outfitSemiBold">{item.name}</Text>
+            <Text className="text-sm font-outfitRegular">{item.name}</Text>
         </TouchableOpacity>
     );
 
     return (
-        <View className="flex-1 items-center justify-center bg-white">
-            <View className="w-full h-[70%] px-10 flex-1 justify-center">
-                <Text className="text-5xl font-outfitBold text-center my-12">
-                    Register
-                </Text>
+        <LinearGradient 
+            colors={['#F0FFF4', '#E6FFF4', '#D4FAF0']} 
+            className="flex-1"
+        >
+            <View className="w-full h-full px-6 flex-1 justify-center">
+                <Animated.View 
+                    entering={FadeInUp} 
+                    className="mb-10 items-center"
+                >
+                    <Text className="text-4xl font-outfitBold text-gray-800 mt-10">
+                        Create Account
+                    </Text>
+                    <Text className="text-gray-500 mt-2 text-center font-outfitLight">
+                        Join and Make Your Event Easier
+                    </Text>
+                </Animated.View>
+                
+                <View className="bg-white/80 rounded-2xl shadow-md p-6">
+                    <Animated.View entering={FadeInDown.delay(200)} className="mb-4">
+                        <Text className="text-gray-600 mb-2 font-outfitRegular">Email Address</Text>
+                        <View className="border border-gray-200 rounded-lg">
+                            <TextInput
+                                className="py-3 px-4 text-base text-gray-700 font-outfitRegular"
+                                placeholder="Enter your email"
+                                value={userEmail}
+                                onChangeText={setUserEmail}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                            />
+                        </View>
+                    </Animated.View>
 
-                <View className="flex flex-col gap-4 w-full items-center">
-                    <View className="flex flex-col gap-2 w-[90%]">
-                        <Text className="font-outfitRegular">Email</Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                            placeholder="Enter your email.."
-                            maxLength={50}
-                            onChangeText={setUserEmail}
-                            value={userEmail}
-                        />
-                    </View>
-                    <View className="flex flex-col gap-2 w-[90%]">
+                    <Animated.View entering={FadeInDown.delay(300)} className="mb-4">
                         <Text className="font-outfitRegular">Province</Text>
-                        <View
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full">
+                        <View className="border border-gray-200 rounded-lg">
                             <RNPickerSelect
-                                onValueChange={(value, index) => {
+                                onValueChange={(value) => {
                                     setSelectedProvinceId(value);
-                                    // If value exists, find the corresponding province and set its name
                                     if (value) {
                                         const selectedProvince = provinceData.find(
                                             (p) => p.value === value
@@ -182,33 +218,40 @@ export default function RegisterScreen() {
                                         setProvinceSearchText("");
                                     }
                                 }}
-                                placeholder={{label: "Select province", value: null}}
+                                placeholder={{ label: "Select province", value: null }}
                                 useNativeAndroidPickerStyle={false}
-                                pickerProps={{mode: "dropdown"}}
+                                pickerProps={{ mode: "dropdown" }}
                                 items={provinceData}
+                                style={{
+                                    inputAndroid: {
+                                        paddingVertical: 12,
+                                        paddingHorizontal: 16,
+                                        color: '#4A5568',
+                                        fontSize: 16,
+                                    },
+                                    inputIOS: {
+                                        paddingVertical: 12,
+                                        paddingHorizontal: 16,
+                                        color: '#4A5568',
+                                        fontSize: 16,
+                                    },
+                                }}
                             />
                         </View>
-                    </View>
-                    <View className="flex flex-row gap-2 w-[90%]">
-                        <View className="flex flex-col gap-2 w-[50%]">
-                            <Text
-                                className={
-                                    selectedProvinceId !== null
-                                        ? "font-outfitRegular"
-                                        : "font-outfitRegular opacity-50"
-                                }
-                            >
+                    </Animated.View>
+                    
+
+                    
+                    {/* <Animated.View entering={FadeInDown.delay(400)} className="mb-4 flex flex-row gap-1"> */}
+                    <View className="flex flex-row gap-1 mb-4">
+                        <View className="flex flex-col gap-2 w-1/2">
+                            <Text className={selectedProvinceId !== null ? "font-outfitRegular text-gray-600" : "font-outfitRegular text-gray-600"}>
                                 City
                             </Text>
                             <TextInput
                                 editable={selectedProvinceId !== null}
-                                // className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                                className={
-                                    selectedProvinceId !== null
-                                        ? "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                                        : "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full opacity-50"
-                                }
-                                placeholder="Enter your email.."
+                                className={selectedProvinceId !== null ? "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full" : "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full opacity-50"}
+                                placeholder="Enter city.."
                                 maxLength={50}
                                 onChangeText={handleCitySearch}
                                 value={citySearchText}
@@ -222,25 +265,15 @@ export default function RegisterScreen() {
                                 />
                             )}
                         </View>
-                        <View className="flex flex-col gap-2 w-[50%]">
-                            <Text
-                                className={
-                                    selectedCityId !== null
-                                        ? "font-outfitRegular"
-                                        : "font-outfitRegular opacity-50"
-                                }
-                            >
+
+                        <View className="flex flex-col gap-2 w-1/2">
+                            <Text className={selectedCityId !== null ? "font-outfitRegular text-gray-600" : "font-outfitRegular text-gray-600"}>
                                 District
                             </Text>
                             <TextInput
-                                // className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
                                 editable={selectedCityId !== null}
-                                className={
-                                    selectedCityId !== null
-                                        ? "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                                        : "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full opacity-50"
-                                }
-                                placeholder="Enter district"
+                                className={selectedCityId !== null ? "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full" : "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full opacity-50"}
+                                placeholder="Enter district.."
                                 onChangeText={handleDistrictSearch}
                                 value={districtSearchText}
                             />
@@ -254,66 +287,77 @@ export default function RegisterScreen() {
                             )}
                         </View>
                     </View>
+                    {/* </Animated.View> */}
+                    
 
-                    <View className="flex flex-col gap-2 w-[90%]">
-                        <Text>Password</Text>
-                        <MaterialCommunityIcons
-                            className="absolute right-4 top-[38px] "
-                            name="eye"
-                            color={"gray"}
-                            size={20}
-                        />
-                        <TextInput
-                            secureTextEntry={true}
-                            autoCorrect={false}
-                            value={userPassword}
-                            autoComplete="current-password"
-                            autoCapitalize="none"
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                            placeholder="Enter your password"
-                            maxLength={50}
-                            onChangeText={setUserPassword}
-                        />
-                    </View>
-                    <View className="flex flex-col gap-2 w-[90%]">
-                        <Text>Confirm Password</Text>
-                        <MaterialCommunityIcons
-                            className="absolute right-4 top-[38px] "
-                            name="eye"
-                            color={"gray"}
-                            size={20}
-                        />
-                        <TextInput
-                            secureTextEntry={true}
-                            autoCorrect={false}
-                            value={userPasswordConfirmation}
-                            autoComplete="current-password"
-                            autoCapitalize="none"
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                            placeholder="Enter your password"
-                            maxLength={50}
-                            onChangeText={setUserPasswordConfirmation}
-                        />
-                    </View>
-                </View>
-                <TouchableOpacity
-                    onPress={() => handleRegistration()}
-                    className="bg-[#00AA55] mx-auto w-[90%] mt-14 items-center justify-center px-8 py-3 rounded-full"
-                >
-                    <Text className="text-white text-xl font-outfitBold py-1.5">
-                        Register
-                    </Text>
-                </TouchableOpacity>
-                <Text className="text-center text-gray-500 text-xs mt-4 font-outfitRegular">
-                    Have an account?{" "}
-                    <Text
-                        className="text-blue-500"
-                        onPress={() => router.push(ROUTES.AUTH.LOGIN)}
+                    <Animated.View entering={FadeInDown.delay(500)} className="mb-4">
+                        <Text className="text-gray-600 mb-2 font-outfitRegular">Password</Text>
+                        <View className="border border-gray-200 rounded-lg relative">
+                            <TextInput
+                                className="py-3 px-4 pr-12 text-base text-gray-700 font-outfitRegular"
+                                placeholder="Enter password"
+                                secureTextEntry={hidePassword}
+                                value={userPassword}
+                                onChangeText={setUserPassword}
+                            />
+                            <TouchableOpacity 
+                                className="absolute right-4 top-1/2 transform -translate-y-1/2"
+                                onPress={() => setHidePassword(!hidePassword)}
+                            >
+                                <MaterialCommunityIcons
+                                    name={hidePassword ? "eye" : "eye-off"}
+                                    color="black"
+                                    size={24}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </Animated.View>
+                    
+
+                    <Animated.View entering={FadeInDown.delay(600)} className="mb-4">
+                        <Text className="text-gray-600 mb-2 font-outfitRegular">Confirm Password</Text>
+                        <View className="border border-gray-200 rounded-lg relative">
+                            <TextInput
+                                className="py-3 px-4 pr-12 text-base text-gray-700 font-outfitRegular"
+                                placeholder="Confirm your password"
+                                secureTextEntry={hidePasswordConfirmation}
+                                value={userPasswordConfirmation}
+                                onChangeText={setUserPasswordConfirmation}
+                            />
+                            <TouchableOpacity 
+                                className="absolute right-4 top-1/2 transform -translate-y-1/2"
+                                onPress={() => setHidePasswordConfirmation(!hidePasswordConfirmation)}
+                            >
+                                <MaterialCommunityIcons
+                                    name={hidePasswordConfirmation ? "eye" : "eye-off"}
+                                    color="black"
+                                    size={24}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </Animated.View>
+
+                    
+                    <TouchableOpacity
+                        onPress={handleRegistration}
+                        className="bg-[#10B981] rounded-full py-3 mt-6"
                     >
-                        Login
+                        <Text className="text-white text-center text-lg font-outfitBold">
+                            Register
+                        </Text>
+                    </TouchableOpacity>
+
+                    <Text className="text-center text-gray-500 text-sm mt-4 font-outfitRegular">
+                        Already have an account?{" "}
+                        <Text
+                            className="text-[#10B981] font-outfitBold"
+                            onPress={() => router.push(ROUTES.AUTH.LOGIN)}
+                        >
+                            Login
+                        </Text>
                     </Text>
-                </Text>
+                </View>
             </View>
-        </View>
+        </LinearGradient>
     );
 }
