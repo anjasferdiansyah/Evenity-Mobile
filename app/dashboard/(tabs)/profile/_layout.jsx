@@ -15,7 +15,7 @@ export default function _layout() {
                 }}
             />
             <Stack.Screen
-                name="changePassword"
+                name="change-password"
                 options={{
                     presentation: 'modal',
                 }}

@@ -11,7 +11,6 @@ import { eventSchema } from "@/helper/validator/schema";
 
 const MakeEventName = () => {
     const dispatch = useDispatch();
-    const [isInputValid, setIsInputValid] = useState(false);
 
     const {
         control,
