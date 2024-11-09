@@ -1,5 +1,5 @@
-import {FlatList, ScrollView, Text, TouchableOpacity, useWindowDimensions, View,} from "react-native";
-import React, {useEffect, useState} from "react";
+import {FlatList, RefreshControl, ScrollView, Text, TouchableOpacity, useWindowDimensions, View,} from "react-native";
+import React, {useCallback, useEffect, useState} from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
 import {useDispatch, useSelector} from "react-redux";
@@ -19,6 +19,19 @@ export default function CheckApprove() {
     const slideAnim = useSharedValue(0);
     const paddingHorizontal = 20;
     const itemWidth = (width - paddingHorizontal * 2) / 3;
+
+    // Add state for refresh
+    const [refreshing, setRefreshing] = useState(false);
+    // Create onRefresh callback
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        // Dispatch the action to fetch history events
+        dispatch(historyEventCustomer(id)).then(() => {
+            setRefreshing(false);
+        }).catch(() => {
+            setRefreshing(false);
+        });
+    }, [dispatch, id]);
 
     const handlePress = (item, index) => {
         setSelected(item);
@@ -208,6 +221,14 @@ export default function CheckApprove() {
                             item !== undefined && item.id !== undefined
                                 ? item.id.toString() + index.toString()
                                 : index.toString()
+                        }
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                                colors={['#00AA55']} // Optional: customize the loading indicator color
+                                tintColor="#00AA55" // iOS
+                            />
                         }
                     />
                 </View>

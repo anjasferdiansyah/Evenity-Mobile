@@ -2,12 +2,14 @@ import {ScrollView, Text, TouchableOpacity, View} from "react-native";
 import React from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import moment from "moment";
 import BottomPadding from "@/components/misc/BottomPadding";
+import {regenerateEvent} from "@/redux/slices/historyEvent";
 
 const InvoiceDetailUser = () => {
     const {selectedHistoryEvent} = useSelector((state) => state.historyEvent);
+    const dispatch = useDispatch();
 
     const formatDate = (date) => {
         return moment(date).format("DD MMM YYYY");
@@ -21,6 +23,13 @@ const InvoiceDetailUser = () => {
         (acc, item) => acc + (item.cost || 0),
         0
     );
+
+    function handleRegenerate(id) {
+        return () => {
+            console.log("id", id)
+            dispatch(regenerateEvent(id));
+        }
+    }
 
     return (
         <View className="flex-1 bg-white">
@@ -168,7 +177,8 @@ const InvoiceDetailUser = () => {
                     {selectedHistoryEvent?.eventDetailResponseList?.some(
                         (item) => item.approvalStatus === "REJECTED"
                     ) && (
-                        <TouchableOpacity className="bg-green-400 p-4 rounded-xl shadow-lg">
+                        <TouchableOpacity className="bg-green-400 p-4 rounded-xl shadow-lg"
+                            onPress={handleRegenerate(selectedHistoryEvent?.id)}>
                             <Text className="text-lg font-outfitRegular text-white">
                                 Regenerate
                             </Text>
