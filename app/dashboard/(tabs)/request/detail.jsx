@@ -1,4 +1,4 @@
-import {SafeAreaView, ScrollView, Text, TouchableOpacity, View} from 'react-native'
+import {SafeAreaView, ScrollView, Text, TouchableOpacity, View, RefreshControl} from 'react-native'
 import React from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
@@ -10,6 +10,16 @@ import BottomPadding from "@/components/misc/BottomPadding";
 export default function DetailRequest() {
     const {selectedRequest} = useSelector(state => state.request)
     const dispatch = useDispatch()
+    const [refreshing, setRefreshing] = useState(false);
+
+
+    const onRefresh = () => {
+
+        setRefreshing(true);
+
+        dispatch(fetchRequestDetail(selectedRequest?.eventDetailId))
+        .finally(() => setRefreshing(false));
+    };
 
     const formatedDate = (date) => {
         return moment(date).format('DD MMM YYYY')
@@ -84,6 +94,11 @@ export default function DetailRequest() {
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     className="flex-1"
+                    refreshControl={
+
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#10B981"]} />
+
+                    }
                 >
                     <View className="bg-white rounded-2xl p-6 shadow-md mb-6"
                         style={{
@@ -105,8 +120,8 @@ export default function DetailRequest() {
 
                 {/* Action Buttons */}
                 {selectedRequest?.approvalStatus === "PENDING" && (
-                    <View className="flex-row justify-between mb-6">
-                        <TouchableOpacity
+                    <View className="flex-row justify-between absolute bottom-[200px] left-6 right-6">
+                        <TouchableOpacity 
                             className="flex-1 mr-4 bg-[#10B981] items-center rounded-xl"
                             onPress={handleApprove(selectedRequest?.eventDetailId)}
                         >

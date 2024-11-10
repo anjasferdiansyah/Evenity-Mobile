@@ -12,6 +12,14 @@ export const fetchRequestLists = createAsyncThunk(
     }
 )
 
+export const fetchRequestDetail = createAsyncThunk(
+    'request/fetchRequestDetail',
+    async (id) => {
+        const response = await axios.get(`event/detail/${id}`)
+        return response.data.data
+    }
+)
+
 export const approveRequest = createAsyncThunk(
     'request/approveRequest',
     async (id) => {
@@ -46,6 +54,10 @@ const requestSlice = createSlice({
         builder
             .addCase(fetchRequestLists.fulfilled, (state, action) => {
                 state.requestList = action.payload;
+                state.status = "success";
+            })
+            .addCase(fetchRequestDetail.fulfilled, (state, action) => {
+                state.selectedRequest = action.payload;
                 state.status = "success";
             })
             .addCase(approveRequest.fulfilled, (state, action) => {

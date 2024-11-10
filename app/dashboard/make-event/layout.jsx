@@ -6,6 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import tailwind from "twrnc";
 import { useDispatch } from "react-redux";
 import { ROUTES } from "@/constant/ROUTES";
+import { resetRecommendedList, resetRegistMakeEvent } from "@/redux/slices/makeEventSlice";
 
 const MakeEventLayout = ({
     progress,
@@ -19,6 +20,12 @@ const MakeEventLayout = ({
 }) => {
     const dispatch = useDispatch();
 
+    const handleBack = () => {
+        dispatch(resetRegistMakeEvent());
+        dispatch(resetRecommendedList());
+        router.back();
+    };
+
     return (
         <SafeAreaView className="flex-1 bg-white">
             {/* Close Button */}
@@ -30,7 +37,7 @@ const MakeEventLayout = ({
                     backgroundColor: "red",
                     borderRadius: 50,
                     padding: 10,
-                    zIndex: 10, // Ensure it stays above other elements
+                    zIndex: 10,
                 }}
                 onPress={() => {
                     router.replace(ROUTES.DASHBOARD.INDEX);
@@ -57,34 +64,34 @@ const MakeEventLayout = ({
                     <TouchableOpacity
                         onPress={() => {
                             handleNext();
-                            router.push(ROUTES.DASHBOARD.EVENT.NEW.INDEX + "/" + nextRoute);
+                            router.push(`${ROUTES.DASHBOARD.EVENT.NEW.INDEX}/${nextRoute}`);
                         }}
-                        className={`bg-[#00AA55] mx-auto w-full items-center justify-center py-5 rounded-full ${
-                            !isInputValid && "opacity-50"
-                        }`}
+                        className={`bg-[#00AA55] mx-auto w-full items-center justify-center py-5 rounded-full ${!isInputValid && "opacity-50"}`}
                         disabled={!isInputValid}
                     >
                         <Text className="text-white text-xl font-bold">Next</Text>
                     </TouchableOpacity>
                 ) : nextInfor === "Make Event" ? (
-                    <>
+                    <View className="w-full px-10" style={tailwind`my-3 flex flex-col gap-5`}>
                         <TouchableOpacity
                             onPress={handleAccept}
-                            className="bg-[#00AA55] mx-auto w-full items-center justify-center py-2 rounded-full"
+                            className="bg-[#00AA55] mx-auto items-center justify-center py-3 rounded-full"
+                            style={tailwind`w-full`}
                         >
-                            <Text className="text-white text-xl font-outfitBold py-3">Accept</Text>
+                            <Text className="text-white text-xl font-outfitBold py-1.5">Accept</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={handleRegenerateVendor}
-                            className="mx-auto w-full items-center justify-center py-2 rounded-full bg-[#19ff8c] mt-5"
+                            className="mx-auto items-center justify-center py-3 rounded-full bg-[#19ff8c]"
+                            style={tailwind`w-full`}
                         >
-                            <Text className="text-white text-xl font-outfitBold py-3">Regenerate</Text>
+                            <Text className="text-white text-xl font-outfitBold py-1.5">Regenerate</Text>
                         </TouchableOpacity>
-                    </>
+                    </View>
                 ) : (
-                    <View className="flex flex-row justify-between">
+                    <View className="flex flex-row justify-between mt-12">
                         <TouchableOpacity
-                            onPress={() => router.back()}
+                            onPress={handleBack}
                             className="mx-auto w-[30%] items-center justify-center rounded-full bg-red-500 p-4"
                         >
                             <MaterialCommunityIcons name="chevron-left" size={24} color="white" />
@@ -94,9 +101,7 @@ const MakeEventLayout = ({
                                 handleNext();
                                 router.push(`/dashboard/make-event/${nextRoute}`);
                             }}
-                            className={`bg-[#00AA55] mx-auto w-[60%] items-center justify-center py-3 rounded-full ${
-                                !isInputValid && "opacity-50"
-                            }`}
+                            className={`bg-[#00AA55] mx-auto w-[60%] items-center justify-center py-3 rounded-full ${!isInputValid && "opacity-50"}`}
                             disabled={!isInputValid}
                         >
                             <Text className="text-white text-xl font-bold">Next</Text>

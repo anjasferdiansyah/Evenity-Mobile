@@ -1,11 +1,11 @@
-import {ScrollView, Text, TouchableOpacity, View, Dimensions} from "react-native";
-import React from "react";
+import {ScrollView, Text, TouchableOpacity, View, Dimensions, RefreshControl} from "react-native";
+import React, { useState } from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
 import {useDispatch, useSelector} from "react-redux";
 import moment from "moment";
 import BottomPadding from "@/components/misc/BottomPadding";
-import {regenerateEvent} from "@/redux/slices/historyEvent";
+import {fetchEventDetail, regenerateEvent} from "@/redux/slices/historyEvent";
 import Animated, {
     FadeInDown, 
     FadeInUp, 
@@ -20,6 +20,7 @@ const {width} = Dimensions.get('window');
 const InvoiceDetailUser = () => {
     const {selectedHistoryEvent} = useSelector((state) => state.historyEvent);
     const dispatch = useDispatch();
+    const [refreshing, setRefreshing] = useState(false);
 
     // Animasi scaling
     const scale = useSharedValue(1);
@@ -49,6 +50,19 @@ const InvoiceDetailUser = () => {
             dispatch(regenerateEvent(id));
         }
     }
+
+    const onRefresh = async () => {
+
+        setRefreshing(true);
+
+        try {
+            dispatch(fetchEventDetail(selectedHistoryEvent?.eventId)); // Fetch event details again
+        } catch (error) {
+            console.error("Failed to refresh event details:", error);
+        } finally {
+            setRefreshing(false);
+        }
+    };
 
     const DetailCard = ({title, children, style}) => (
         <Animated.View 
@@ -110,6 +124,13 @@ const InvoiceDetailUser = () => {
                 <ScrollView 
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{paddingBottom: 50}}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            colors={["#00AA55"]}
+                        />
+                    }
                 >
                     {/* Event Details in Modern Card Style */}
                     <DetailCard title="Event Name">

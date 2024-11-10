@@ -1,5 +1,5 @@
-import {Text, TouchableOpacity, View, ScrollView, Dimensions} from "react-native";
-import React from "react";
+import {Text, TouchableOpacity, View, ScrollView, Dimensions, RefreshControl} from "react-native";
+import React, { useState } from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
 import {useSelector} from "react-redux";
@@ -12,6 +12,7 @@ const {width} = Dimensions.get('window');
 
 const OrderDetailUser = () => {
     const {selectedInvoiceCustomer} = useSelector((state) => state.invoiceCustomer);
+    const [refreshing, setRefreshing] = useState(false);
 
     const formatDate = (date) => {
         return moment(date).format('DD MMM YYYY')
@@ -33,6 +34,24 @@ const OrderDetailUser = () => {
             console.log(error)
         }
     }
+
+    const onRefresh = async () => {
+
+        setRefreshing(true);
+
+        try {
+            await axios.get(`/invoice/${selectedInvoiceCustomer?.invoiceId}`);
+        } catch (error) {
+
+            console.log(error);
+
+        } finally {
+
+            setRefreshing(false);
+
+        }
+
+    };
 
     const DetailCard = ({title, children, style}) => (
         <Animated.View 
@@ -94,6 +113,13 @@ const OrderDetailUser = () => {
                 <ScrollView 
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{paddingBottom: 50}}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            colors={['#00AA55']}
+                        />
+                    }
                 >
                     {/* Order Information */}
                     <DetailCard title="Invoice ID">
@@ -137,7 +163,7 @@ const OrderDetailUser = () => {
                     <DetailCard title="Payment Status">
                         <Text 
                             className={`text-xl font-outfitSemiBold ${
-                                selectedInvoiceCustomer?.paymentStatus === 'PAID' 
+                                selectedInvoiceCustomer?.paymentStatus === 'COMPLETE' 
                                 ? 'text-green-600' 
                                 : 'text-red-600'
                             }`}
@@ -164,7 +190,7 @@ const OrderDetailUser = () => {
                                     <Text className="text-lg font-outfitSemiBold text-gray-800 mb-1">
                                         {item.productName}
                                     </Text>
-                                    <Text 
+                                    {/* <Text 
                                         className={`text-sm font-outfitRegular ${
                                             item.approvalStatus === 'APPROVED' 
                                             ? 'text-green-600' 
@@ -172,7 +198,7 @@ const OrderDetailUser = () => {
                                         }`}
                                     >
                                         Approval Status: {item.approvalStatus}
-                                    </Text>
+                                    </Text> */}
                                 </View>
                                 <Text className="text-lg font-outfitBold text-gray-800">
                                     {`Rp ${item.cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}

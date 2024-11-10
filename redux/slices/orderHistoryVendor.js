@@ -11,6 +11,14 @@ export const loadOrderHistoryVendor = createAsyncThunk(
     }
 )
 
+export const loadOrderHistoryDetailVendor = createAsyncThunk(
+    'orderHistoryVendor/loadOrderHistoryDetailVendor',
+    async (id) => {
+        const response = await axios.get(`event/detail/${id}`)
+        return response.data.data
+    }
+)
+
 export const getEventOnVendor = createAsyncThunk(
     'orderHistoryVendor/getEventOnVendor',
     async (eventId) => {
@@ -41,6 +49,10 @@ const orderHistoryVendorSlice = createSlice({
             })
             .addCase(loadOrderHistoryVendor.fulfilled, (state, action) => {
                 state.orderHistoryVendor = action.payload;
+                state.status = "success";
+            })
+            .addCase(loadOrderHistoryDetailVendor.fulfilled, (state, action) => {
+                state.selectedOrderHistoryVendor = action.payload;
                 state.status = "success";
             })
             .addCase(getEventOnVendor.fulfilled, (state, action) => {

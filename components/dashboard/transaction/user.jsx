@@ -1,3 +1,12 @@
+import React, { useCallback, useEffect, useState } from "react";
+import { 
+    FlatList, 
+    Text, 
+    TouchableOpacity, 
+    View, 
+    StatusBar, 
+    RefreshControl
+} from "react-native";
 import React, {useEffect, useState} from "react";
 import {FlatList, StatusBar, Text, TouchableOpacity, View} from "react-native";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
@@ -15,23 +24,34 @@ const OrderHistoryUser = () => {
 
     const [selected, setSelected] = useState("All");
 
+
+    const [refreshing, setRefreshing] = useState(false);
+
     useEffect(() => {
+        fetchHistoryOrderCustomer();
+    }, []);
+
+    const fetchHistoryOrderCustomer = useCallback(() => {
         dispatch(loadInvoiceOrderCustomer(id));
     }, [dispatch, id]);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchHistoryOrderCustomer();
+        setTimeout(() => setRefreshing(false), 2000);
+    }, [fetchHistoryOrderCustomer]);
+
+
 
     const filteredItems =
         selected === "All"
             ? invoiceCustomer
-            : selected === "Approved"
+            : selected === "UNPAID"
                 ? invoiceCustomer.filter((item) =>
-                    item.invoiceDetailResponseList?.every(
-                        (detail) => detail.approvalStatus === "APPROVED"
-                    )
+                    item.paymentStatus === "UNPAID"
                 )
                 : invoiceCustomer.filter((item) =>
-                    item.invoiceDetailResponseList?.some(
-                        (detail) => detail.approvalStatus !== "APPROVED"
-                    )
+                    item.paymentStatus === "COMPLETE"
                 );
 
     const formatedDate = (date) => moment(date).format('DD MMM YYYY');
@@ -108,7 +128,7 @@ const OrderHistoryUser = () => {
 
             <View className="px-6 mb-4">
                 <View className="flex-row justify-between bg-gray-100 rounded-full p-1">
-                    {["All", "Approved", "Failed"].map((item) => (
+                    {["All", "UNPAID", "COMPLETE"].map((item) => (
                         <TouchableOpacity
                             key={item}
                             onPress={() => setSelected(item)}
@@ -118,11 +138,11 @@ const OrderHistoryUser = () => {
                                     : "bg-transparent"
                             }`}
                         >
-                            <Text
-                                className={`font-outfitBold ${
-                                    selected === item
-                                        ? "text-white"
-                                        : "text-gray-600"
+                            <Text 
+                                className={`font-outfitBold capitalize ${
+                                    selected === item 
+                                    ? "text-white" 
+                                    : "text-gray-600"
                                 }`}
                             >
                                 {item}
@@ -136,6 +156,15 @@ const OrderHistoryUser = () => {
                 data={filteredItems}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
+                refreshing={refreshing}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        colors={["#00AA55"]}
+                    />}
+                onRefresh={onRefresh}
+
                 ListEmptyComponent={() => (
                     <View className="flex-1 items-center justify-center px-6 mt-20">
                         <View

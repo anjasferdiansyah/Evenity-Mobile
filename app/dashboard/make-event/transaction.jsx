@@ -58,6 +58,10 @@ const MakeEventTransactionNote = () => {
             categoryProduct: selectedDetailCategories,
             previousProduct: listSelected,
         };
+        console.log("newEventData", newEventData);
+
+        dispatch(resetRecommendedList());
+
         dispatch(regenerateEvent(newEventData));
     };
 
