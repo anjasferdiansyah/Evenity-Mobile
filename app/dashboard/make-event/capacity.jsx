@@ -4,41 +4,39 @@ import {useDispatch} from "react-redux";
 import tailwind from "twrnc";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
 import {registMakeEvent} from "@/redux/slices/makeEventSlice";
+import {useForm, Controller} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {eventCapacitySchema} from "@/helper/validator/schema";
 
 const MakeEventCapacity = () => {
-    const [capacityEvent, setCapacityEvent] = useState(0);
+  
     const dispatch = useDispatch();
-    const [isInputValid, setIsInputValid] = useState(false);
 
-    const handleMakeEvent = () => {
-        if (!capacityEvent || parseInt(capacityEvent) <= 0) {
-            setIsInputValid(false);
-            Alert.alert("Invalid Input", "Please enter a valid event capacity.");
 
-        } else {
-            setIsInputValid(true);
+    const {
+        control,
+        handleSubmit,
+        formState: {errors, isValid},
+    } = useForm({
+        resolver: zodResolver(eventCapacitySchema),
+    });
+
+    const onSubmit = (data) => {
+  
             dispatch(
                 registMakeEvent({
-                    participant: parseInt(capacityEvent),
+                    participant: parseInt(data.capacityEvent),
                 })
             );
-        }
+        
     };
-
-    useEffect(() => {
-        if (capacityEvent) {
-            setIsInputValid(true);
-        } else {
-            setIsInputValid(false);
-        }
-    }, [capacityEvent]);
 
     return (
         <MakeEventLayout
             progress={80}
             nextRoute="vendor"
-            handleNext={handleMakeEvent}
-            isInputValid={isInputValid}
+            handleNext={handleSubmit(onSubmit)}
+            isInputValid={isValid}
         >
             <View className="px-10" style={tailwind`mt-5`}>
                 <Text className="text-6xl font-outfitSemiBold" style={tailwind``}>
@@ -52,15 +50,20 @@ const MakeEventCapacity = () => {
             <View className="flex flex-col gap-4 w-full mt-12 px-10">
                 <View className="flex flex-col gap-2">
                     <Text className="font-outfitRegular">Event Capacity</Text>
-                    <TextInput
-                        className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                        placeholder="Enter your event capacity"
-                        keyboardType="numeric"
-                        onChangeText={(value) => {
-                            const numericValue = value.replace(/[^0-9]/g, "");
-                            setCapacityEvent(numericValue);
-                        }}
+                    <Controller
+                        control={control}
+                        name="capacityEvent"
+                        render={({field: {onChange, value}}) => (
+                            <TextInput
+                                className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+                                placeholder="Enter your event capacity"
+                                keyboardType="numeric"
+                                onChangeText={onChange}
+                                value={value}
+                            />
+                        )}
                     />
+                    {errors.capacityEvent && <Text className="text-red-500">{errors.capacityEvent.message}</Text>}
                 </View>
             </View>
         </MakeEventLayout>

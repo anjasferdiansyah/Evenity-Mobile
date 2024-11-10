@@ -109,8 +109,16 @@ const MakeEventTransactionNote = () => {
 
         console.log("eventData body", eventData);
 
-        dispatch(acceptAndMakeEvent(eventData));
-        router.replace(`/dashboard/transaction`);
+        try {
+            dispatch(acceptAndMakeEvent(eventData));
+        // router.replace(`/dashboard/transaction`);
+            if(makeEventData){
+                router.replace(`/dashboard/transaction`);
+            }
+        } catch (error) {
+            console.error("Error accepting make event:", error);
+        }
+        
     };
 
     useEffect(() => {

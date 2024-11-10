@@ -32,7 +32,7 @@ const MakeEventLayout = ({
                     padding: 10,
                 }}
                 onPress={() => {
-                    router.back();
+                    router.replace(ROUTES.DASHBOARD.INDEX); // router.back();
                 }}
             >
                 <MaterialCommunityIcons name="close" size={24} color="white"/>
