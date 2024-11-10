@@ -1,16 +1,9 @@
-import {Text, TextInput, TouchableOpacity, View,} from "react-native";
+import {Text, TextInput, TouchableOpacity, View, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView} from "react-native";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {router} from "expo-router";
+import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import { clearProfile, editVendorProfile, fetchUserProfile } from "@/redux/slices/profileSlice";
-
-const provinceData = [
-    {label: "JAWA BARAT", value: "32", name: "JAWA BARAT"},
-    {label: "JAWA TENGAH", value: "33", name: "JAWA TENGAH"},
-    {label: "JAWA TIMUR", value: "35", name: "JAWA TIMUR"},
-    {label: "DKI JAKARTA", value: "31", name: "DKI JAKARTA"},
-    {label: "D.I YOGYAKARTA", value: "34", name: "D.I YOGYAKARTA"},
-];
 
 export default function EditProfileVendor() {
     const [name, setName] = useState("");
@@ -32,9 +25,7 @@ export default function EditProfileVendor() {
             setAddress(userInfo?.detail.address || "")
             setOwnerName(userInfo?.detail.owner || "")
         }
-        
     }, [userInfo, dispatch]);
-
 
     const handleEditProfile = async () => {
         const newRegisterData = {
@@ -55,71 +46,95 @@ export default function EditProfileVendor() {
         } catch (error) {
             console.log(error)
         }
-
     }
 
-    return (
-        <View className="flex-1 items-center justify-center bg-white">
-            <View className="w-full p-10">
-                <Text className="text-2xl font-outfitBold w-full">
-              Edit Profile
-                </Text>
-                <View className="flex flex-col gap-4 py-safe-or-12">
-                    <View className="flex flex-col gap-2">
-                        <Text className="font-outfitRegular text-gray-500">Name</Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                            placeholder="Enter name.."
-                            onChangeText={(text) => setName(text)}
-                            value={name}
-
-                        />
-                    </View>
-                    <View className="flex flex-col gap-2">
-                        <Text className="font-outfitRegular text-gray-500">
-                      Phone Number
-                        </Text>
-                        <TextInput
-      
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                            placeholder="Enter phone number"
-                            onChangeText={(text) => setPhoneNumber(text)}
-                            value={phoneNumber}
-                        />
-                    </View>
-                    <View className="flex flex-col gap-2">
-                        <Text className="font-outfitRegular text-gray-500">
-                      Address
-                        </Text>
-                        <TextInput
-                     
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                            placeholder="Enter address detail"
-                            onChangeText={(text) => setAddress(text)}
-                            value={address}
-                        />
-                    </View>
-                    <View className="flex flex-col gap-2">
-                        <Text className="font-outfitRegular text-gray-500">
-                      Owner Name
-                        </Text>
-                        <TextInput
-                     
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                            placeholder="Enter address detail"
-                            onChangeText={(text) => setOwnerName(text)}
-                            value={ownerName}
-                        />
-                    </View>
-                    <TouchableOpacity
-                        onPress={handleEditProfile}
-                        className="bg-[#00AA55] mx-auto w-[90%] mt-12 items-center justify-center px-8 py-3 rounded-full"
-
-                    >
-                        <Text className="text-white text-xl font-outfitBold">Save</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+    const renderInput = (label, value, onChangeText, placeholder) => (
+        <View className="mb-4">
+            <Text className="text-sm font-outfitRegular text-[#6B7280] mb-2">{label}</Text>
+            <TextInput
+                className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl px-4 py-3 text-[#1F2937] text-base font-outfitRegular"
+                placeholder={placeholder}
+                placeholderTextColor="#9CA3AF"
+                onChangeText={onChangeText}
+                value={value}
+            />
         </View>
+    )
+
+    return (
+        <SafeAreaView className="flex-1 bg-white">
+            <KeyboardAvoidingView 
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                className="flex-1"
+            >
+                <View className="flex-1 px-6 pt-6">
+                    {/* Header */}
+                    <View className="flex-row items-center mb-6 mt-10">
+                        <TouchableOpacity 
+                            onPress={() => router.back()} 
+                            className="mr-4 p-2 rounded-full bg-[#F3F4F6]"
+                        >
+                            <AntDesignIcons name='arrowleft' size={20} color={'#374151'}/>
+                        </TouchableOpacity>
+                        <Text className="text-2xl font-outfitSemiBold text-[#111827]">
+                            Edit Profile
+                        </Text>
+                    </View>
+
+                    {/* Content */}
+                    <ScrollView 
+                        showsVerticalScrollIndicator={false}
+                        className="flex-1"
+                    >
+                        <View 
+                            className="bg-white rounded-2xl p-6 shadow-md"
+                            style={{
+                                shadowColor: "#000",
+                                shadowOffset: { width: 0, height: 2 },
+                                shadowOpacity: 0.1,
+                                shadowRadius: 4,
+                                elevation: 2
+                            }}
+                        >
+                            {renderInput(
+                                "Name", 
+                                name, 
+                                (text) => setName(text), 
+                                "Enter your name"
+                            )}
+
+                            {renderInput(
+                                "Phone Number", 
+                                phoneNumber, 
+                                (text) => setPhoneNumber(text), 
+                                "Enter your phone number"
+                            )}
+
+                            {renderInput(
+                                "Address", 
+                                address, 
+                                (text) => setAddress(text), 
+                                "Enter your address"
+                            )}
+
+                            {renderInput(
+                                "Owner Name", 
+                                ownerName, 
+                                (text) => setOwnerName(text), 
+                                "Enter owner name"
+                            )}
+                        </View>
+
+                        {/* Save Button */}
+                        <TouchableOpacity
+                            onPress={handleEditProfile}
+                            className="bg-[#10B981] mt-6 items-center justify-center py-4 rounded-xl"
+                        >
+                            <Text className="text-white text-base font-bold">Save Changes</Text>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     )
 }

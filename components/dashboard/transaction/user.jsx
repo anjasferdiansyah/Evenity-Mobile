@@ -1,48 +1,32 @@
-import {FlatList, Text, TouchableOpacity, useWindowDimensions, View,} from "react-native";
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
+import { 
+    FlatList, 
+    Text, 
+    TouchableOpacity, 
+    View, 
+    StatusBar 
+} from "react-native";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
-import {router} from "expo-router";
-import {useDispatch, useSelector} from "react-redux";
-import Animated, {useAnimatedStyle, useSharedValue, withTiming,} from "react-native-reanimated";
+import { router } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import {loadInvoiceOrderCustomer, setSelectedInvoiceCustomer} from "@/redux/slices/invoiceCustomerSlice";
-import {SafeAreaView} from "react-native-safe-area-context";
-import {ROUTES} from "@/constant/ROUTES";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ROUTES } from "@/constant/ROUTES";
+import { 
+    loadInvoiceOrderCustomer, 
+    setSelectedInvoiceCustomer 
+} from "@/redux/slices/invoiceCustomerSlice";
 
 const OrderHistoryUser = () => {
     const dispatch = useDispatch();
-
-    const {id} = useSelector((state) => state.auth)
-    // const { ordersUser  } = useSelector((state) => state.orderUser)
-    const {invoiceCustomer} = useSelector((state) => state.invoiceCustomer)
-
-    // console.log("invoiceCustomer", invoiceCustomer)
-
-    const {width} = useWindowDimensions();
+    const { id } = useSelector((state) => state.auth);
+    const { invoiceCustomer } = useSelector((state) => state.invoiceCustomer);
 
     const [selected, setSelected] = useState("All");
 
-    const slideAnim = useSharedValue(0);
-    const paddingHorizontal = 25;
-    const itemWidth = (width - paddingHorizontal * 2) / 3;
-
-    const handlePress = (item, index) => {
-        setSelected(item);
-        slideAnim.value = withTiming(index * itemWidth, {duration: 300});
-    };
-
-    const animatedIndicatorStyle = useAnimatedStyle(() => ({
-        transform: [{translateX: slideAnim.value}],
-    }));
-
-    // useEffect(() => {
-    //   dispatch(historyOrderCustomer(id));
-
-    // }, []);
-
     useEffect(() => {
-        dispatch(loadInvoiceOrderCustomer(id))
-    }, [dispatch, id])
+        dispatch(loadInvoiceOrderCustomer(id));
+    }, [dispatch, id]);
 
     const filteredItems =
         selected === "All"
@@ -59,127 +43,143 @@ const OrderHistoryUser = () => {
                     )
                 );
 
-    // console.log(invoiceCustomer)
-
-    const formatedDate = (date) => {
-        return moment(date).format('DD MMM YYYY')
-    }
+    const formatedDate = (date) => moment(date).format('DD MMM YYYY');
 
     const handleSelectedDetail = (item) => {
-        dispatch(setSelectedInvoiceCustomer(item))
-        router.push(ROUTES.DASHBOARD.TRANSACTION.DETAIL)
-    }
+        dispatch(setSelectedInvoiceCustomer(item));
+        router.push(ROUTES.DASHBOARD.TRANSACTION.DETAIL);
+    };
 
-
-    const renderItem = ({item}) => (
+    const renderItem = ({ item }) => (
         <TouchableOpacity
             onPress={() => handleSelectedDetail(item)}
-            key={item.id}
-            style={{
-                shadowColor: "#000",
-                shadowOpacity: 0.2,
-                shadowOffset: {width: 0, height: 2},
-                shadowRadius: 4,
-                elevation: 4,
-                padding: 10,
-            }}
+            className="mb-4 px-6"
         >
-            <View
-                className={`flex flex-row justify-between items-center p-5 ${
-                    item.paymentStatus === "COMPLETE" ? "bg-green-400/20" : "bg-red-400/20"
-                } rounded-xl`}
+            <View 
+                className={`relative overflow-hidden rounded-3xl ${
+                    item.paymentStatus === "COMPLETE" 
+                    ? "bg-green-500/10" 
+                    : "bg-red-500/10"
+                }`}
             >
-                <View>
-                    <Text className="text-xl font-outfitBold text-gray-800">
-                        {item.eventName}
-                    </Text>
-                    <Text className="text-sm font-outfitRegular text-gray-500">
-                        {formatedDate(item.startDate)}
-                    </Text>
-                </View>
+                {/* Gradient Overlay */}
+                <View 
+                    className={`absolute inset-0 opacity-10 ${
+                        item.paymentStatus === "COMPLETE" 
+                        ? "bg-green-500" 
+                        : "bg-red-500"
+                    }`} 
+                />
 
-                <View className="p-3 bg-white rounded-full">
-                    <AntDesignIcons
-                        name="right"
-                        size={24}
-                        color={item.paymentStatus === "COMPLETE" ? "#00AA55" : "red"}
-                    />
-                </View>
-            </View>
-        </TouchableOpacity>
-    )
-
-
-    return (
-        <SafeAreaView className="flex-1 bg-gray-50">
-            <View className="w-full h-full px-6">
-                <View className="flex flex-col items-center">
-                    <Text className="text-3xl font-outfitBold text-center text-gray-800 mb-1">
-                        History
-                    </Text>
-                    <View className="flex flex-col items-center">
-                        <Text className="text-5xl font-outfitBold text-center text-[#00AA55]">
-                            Transactions
+                <View className="flex flex-row justify-between items-center p-5">
+                    <View className="flex-1 pr-4">
+                        <Text className="text-xl font-outfitBold text-gray-800 mb-1">
+                            {item.eventName}
+                        </Text>
+                        <Text className="text-sm font-outfitRegular text-gray-600">
+                            {formatedDate(item.startDate)}
                         </Text>
                     </View>
-                </View>
 
-                <View className="mt-6">
-                    <View className="flex flex-row justify-around relative bg-gray-100 p-4 rounded-full">
-                        {["All", "Approved", "Failed"].map((item, index) => (
-                            <TouchableOpacity
-                                key={item}
-                                onPress={() => handlePress(item, index)}
-                                style={{
-                                    width: itemWidth,
-                                    alignItems: "center",
-                                    paddingVertical: 2,
-                                }}
-                            >
-                                <Text
-                                    style={{
-                                        color: selected === item ? "white" : "black",
-                                        fontWeight: "bold",
-                                        fontSize: 16,
-                                        backgroundColor:
-                                            selected === item ? "#00AA55" : "transparent",
-                                        paddingHorizontal: 15,
-                                        paddingVertical: 5,
-                                        borderRadius: 15,
-                                    }}
-                                >
-                                    {item}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
-
-                        <Animated.View
-                            style={[
-                                animatedIndicatorStyle,
-                                {
-                                    position: "absolute",
-                                    bottom: -2,
-                                    left: selected === "All" ? 25 : itemWidth - 120,
-                                    width: itemWidth - 25, // Adjust this value based on your design
-                                    height: 3,
-                                    backgroundColor: "#00AA55",
-                                    borderRadius: 2,
-                                },
-                            ]}
+                    <View 
+                        className={`p-3 rounded-full ${
+                            item.paymentStatus === "COMPLETE" 
+                            ? "bg-green-500/20" 
+                            : "bg-red-500/20"
+                        }`}
+                    >
+                        <AntDesignIcons
+                            name="right"
+                            size={24}
+                            color={item.paymentStatus === "COMPLETE" ? "#00AA55" : "red"}
                         />
                     </View>
                 </View>
-
-
-                <View className="list-history space-y-4 mt-6">
-                    <FlatList
-                        data={filteredItems}
-                        renderItem={renderItem}
-                        keyExtractor={(item, index) => index}
-                    />
-                </View>
-
             </View>
+        </TouchableOpacity>
+    );
+
+    return (
+        <SafeAreaView className="flex-1 bg-white">
+            <StatusBar barStyle="dark-content" />
+            
+            {/* Elegant Header */}
+            <View className="px-6 pt-4 pb-6">
+                <View className="flex-row justify-between items-center">
+                    <View>
+                        <Text className="text-4xl font-outfitBold text-gray-800">
+                            Transactions
+                        </Text>
+                        <Text className="text-base font-outfitRegular text-gray-500 mt-1">
+                            Your history transaction
+                        </Text>
+                    </View>
+                    {/* <TouchableOpacity className="bg-gray-100 p-3 rounded-full">
+                        <AntDesignIcons 
+                            name="filter" 
+                            size={24} 
+                            color="#00AA55" 
+                        />
+                    </TouchableOpacity> */}
+                </View>
+            </View>
+
+            {/* Modern Filter */}
+            <View className="px-6 mb-4">
+                <View className="flex-row justify-between bg-gray-100 rounded-full p-1">
+                    {["All", "Approved", "Failed"].map((item) => (
+                        <TouchableOpacity
+                            key={item}
+                            onPress={() => setSelected(item)}
+                            className={`flex-1 items-center py-3 rounded-full ${
+                                selected === item 
+                                ? "bg-[#00AA55]" 
+                                : "bg-transparent"
+                            }`}
+                        >
+                            <Text 
+                                className={`font-outfitBold ${
+                                    selected === item 
+                                    ? "text-white" 
+                                    : "text-gray-600"
+                                }`}
+                            >
+                                {item}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </View>
+
+            {/* List dengan Empty State Elegan */}
+            <FlatList
+                data={filteredItems}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+                ListEmptyComponent={() => (
+                    <View className="flex-1 items-center justify-center px-6 mt-20">
+                        <View 
+                            className="w-32 h-32 rounded-full bg-gray-100 
+                            items-center justify-center mb-6"
+                        >
+                            <AntDesignIcons 
+                                name="inbox" 
+                                size={64} 
+                                color="#00AA55" 
+                            />
+                        </View>
+                        <Text className="text-2xl font-outfitBold text-gray-800 mb-2 text-center">
+                            No Transactions
+                        </Text>
+                        <Text className="text-base font-outfitRegular text-gray-500 text-center">
+                            Your recent transactions will appear here when you make a purchase
+                        </Text>
+                    </View>
+                )}
+                contentContainerStyle={{ 
+                    paddingBottom: 100 
+                }}
+            />
         </SafeAreaView>
     );
 };

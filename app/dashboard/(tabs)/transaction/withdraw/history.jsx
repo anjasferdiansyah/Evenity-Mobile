@@ -1,23 +1,18 @@
-import {FlatList, Text, TouchableOpacity, View} from 'react-native'
+import {FlatList, Text, TouchableOpacity, View, SafeAreaView} from 'react-native'
 import React, {useEffect} from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
-import tailwind from 'twrnc'
 import {router} from "expo-router";
 import {useDispatch, useSelector} from 'react-redux';
 import {loadWithdrawHistory} from '@/redux/slices/withdrawHistorySlice';
 import moment from 'moment'
 
-
 export default function WithdrawHistoryScreen() {
-
-
     const dispatch = useDispatch()
     const {withdrawHistory, status} = useSelector(state => state.withdrawHistory)
 
     useEffect(() => {
         dispatch(loadWithdrawHistory())
     }, [dispatch])
-
 
     const formatDate = (date) => {
         return moment(date).format('DD MMM YYYY')
@@ -27,33 +22,69 @@ export default function WithdrawHistoryScreen() {
         return `Rp ${amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`;
     }
 
+    const renderWithdrawItem = ({item}) => {
+        if (item.amount > 0) return (
+            <View 
+                className="bg-white rounded-2xl mb-4 p-5 shadow-md"
+                style={{
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 4,
+                    elevation: 2
+                }}
+            >
+                <View className="flex-row justify-between items-center mb-3">
+                    <Text className="text-base font-semibold text-[#666]">
+                        {formatDate(item.date)}
+                    </Text>
+                    <Text 
+                        className={`
+                            px-3 py-1 rounded-full text-xs 
+                            ${item.status === 'Success' 
+                                ? 'bg-green-100 text-green-700' 
+                                : 'bg-yellow-100 text-yellow-700'
+                            }
+                        `}
+                    >
+                        {item.status}
+                    </Text>
+                </View>
+                <Text className="text-2xl font-bold text-[#333] mb-2">
+                    {formatAmount(item.amount)}
+                </Text>
+                <Text className="text-base text-[#666]">
+                    {item.account}
+                </Text>
+            </View>
+        )
+    }
 
     return (
-        <View className='flex-1 justify-center items-center bg-white'>
-            <View className='w-full h-full pt-20 px-10'>
-                <TouchableOpacity onPress={() => router.back()} className="p-2 bg-[#00F279] rounded-full self-start">
-                    <AntDesignIcons name='arrowleft' size={20} color={'white'}/>
-                </TouchableOpacity>
-                <View className="mt-10">
-                    <Text className="text-3xl font-outfitBold text-center mb-8">Withdraw History</Text>
+        <SafeAreaView className="flex-1 bg-[#F5F7FA]">
+            <View className="flex-1 px-6 pt-6">
+                {/* Header */}
+                <View className="flex-row items-center mb-8 mt-10">
+                    <TouchableOpacity 
+                        onPress={() => router.back()} 
+                        className="mr-4 p-2 rounded-full bg-[#F0F0F0]"
+                    >
+                        <AntDesignIcons name='arrowleft' size={20} color={'#333'}/>
+                    </TouchableOpacity>
+                    <Text className="text-2xl font-outfitBold text-[#333]">
+                        Withdraw History
+                    </Text>
                 </View>
-                <View className="h-[60%] w-full overflow-visible">
-                    <FlatList
-                        data={withdrawHistory}
-                        renderItem={({item}) => {
-                            if (item.amount > 0) return (
-                                <View className="p-5 bg-[#00F279] rounded-2xl mb-4" style={tailwind`shadow-2xl`}>
-                                    <Text
-                                        className="text-xl font-outfitSemiBold text-white">{formatDate(item.date)}</Text>
-                                    <Text
-                                        className="text-3xl font-outfitBold text-white">{formatAmount(item.amount)}</Text>
-                                    <Text className="text-xl font-outfitSemiBold text-white">{item.status}</Text>
-                                    <Text className="text-xl font-outfitSemiBold text-white py-2">{item.account}</Text>
-                                </View>
-                            )
-                        }}/>
-                </View>
+
+                {/* History List */}
+                <FlatList
+                    data={withdrawHistory}
+                    renderItem={renderWithdrawItem}
+                    keyExtractor={(item, index) => index.toString()}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{paddingBottom: 20}}
+                />
             </View>
-        </View>
+        </SafeAreaView>
     )
 }

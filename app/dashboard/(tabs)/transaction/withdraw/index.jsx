@@ -1,4 +1,4 @@
-import {ActivityIndicator, Alert, Text, TextInput, TouchableOpacity, View} from 'react-native'
+import {ActivityIndicator, Alert, Text, TextInput, TouchableOpacity, View, SafeAreaView} from 'react-native'
 import React, {useEffect, useState} from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import RNPickerSelect from 'react-native-picker-select';
@@ -8,19 +8,13 @@ import {getBankAccount, getListBank} from '@/redux/slices/withdrawHistorySlice';
 import {Controller, useForm} from 'react-hook-form';
 
 export default function WithdrawNextScreen() {
-
-
     const dispatch = useDispatch();
-
-    const {listBank, status, isValidBankAccount} = useSelector(state => state.withdrawHistory)
-
+    const {listBank, status} = useSelector(state => state.withdrawHistory)
     const [isVerifying, setIsVerifying] = useState(false);
-
     const {control, handleSubmit, formState: {errors}} = useForm();
 
     useEffect(() => {
         dispatch(getListBank())
-
     }, [dispatch])
 
     const mapToLabelAndValue = (list) => {
@@ -51,17 +45,25 @@ export default function WithdrawNextScreen() {
         }
     };
 
-
     return (
-        <View className="flex-1 items-center justify-center bg-white">
-            <View className="w-full h-full pt-20 px-10">
-                <TouchableOpacity onPress={() => router.back()} className="p-2 bg-[#00F279] rounded-full self-start">
-                    <AntDesignIcons name='arrowleft' size={20} color={'white'}/>
-                </TouchableOpacity>
-                <View className="mt-14">
-                    <Text className="text-3xl font-outfitBold text-center">Withdraw</Text>
-                    <View className="flex flex-col gap-2">
-                        <Text className="text-xl font-outfitRegular text-gray-500 mt-12">Bank</Text>
+        <SafeAreaView className="flex-1 bg-white">
+            <View className="flex-1 px-6 pt-6">
+                {/* Header */}
+                <View className="flex-row items-center mb-8 mt-10">
+                    <TouchableOpacity 
+                        onPress={() => router.back()} 
+                        className="mr-4 p-2 rounded-full bg-[#F0F0F0]"
+                    >
+                        <AntDesignIcons name='arrowleft' size={20} color={'#333'}/>
+                    </TouchableOpacity>
+                    <Text className="text-2xl font-outfitBold text-[#333]">Withdraw</Text>
+                </View>
+
+                {/* Form Container */}
+                <View className="space-y-6">
+                    {/* Bank Selection */}
+                    <View>
+                        <Text className="text-base font-outfitBold text-[#666] mb-2">Bank</Text>
                         {status === "loading" ? (
                             <ActivityIndicator size="small" color="#00F279"/>
                         ) : (
@@ -70,22 +72,41 @@ export default function WithdrawNextScreen() {
                                 control={control}
                                 rules={{required: "Bank selection is required"}}
                                 render={({field: {onChange, value}}) => (
-                                    <View className="rounded-xl border-[0.5px] border-gray-400">
+                                    <View className="bg-[#F5F5F5] rounded-xl">
                                         <RNPickerSelect
                                             onValueChange={(value) => onChange(value)}
                                             items={mapToLabelAndValue(listBank)}
                                             placeholder={{label: "Select your bank", value: null}}
                                             value={value}
+                                            style={{
+                                                inputAndroid: {
+                                                    color: '#333',
+                                                    paddingHorizontal: 12,
+                                                    paddingVertical: 14,
+                                                },
+                                                inputIOS: {
+                                                    color: '#333',
+                                                    paddingHorizontal: 12,
+                                                    paddingVertical: 14,
+                                                }
+                                            }}
                                         />
                                     </View>
                                 )}
                             />
                         )}
-                        {errors.selectedBank && <Text className="text-red-500">{errors.selectedBank.message}</Text>}
-
+                        {errors.selectedBank && (
+                            <Text className="text-red-500 mt-2 text-sm">
+                                {errors.selectedBank.message}
+                            </Text>
+                        )}
                     </View>
-                    <View className="flex flex-col gap-2">
-                        <Text className="text-xl font-outfitRegular text-gray-500 mt-12">Account Number</Text>
+
+                    {/* Account Number */}
+                    <View>
+                        <Text className="text-base font-outfitBold text-[#666] mb-2 mt-2">
+                            Account Number
+                        </Text>
                         <Controller
                             name="cardAccount"
                             control={control}
@@ -98,30 +119,41 @@ export default function WithdrawNextScreen() {
                             }}
                             render={({field: {onChange, value}}) => (
                                 <TextInput
-                                    className="py-2 px-4 rounded-xl border-[0.5px] border-gray-400"
-                                    placeholder="Enter card number"
+                                    className="bg-[#F5F5F5] py-4 px-4 rounded-xl text-[#333]"
+                                    placeholder="Enter account number"
+                                    placeholderTextColor="#999"
                                     onChangeText={onChange}
                                     value={value}
                                     keyboardType="number-pad"
                                 />
                             )}
                         />
-                        {errors.cardAccount && <Text className="text-red-500">{errors.cardAccount.message}</Text>}
+                        {errors.cardAccount && (
+                            <Text className="text-red-500 mt-2 text-sm">
+                                {errors.cardAccount.message}
+                            </Text>
+                        )}
                     </View>
 
+                    {/* Continue Button */}
+                    <TouchableOpacity
+                        onPress={handleSubmit(onSubmit)}
+                        disabled={isVerifying}
+                        className={`
+                            mt-6 py-4 rounded-xl 
+                            ${isVerifying ? 'bg-gray-300' : 'bg-[#00F279]'}
+                        `}
+                    >
+                        {isVerifying ? (
+                            <ActivityIndicator size="small" color="white"/>
+                        ) : (
+                            <Text className="text-center text-white text-lg font-outfitBold">
+                                Next
+                            </Text>
+                        )}
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                    onPress={handleSubmit(onSubmit)}
-                    disabled={isVerifying}
-                    className="bg-[#00F279] self-end w-[30%] mt-12 items-center px-8 py-3 rounded-full"
-                >
-                    {isVerifying ? (
-                        <ActivityIndicator size="small" color="white"/>
-                    ) : (
-                        <Text className="text-white text-xl font-bold">Next</Text>
-                    )}
-                </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     )
 }

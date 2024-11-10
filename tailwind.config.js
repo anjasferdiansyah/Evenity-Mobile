@@ -23,7 +23,7 @@ module.exports = {
         fontFamily: {
             outfitLight: ["Outfit-Light", "sans-serif"],
             outfitRegular: ["Outfit-Regular", "sans-serif"],
-            outfitMedium: ["Outfit-Medium", "sans-serif"],
+            // outfitMedium: ["Outfit-Medium", "sans-serif"],
             outfitSemiBold: ["Outfit-SemiBold", "sans-serif"],
             outfitBold: ["Outfit-Bold", "sans-serif"],
             outfitExtraBold: ["Outfit-ExtraBold", "sans-serif"],
