@@ -3,15 +3,16 @@ import React from 'react'
 import {WebView} from 'react-native-webview'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import { router } from 'expo-router'
+import { ROUTES } from '@/constant/ROUTES'
 
 const MidtransSnapScreen = ({url}) => {
 
-    const exampleUrl = 'https://example.com';
+    const regex = /example/;
 
 
     const handleNavigationStateChange = (navState) => {
-        if (navState.url.startWith(exampleUrl)) {
-            router.push("/dashboard/index")
+        if (regex.test(navState.url)){
+            router.replace(ROUTES.DASHBOARD.INDEX)
         }
     }
 

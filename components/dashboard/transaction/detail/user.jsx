@@ -163,7 +163,7 @@ const OrderDetailUser = () => {
                     <DetailCard title="Payment Status">
                         <Text 
                             className={`text-xl font-outfitSemiBold ${
-                                selectedInvoiceCustomer?.paymentStatus === 'PAID' 
+                                selectedInvoiceCustomer?.paymentStatus === 'COMPLETE' 
                                 ? 'text-green-600' 
                                 : 'text-red-600'
                             }`}
@@ -190,7 +190,7 @@ const OrderDetailUser = () => {
                                     <Text className="text-lg font-outfitSemiBold text-gray-800 mb-1">
                                         {item.productName}
                                     </Text>
-                                    <Text 
+                                    {/* <Text 
                                         className={`text-sm font-outfitRegular ${
                                             item.approvalStatus === 'APPROVED' 
                                             ? 'text-green-600' 
@@ -198,7 +198,7 @@ const OrderDetailUser = () => {
                                         }`}
                                     >
                                         Approval Status: {item.approvalStatus}
-                                    </Text>
+                                    </Text> */}
                                 </View>
                                 <Text className="text-lg font-outfitBold text-gray-800">
                                     {`Rp ${item.cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}

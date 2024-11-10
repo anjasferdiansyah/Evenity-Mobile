@@ -47,16 +47,12 @@ const OrderHistoryUser = () => {
     const filteredItems =
         selected === "All"
             ? invoiceCustomer
-            : selected === "Approved"
+            : selected === "UNPAID"
                 ? invoiceCustomer.filter((item) =>
-                    item.invoiceDetailResponseList?.every(
-                        (detail) => detail.approvalStatus === "APPROVED"
-                    )
+                    item.paymentStatus === "UNPAID"
                 )
                 : invoiceCustomer.filter((item) =>
-                    item.invoiceDetailResponseList?.some(
-                        (detail) => detail.approvalStatus !== "APPROVED"
-                    )
+                    item.paymentStatus === "COMPLETE"
                 );
 
     const formatedDate = (date) => moment(date).format('DD MMM YYYY');
@@ -143,7 +139,7 @@ const OrderHistoryUser = () => {
             {/* Modern Filter */}
             <View className="px-6 mb-4">
                 <View className="flex-row justify-between bg-gray-100 rounded-full p-1">
-                    {["All", "Approved", "Failed"].map((item) => (
+                    {["All", "UNPAID", "COMPLETE"].map((item) => (
                         <TouchableOpacity
                             key={item}
                             onPress={() => setSelected(item)}
@@ -154,7 +150,7 @@ const OrderHistoryUser = () => {
                             }`}
                         >
                             <Text 
-                                className={`font-outfitBold ${
+                                className={`font-outfitBold capitalize ${
                                     selected === item 
                                     ? "text-white" 
                                     : "text-gray-600"
