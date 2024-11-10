@@ -6,6 +6,7 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import tailwind from "twrnc";
 import {useDispatch} from "react-redux";
 import {ROUTES} from "@/constant/ROUTES";
+import { resetRegistMakeEvent } from "@/redux/slices/makeEventSlice";
 
 const MakeEventLayout = ({
     progress,
@@ -19,6 +20,13 @@ const MakeEventLayout = ({
     resetRecommendedList,
 }) => {
     const dispatch = useDispatch();
+
+
+    const handleBack = () => {
+        dispatch(resetRecommendedList());
+        dispatch(resetRegistMakeEvent());
+        router.back();
+    }
 
     return (
         <View className="flex-1 justify-center bg-white">
@@ -103,7 +111,7 @@ const MakeEventLayout = ({
                     style={tailwind`mt-12`}
                 >
                     <TouchableOpacity
-                        onPress={() => router.back()}
+                        onPress={handleBack}
                         className="mx-auto w-[30%] mt-14 items-center justify-center rounded-full"
                         style={tailwind`bg-red-500 p-4`}
                     >

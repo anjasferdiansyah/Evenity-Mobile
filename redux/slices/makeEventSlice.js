@@ -82,6 +82,9 @@ const MakeEventSlice = createSlice({
             };
             console.log("make event Regist", state.makeEventRegist);
         },
+        resetRegistMakeEvent: (state) => {
+            state.makeEventRegist = null;
+        },
         addListSelected: (state, action) => {
             // state.listSelected.push(action.payload); // Add new item to listSelected array
             // console.log("listSelected", state.listSelected);
@@ -219,6 +222,7 @@ const MakeEventSlice = createSlice({
 
 export const {
     registMakeEvent,
+    resetRegistMakeEvent,
     addListSelected,
     updateRecommendedList,
     resetRecommendedList,
