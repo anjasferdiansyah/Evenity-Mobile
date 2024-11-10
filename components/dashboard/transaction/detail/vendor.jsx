@@ -1,14 +1,22 @@
-import {ScrollView, Text, TouchableOpacity, View, SafeAreaView} from 'react-native'
-import React, { useEffect } from 'react'
+import {ScrollView, Text, TouchableOpacity, View, SafeAreaView, RefreshControl} from 'react-native'
+import React, { useEffect, useState } from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
 import { useDispatch, useSelector } from 'react-redux';
-import { getEventOnVendor } from '@/redux/slices/orderHistoryVendor';
+import { getEventOnVendor, loadOrderHistoryDetailVendor } from '@/redux/slices/orderHistoryVendor';
 import moment from 'moment';
 
 const OrderDetailVendor = () => {
     const { selectedOrderHistoryVendor, eventOnVendor } = useSelector((state) => state.orderHistoryVendor);
     const dispatch = useDispatch();
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = () => {
+        setRefreshing(true);
+        dispatch(loadOrderHistoryDetailVendor(selectedOrderHistoryVendor?.eventId))
+        dispatch(getEventOnVendor(selectedOrderHistoryVendor?.eventId))
+            .finally(() => setRefreshing(false));
+    };
 
     useEffect(()=> {
         dispatch(getEventOnVendor(selectedOrderHistoryVendor?.eventId))
@@ -51,6 +59,13 @@ const OrderDetailVendor = () => {
 
                 {/* Content */}
                 <ScrollView 
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            colors={['#2563EB']}
+                        />
+                    }
                     showsVerticalScrollIndicator={false}
                     className="flex-1"
                 >

@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { 
     FlatList, 
     Text, 
     TouchableOpacity, 
     View, 
-    StatusBar 
+    StatusBar, 
+    RefreshControl
 } from "react-native";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import { router } from "expo-router";
@@ -24,9 +25,24 @@ const OrderHistoryUser = () => {
 
     const [selected, setSelected] = useState("All");
 
+
+    const [refreshing, setRefreshing] = useState(false);
+
     useEffect(() => {
+        fetchHistoryOrderCustomer();
+    }, []);
+
+    const fetchHistoryOrderCustomer = useCallback(() => {
         dispatch(loadInvoiceOrderCustomer(id));
     }, [dispatch, id]);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchHistoryOrderCustomer();
+        setTimeout(() => setRefreshing(false), 2000);
+    }, [fetchHistoryOrderCustomer]);
+
+
 
     const filteredItems =
         selected === "All"
@@ -156,6 +172,15 @@ const OrderHistoryUser = () => {
                 data={filteredItems}
                 renderItem={renderItem}
                 keyExtractor={(item, index) => index.toString()}
+                refreshing={refreshing}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        colors={["#00AA55"]}
+                    />}
+                onRefresh={onRefresh}
+
                 ListEmptyComponent={() => (
                     <View className="flex-1 items-center justify-center px-6 mt-20">
                         <View 
