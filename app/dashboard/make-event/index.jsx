@@ -84,7 +84,7 @@ const MakeEventName = () => {
           />
         </View> */}
             </View>
-        </MakeEventLayout>
+        </MakeEventLayout>  
     );
 };
 
