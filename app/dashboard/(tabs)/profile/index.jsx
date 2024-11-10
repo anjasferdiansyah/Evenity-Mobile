@@ -55,7 +55,7 @@ export default function ProfileScreen() {
                 <Text className="text-sm text-gray-500 font-outfitRegular">
                     {title}
                 </Text>
-                <Text className="text-lg font-outfitSemiBold text-gray-800">
+                <Text className="text-lg font-outfitSemiBold text-gray-800 max-w-96">
                     {value}
                     
                 </Text>
@@ -128,7 +128,7 @@ export default function ProfileScreen() {
                             <ProfileSection 
                                 icon={<Entypo name="location" size={24} color="#00AA55"/>}
                                 title="Location"
-                                value={`${userDetail?.district}, ${userDetail?.city}, ${userDetail?.province}`}
+                                value={`${userDetail?.district}, ${userDetail?.city},\n${userDetail?.province}`}
                             />
                             <ProfileSection 
                                 icon={<MaterialIcons name="contact-phone" size={24} color="#00AA55"/>}

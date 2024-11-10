@@ -12,6 +12,8 @@ import { router } from "expo-router";
 import RNPickerSelect from "react-native-picker-select";
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import AntDesignIcons from 'react-native-vector-icons/AntDesign';
+
 
 // Import helper dan konstanta
 import { validateRegistration } from "@/helper/validator/auth";
@@ -165,6 +167,12 @@ export default function RegisterScreen() {
             colors={['#F0FFF4', '#E6FFF4', '#D4FAF0']} 
             className="flex-1"
         >
+            <TouchableOpacity 
+                onPress={() => router.push(ROUTES.AUTH.INDEX)}
+                className="mr-4 p-2 rounded-full bg-[#f3f4f6a2] absolute top-10 left-4"
+            >
+                <AntDesignIcons name='arrowleft' size={20} color={'#374151'}/>
+            </TouchableOpacity>
             <View className="w-full h-full px-6 flex-1 justify-center">
                 <Animated.View 
                     entering={FadeInUp} 
