@@ -10,6 +10,9 @@ import {Picker} from "@react-native-picker/picker";
 import {loadCategories} from "@/redux/slices/categorySlice";
 import {getPriceRange} from "@/redux/slices/productSlice";
 import ListVendor from "@/components/ListVendors";
+import { Controller, useForm } from "react-hook-form";
+import { priceSchema } from "@/helper/validator/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const MakeEventChooseVendor = () => {
     const dispatch = useDispatch();
@@ -40,6 +43,15 @@ const MakeEventChooseVendor = () => {
     useEffect(() => {
         dispatch(loadCategories());
     }, [dispatch]);
+
+
+    const { control, handleSubmit, formState: { errors, isValid } } = useForm({
+        resolver: zodResolver(priceSchema),
+        mode: "onChange",
+        shouldFocusError: true,
+    });
+
+
 
     const handleCategoryChange = (itemValue) => {
         setSelectedCategory(itemValue);
@@ -150,7 +162,10 @@ const MakeEventChooseVendor = () => {
         return str.charAt(0).toUpperCase() + str.slice(1);
     };
 
-    const handleAddCategory = () => {
+    const onSubmit = (data) => {
+
+        console.log(data);
+
         if (selectedCategory && lowestPrice && highestPrice) {
             const selectedCategoryData = categories.find(
                 (category) => category.id === selectedCategory
@@ -158,8 +173,8 @@ const MakeEventChooseVendor = () => {
 
             const newCategory = {
                 categoryId: selectedCategory,
-                minCost: parseInt(tempLowestPrice.replace(/[^0-9]/g, ""), 10),
-                maxCost: parseInt(tempHighestPrice.replace(/[^0-9]/g, ""), 10),
+                minCost: parseInt(data.tempLowestPrice),
+                maxCost: parseInt(data.tempHighestPrice)
             };
 
             console.log("newCategory", newCategory);
@@ -172,8 +187,8 @@ const MakeEventChooseVendor = () => {
                     id: selectedCategory + lowestPrice + highestPrice,
                     categoryId: selectedCategory,
                     name: selectedCategoryData.mainCategory,
-                    minCost: parseInt(tempLowestPrice, 10),
-                    maxCost: parseInt(tempHighestPrice, 10),
+                    minCost: parseInt(data.tempLowestPrice, 10),
+                    maxCost: parseInt(data.tempHighestPrice, 10),
                 },
             ]);
 
@@ -246,35 +261,50 @@ const MakeEventChooseVendor = () => {
                         </Picker>
                     </View>
                 </View>
-                <View className="flex flex-row gap-2">
-                    <View style={tailwind`w-[40%]`}>
+                <View className="flex flex-col gap-2 w-full">
+                    <View style={tailwind`w-[100%]`}>
                         <Text className="font-outfitRegular">Lowest Price</Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
-                            placeholder={`Min: ${formatPrice(lowestPrice)}`}
-                            keyboardType="numeric"
-                            value={tempLowestPrice}
-                            // onChangeText={setTempLowestPrice}
-                            onChangeText={handleLowestPriceChange}
-                            onBlur={handleLowestPriceBlur}
-                        />
+                        <Controller
+                    control={control}
+                    name="tempLowestPrice"
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <View style={tailwind`w-[100%]`}>
+                            <TextInput
+                                className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
+                                placeholder={`Min: ${formatPrice(lowestPrice)}`}
+                                keyboardType="numeric"
+                                value={value}
+                                onChangeText={onChange}
+                                onBlur={onBlur}
+                            />
+                            {errors.tempLowestPrice && <Text style={{ color: 'red' }}>{errors.tempLowestPrice.message}</Text>}
+                        </View>
+                    )}
+                />
                     </View>
-                    <View style={tailwind`w-[40%]`}>
+                    <View style={tailwind`w-[100%]`}>
                         <Text className="font-outfitRegular">Highest Price</Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
-                            placeholder={`Max: ${formatPrice(highestPrice)}`}
-                            value={tempHighestPrice}
-                            keyboardType="numeric"
-                            // onChangeText={setTempHighestPrice}
-                            onChangeText={handleHighestPriceChange}
-                            onBlur={handleHighestPriceBlur}
-                        />
+                        <Controller
+                    control={control}
+                    name="tempHighestPrice"
+                    render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
+                                placeholder={`Max: ${formatPrice(highestPrice)}`}
+                                keyboardType="numeric"
+                                value={value}
+                                onChangeText={onChange}
+                                onBlur={onBlur}
+                            />
+                    )}
+                />
+                        {errors.tempHighestPrice && <Text style={{ color: 'red' }}>{errors.tempHighestPrice.message}</Text>}
                     </View>
                     <TouchableOpacity
-                        onPress={handleAddCategory}
+                        onPress={handleSubmit(onSubmit)}
+                        disabled={!isValid}
                         className="mx-auto mt-4 items-center justify-center rounded-full push-to"
-                        style={tailwind`bg-[#00AA55] p-4`}
+                        style={tailwind`bg-[#00AA55] p-4 ${isValid ? "" : "opacity-50"}`}
                     >
                         <MaterialCommunityIcons
                             name="chevron-down"

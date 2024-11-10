@@ -8,7 +8,7 @@ export const getPriceRange = createAsyncThunk(
         try {
             const token = await asyncStorage.getItem("token");
             console.log("token", token);
-            console.log("data", data);
+            // console.log("data", data);
             const response = await axios.post("/product/price/range", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,

@@ -53,7 +53,7 @@ export const acceptAndMakeEvent = createAsyncThunk(
             })
             .catch((e) => e.response);
         // console.log("Hitt22");
-        console.log("response", response);
+        console.log("response", response.data.data);
         if (response.status !== 200) return rejectWithValue(response.data.message);
         return response.data.data;
     }

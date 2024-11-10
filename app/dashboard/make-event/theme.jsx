@@ -1,44 +1,44 @@
 import {Alert, Text, TextInput, View} from "react-native";
-import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {registMakeEvent} from "@/redux/slices/makeEventSlice";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { eventThemeSchema } from "@/helper/validator/schema";
 
 // import MakeEventLayout from "../dashboard/(tabs)/MakeEventLayout";
 import tailwind from "twrnc";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
 
 const MakeEventTheme = () => {
-    const [themeEvent, setThemeEvent] = useState();
     const dispatch = useDispatch();
-    const [isInputValid, setIsInputValid] = useState(false);
 
-    const handleMakeEvent = () => {
-        if (!isInputValid) {
-            Alert.alert("Invalid Input", "Please enter a valid event theme.");
+    const { control, handleSubmit,  formState: { errors, isValid } } = useForm({
+        resolver: zodResolver(eventThemeSchema),
+        mode: "onChange",
+        defaultValues : {
+            theme: "",
+        }
+      });
 
-        } else {
+
+    const onSubmit = (data) => {
+       
             dispatch(
                 registMakeEvent({
-                    theme: themeEvent,
+                    theme: data.themeEvent,
                 })
             );
-        }
+        
     };
 
-    useEffect(() => {
-        if (themeEvent) {
-            setIsInputValid(true);
-        } else {
-            setIsInputValid(false);
-        }
-    }, [themeEvent]);
+    console.log("isValid", isValid);
 
     return (
         <MakeEventLayout
             progress={50}
             nextRoute="capacity"
-            handleNext={handleMakeEvent}
-            isInputValid={isInputValid}
+            isInputValid={isValid}
+            handleNext={handleSubmit(onSubmit)}
         >
             <View className="px-10" style={tailwind`mt-5`}>
                 <Text className="text-6xl font-outfitSemiBold" style={tailwind`mb-3`}>
@@ -49,12 +49,21 @@ const MakeEventTheme = () => {
             <View className="flex flex-col gap-4 w-full mt-12 px-10">
                 <View className="flex flex-col gap-2">
                     <Text className="font-outfitRegular">Event Theme</Text>
-                    <TextInput
-                        className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                        placeholder="Enter your event theme"
-                        value={themeEvent}
-                        onChangeText={setThemeEvent}
-                    />
+                    <Controller
+                        control={control}
+                        name="themeEvent"
+                        render={({ field: { onChange, value } }) => (
+                            <TextInput
+                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+                            placeholder="Enter your event theme"
+                            onChangeText={onChange}
+                            value={value}
+                        />
+                        )}
+                        />
+                        {errors && errors.themeEvent && (
+                            <Text className="text-red-500">{errors.themeEvent.message}</Text>
+                        )}
                 </View>
             </View>
         </MakeEventLayout>
