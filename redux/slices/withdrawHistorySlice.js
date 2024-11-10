@@ -3,77 +3,132 @@ import axios from "axios";
 const { createSlice, createAsyncThunk } = require("@reduxjs/toolkit");
 
 export const loadWithdrawHistory = createAsyncThunk(
-    'withdrawHistory/loadWithdrawHistory',
-    async () => {
-        const response = await axios.get("transaction/withdraw/request/user/99a482c6-f3ec-4b0e-817a-34cf03ccf6d1").catch(e => e.response)
-        console.log(response.data)
-        return response.data.data
-    }
+  "withdrawHistory/loadWithdrawHistory",
+  async (id) => {
+    const response = await axios
+      .get(
+        `transaction/withdraw/request/user/${id}`
+      )
+      .catch((e) => e.response);
+    console.log(response.data);
+    return response.data.data;
+  }
 );
 
 export const getListBank = createAsyncThunk(
-    'withdrawHistory/getListBank',
-    async () => {
-        try{ const response = await axios.get("https://api-rekening.lfourr.com/listBank")
-            return response.data} catch (error) {
-            console.log(error)
-        }
+  "withdrawHistory/getListBank",
+  async () => {
+    try {
+      const response = await axios.get(
+        "https://api-rekening.lfourr.com/listBank"
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
     }
-)
+  }
+);
 
 export const getBankAccount = createAsyncThunk(
-    'withdrawHistory/getBankAccount',
-    async ({bankCode, accountNumber}, {rejectWithValue}) => {
-        { const response = await axios.get(`https://api-rekening.lfourr.com/getBankAccount?bankCode=${bankCode}&accountNumber=${accountNumber}`)
-        
-            return response.data}
+  "withdrawHistory/getBankAccount",
+  async ({ bankCode, accountNumber }, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `https://api-rekening.lfourr.com/getBankAccount?bankCode=${bankCode}&accountNumber=${accountNumber}`
+      );
+      return response.data;
+    } catch (error) {
+      rejectWithValue(error.response.data);
     }
+  }
+);
+
+export const getUserBalance = createAsyncThunk(
+  "withdrawHistory/getUserBalance",
+  async ({ id }, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`transaction/balance/user/${id}`);
+      console.log("response", response);
+      return response.data.data;
+    } catch (error) {
+      rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const makeWithdrawRequest = createAsyncThunk(
+  "withdrawHistory/makeWithdrawRequest",
+  async ({ amount, id }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `transaction/withdraw/${id}`,
+        { amount }
+      );
+      console.log("makeWithdrawRequest", response);
+      return response.data.data;
+    } catch (error) {
+      console.log("makeWithdrawRequest Error", error);
+      rejectWithValue(error.response.data);
+    }
+  }
 )
 
 const withdrawHistorySlice = createSlice({
-    name: "withdrawHistory",
-    initialState: {
-        withdrawHistory: [],
-        listBank : [],
-        accountName : "",
-        accountNumber : "",
-        bankName : "",
-        status: "",
-        isValidBankAccount : false
-    },
-    extraReducers: (builder) => {
-        builder
-            .addCase(loadWithdrawHistory.pending, (state) => {
-                state.status = "loading";
-            })
-            .addCase(loadWithdrawHistory.fulfilled, (state, action) => {
-                console.log("Action Payload", action.payload)
-                state.withdrawHistory = action.payload;
-                state.status = "success";
-            })
-            .addCase(getListBank.fulfilled, (state, action) => {
-                console.log("Action Payload", action.payload)
-                state.listBank = action.payload.data;
-                state.status = "success";
-            })
-            .addCase(getListBank.pending, (state) => {
-                state.status = "loading";
-            })
-            .addCase(getBankAccount.fulfilled, (state, action) => {
-                console.log("Action Payload", action.payload)
-                if(action.payload.status === true){
-                    state.isValidBankAccount = true;
-                    state.accountName = action.payload.data.accountname
-                    state.accountNumber = action.payload.data.accountnumber
-                    state.bankName = action.payload.data.bankname
-                } else {
-                    state.isValidBankAccount = false;
-                }
-            })
-            .addMatcher((action) => action.type.endsWith("/rejected"), (state, action) => {
-                state.status = "failed";
-            })
-    }
-})
+  name: "withdrawHistory",
+  initialState: {
+    withdrawHistory: [],
+    listBank: [],
+    userBalance: 0,
+    accountName: "",
+    accountNumber: "",
+    bankName: "",
+    status: "",
+    isValidBankAccount: false,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loadWithdrawHistory.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(loadWithdrawHistory.fulfilled, (state, action) => {
+        state.withdrawHistory = action.payload;
+        state.status = "success";
+      })
+      .addCase(getListBank.fulfilled, (state, action) => {
+        state.listBank = action.payload.data;
+        state.status = "success";
+      })
+      .addCase(getListBank.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getBankAccount.fulfilled, (state, action) => {
+        if (action.payload.status === true) {
+          state.isValidBankAccount = true;
+          state.accountName = action.payload.data.accountname;
+          state.accountNumber = action.payload.data.accountnumber;
+          state.bankName = action.payload.data.bankname;
+        } else {
+          state.isValidBankAccount = false;
+        }
+      })
+      .addCase(getBankAccount.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getUserBalance.fulfilled, (state, action) => {
+        console.log("Action Payload", action.payload);
+        state.userBalance = action.payload.amount;
+        state.status = "success";
+      })
+      .addCase(makeWithdrawRequest.fulfilled, (state, action) => {
+        state.status = "success";
+      })
+      .addMatcher(
+        (action) => action.type.endsWith("/rejected"),
+        (state, action) => {
+          state.status = "failed";
+        }
+      );
+  },
+});
 
-export default withdrawHistorySlice.reducer
+export default withdrawHistorySlice.reducer;

@@ -95,3 +95,62 @@ export const priceSchema = z
       path: ["tempHighestPrice"],
     }
   );
+
+  export const withdrawSchema = (userBalance) => {
+    return z
+      .object({
+        amount: z
+          .string()
+          .min(1, { message: "Amount is required" })
+          .refine((value) => /^\d+$/.test(value.replace(/,/g, "")), {
+            message: "Amount must be a valid number",
+          })
+          .transform((value) => parseInt(value.replace(/,/g, ""), 10))
+          .refine((value) => value > 100000, {
+            message: "Amount must be greater than 100000",
+          }),
+      })
+      .refine((data) => data.amount <= userBalance, {
+        message: "Amount must be less than or equal to your balance",
+        path: ["amount"],
+      });
+  }
+
+  export const productSchema = z.object({
+    name: z
+      .string()
+      .min(1, { message: "Name is required" })
+      .max(50, { message: "Name must be 50 characters or less" }),
+    description: z
+      .string()
+      .min(1, { message: "Description is required" })
+      .max(500, { message: "Description must be 500 characters or less" }),
+    price: z
+      .string()
+      .min(1, { message: "Price is required" })
+      .refine((value) => /^\d+$/.test(value.replace(/,/g, "")), {
+        message: "Price must be a valid number",
+      })
+      .transform((value) => parseInt(value.replace(/,/g, ""), 10))
+      .refine((value) => value > 0, {
+        message: "Price must be greater than 0",
+      }),
+    qty: z
+      .string()
+      .min(1, { message: "Quantity is required" })
+      .refine((value) => /^\d+$/.test(value.replace(/,/g, "")), {
+        message: "Quantity must be a valid number",
+      })
+      .transform((value) => parseInt(value.replace(/,/g, ""), 10))
+      .refine((value) => value > 0, {
+        message: "Quantity must be greater than 0",
+      }),
+      productUnit: z.enum(["PCS", "DAY"], {
+        message: "Unit must be either 'PCS' or 'DAY'",
+      }),
+      categoryId : z
+      .string()
+      .min(1, { message: "Category is required" })
+      .max(50, { message: "Category must be 50 characters or less" }),
+
+  });

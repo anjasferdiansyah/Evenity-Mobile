@@ -6,19 +6,24 @@ import {loadCategories} from '@/redux/slices/categorySlice';
 import {createNewProduct, getProduct} from '@/redux/slices/productVendorSlice';
 import {router} from 'expo-router';
 import {ROUTES} from "@/constant/ROUTES";
+import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { productSchema } from '@/helper/validator/schema';
 
 const New = () => {
 
-    const dispatch = useDispatch();
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [price, setPrice] = useState('');
-    const [qty, setQty] = useState('');
-    const [unit, setUnit] = useState('');
-    const [categoryId, setCategoryId] = useState('');
+    const { control, handleSubmit, formState: { errors, isValid } } = useForm({
+        resolver: zodResolver(productSchema),
+    });
 
     const {user, id} = useSelector((state) => state.auth);
     const {categories} = useSelector((state) => state.categorySlice);
+
+
+    console.log("id", id);
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         dispatch(loadCategories());
@@ -31,27 +36,43 @@ const New = () => {
         }));
     }
 
-    const handleMakeProduct = async () => {
-        const newProduct = {
-            name,
-            description,
-            price,
-            qty,
-            productUnit: unit,
-            categoryId,
-            vendorId: id,
-        };
+    const onSubmit = async (data) => {
+    
+        // Confirm the action before proceeding
+        Alert.alert(
+            "Confirm",
+            "Are you sure you want to create this product?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+                {
+                    text: "Confirm",
+                    onPress: async () => {
 
-        try {
-            dispatch(createNewProduct(newProduct));
-            Alert.alert("Success", "Product created successfully.");
-            dispatch(getProduct(id));
-            router.push(ROUTES.DASHBOARD.PRODUCT.INDEX);
+                        const newProduct = {
+                            ...data,
+                            vendorId: id
+                        }
 
-        } catch (error) {
-            console.error('Error creating product:', error);
-        }
-    }
+                        console.log("newProduct", newProduct);
+    
+                        try {
+                            dispatch(createNewProduct(newProduct));
+                            Alert.alert("Success", "Product created successfully.");
+                            dispatch(getProduct(id));
+                            router.push(ROUTES.DASHBOARD.PRODUCT.INDEX);
+                        } catch (error) {
+                            console.error('Error creating product:', error);
+                            Alert.alert("Error", "There was an issue creating the product.");
+                        }
+                    },
+                },
+            ],
+            { cancelable: false }
+        );
+    };
 
     return (
         <View className="flex-1 items-center justify-center bg-white">
@@ -61,79 +82,119 @@ const New = () => {
 
                     <View className="flex flex-col gap-2">
                         <Text className="font-outfitRegular text-gray-500">Product Name</Text>
-                        <TextInput
-                            value={name}
-                            onChangeText={setName}
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                            placeholder="Enter product name.."
+                        <Controller
+                            control={control}
+                            name="name"
+                            render={({ field: { onChange, value } }) => (
+                                <TextInput
+                                    value={value}
+                                    onChangeText={onChange}
+                                    className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
+                                    placeholder="Enter product name.."
+                                />
+                            )}
                         />
+                        {errors.name && <Text style={{ color: 'red' }}>{errors.name.message}</Text>}
                     </View>
 
                     <View className="flex flex-col gap-2">
                         <Text className="font-outfitRegular text-gray-500">Vendor Type</Text>
-                        <TouchableOpacity
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular">
-                            <RNPickerSelect
-                                onValueChange={(value) => setCategoryId(value)}
-                                useNativeAndroidPickerStyle={false}
-                                value={categoryId}
-                                items={mapToLabelAndValue(categories)}
-                            />
-                        </TouchableOpacity>
+                        <Controller
+                            control={control}
+                            name="categoryId"
+                            render={({ field: { onChange, value } }) => (
+                                <View className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular">
+                                     <RNPickerSelect
+                                    onValueChange={onChange}
+                                    useNativeAndroidPickerStyle={false}
+                                    value={value}
+                                    items={mapToLabelAndValue(categories)}
+                                />
+                                </View>
+                            
+                            )}
+                        />
+                        {errors.categoryId && <Text style={{ color: 'red' }}>{errors.categoryId.message}</Text>}
                     </View>
 
                     <View className="flex flex-col gap-2">
                         <Text className="font-outfitRegular text-gray-500">Price</Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                            placeholder="Enter Price"
-                            keyboardType="numeric"
-                            value={price}
-                            onChangeText={setPrice}
+                        <Controller
+                            control={control}
+                            name="price"
+                            render={({ field: { onChange, value } }) => (
+                                <TextInput
+                                    className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
+                                    placeholder="Enter Price"
+                                    keyboardType="numeric"
+                                    value={value}
+                                    onChangeText={onChange}
+                                />
+                            )}
                         />
+                        {errors.price && <Text style={{ color: 'red' }}>{errors.price.message}</Text>}
                     </View>
 
                     <View className="flex flex-col gap-2">
                         <Text className="font-outfitRegular text-gray-500">Quantity</Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                            placeholder="Enter Quantity"
-                            keyboardType="numeric"
-                            value={qty}
-                            onChangeText={setQty}
+                        <Controller
+                            control={control}
+                            name="qty"
+                            render={({ field: { onChange, value } }) => (
+                                <TextInput
+                                    className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
+                                    placeholder="Enter Quantity"
+                                    keyboardType="numeric"
+                                    value={value}
+                                    onChangeText={onChange}
+                                />
+                            )}
                         />
+                        {errors.qty && <Text style={{ color: 'red' }}>{errors.qty.message}</Text>}
                     </View>
 
                     <View className="flex flex-col gap-2">
                         <Text className="font-outfitRegular text-gray-500">Unit</Text>
-                        <TouchableOpacity
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular">
-                            <RNPickerSelect
-                                onValueChange={(value) => setUnit(value)}
-                                useNativeAndroidPickerStyle={false}
-                                value={unit}
-                                items={[
-                                    {label: 'PCS', value: 'PCS'},
-                                    {label: 'DAY', value: 'DAY'},
-                                ]}
-                            />
-                        </TouchableOpacity>
+                        <Controller
+                            control={control}
+                            name="productUnit"
+                            render={({ field: { onChange, value } }) => (
+                                <View className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular">
+                                <RNPickerSelect
+                                    onValueChange={onChange}
+                                    useNativeAndroidPickerStyle={false}
+                                    value={value}
+                                    items={[
+                                        { label: 'PCS', value: 'PCS' },
+                                        { label: 'DAY', value: 'DAY' },
+                                    ]}
+                                />
+                                </View>
+                            )}
+                        />
+                        {errors.unit && <Text style={{ color: 'red' }}>{errors.unit.message}</Text>}
                     </View>
 
                     <View className="flex flex-col gap-2">
                         <Text className="font-outfitRegular text-gray-500">Description</Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                            placeholder="Enter Description"
-                            numberOfLines={3}
-                            value={description}
-                            onChangeText={setDescription}
+                        <Controller
+                            control={control}
+                            name="description"
+                            render={({ field: { onChange, value } }) => (
+                                <TextInput
+                                    className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
+                                    placeholder="Enter Description"
+                                    numberOfLines={3}
+                                    value={value}
+                                    onChangeText={onChange}
+                                />
+                            )}
                         />
                     </View>
 
                     <TouchableOpacity
                         className="bg-[#00AA55] mx-auto w-[90%] mt-5 items-center justify-center px-8 py-3 rounded-full"
-                        onPress={handleMakeProduct}
+                        onPress={handleSubmit(onSubmit)}
                     >
                         <Text className="text-white text-xl font-outfitBold">Make</Text>
                     </TouchableOpacity>

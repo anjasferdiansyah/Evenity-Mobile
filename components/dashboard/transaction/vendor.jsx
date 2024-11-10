@@ -1,5 +1,5 @@
-import {FlatList, Text, TouchableOpacity, useWindowDimensions, View, StatusBar} from "react-native";
-import React, {useEffect, useState} from "react";
+import {FlatList, Text, TouchableOpacity, useWindowDimensions, View, StatusBar, RefreshControl} from "react-native";
+import React, {useCallback, useEffect, useState} from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
 import {useDispatch, useSelector} from "react-redux";
@@ -14,6 +14,7 @@ import {MaterialIcons} from "@expo/vector-icons";
 import axios from "axios";
 import {loadOrderHistoryVendor, setSelectedOrderHistoryVendor} from "@/redux/slices/orderHistoryVendor";
 import {ROUTES} from "@/constant/ROUTES";
+import { getUserBalance } from "@/redux/slices/withdrawHistorySlice";
 
 // Color Palette
 const COLORS = {
@@ -33,28 +34,32 @@ export function OrderHistoryVendor() {
         (state) => state.orderHistoryVendor
     );
 
+
+
     const {id, user} = useSelector((state) => state.auth);
 
+    const userId = user?.detail?.userId
+
+    const [refreshing, setRefreshing] = useState(false);
+
     useEffect(() => {
+        fetchHistoryTransactionVendor();
+    }, []);
+
+    const fetchHistoryTransactionVendor = useCallback(() => {
         dispatch(loadOrderHistoryVendor(id));
     }, [dispatch, id]);
 
-    const [userBalance, setUserBalance] = useState(0);
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchHistoryTransactionVendor();
+        setTimeout(() => setRefreshing(false), 2000);
+    }, [fetchHistoryTransactionVendor]);
+
+    const { userBalance } = useSelector((state) => state.withdrawHistory);
 
     useEffect(() => {
-        const fetchUserBalance = async () => {
-            try {
-                const response = await axios.get(
-                    `transaction/balance/user/${user?.userId}`,
-                );
-                const {data} = response.data;
-                setUserBalance(data.amount);
-            } catch (error) {
-                console.log("Error fetching user balance:", error);
-            }
-        };
-
-        fetchUserBalance();
+        dispatch(getUserBalance({ id: userId }));
     }, [user]);
 
     const {width} = useWindowDimensions();
@@ -77,7 +82,7 @@ export function OrderHistoryVendor() {
     const filteredItems =
         selected === "All"
             ? orderHistoryVendor
-            : orderHistoryVendor.filter((item) => item.status === selected);
+            : orderHistoryVendor.filter((item) => item.eventProgress === selected.toUpperCase());
 
     const handleSelectedDetail = (item) => {
         dispatch(setSelectedOrderHistoryVendor(item))
@@ -100,8 +105,10 @@ export function OrderHistoryVendor() {
             >
                 <View
                     className={`flex flex-row justify-between items-center p-5 ${
-                        item.status === "Success" 
-                            ? "bg-[#DFF7E6]" 
+                        item.eventProgress === "FINISHED" 
+                            ? "bg-[#DFF7E6]"
+                            : item.eventProgress === "ON_PROGRESS"
+                                ? "bg-[#FFF7E6]" 
                             : "bg-[#FDE4E1]"
                     } rounded-2xl`}
                 >
@@ -127,7 +134,7 @@ export function OrderHistoryVendor() {
                         <AntDesignIcons
                             name="right"
                             size={24}
-                            color={item.status === "Success" ? COLORS.primary : "red"}
+                            color={item.eventProgress === "ON_PROGRESS" ? COLORS.primary : "red"}
                         />
                     </View>
                 </View>
@@ -169,7 +176,7 @@ export function OrderHistoryVendor() {
                         </View>
 
                         <Text className="text-4xl font-outfitBold text-[#2C3E50] mb-6">
-                            Rp {userBalance.toLocaleString()}
+                            Rp {userBalance}
                         </Text>
                         
                         <View className="flex-row space-x-4 gap-2">
@@ -219,7 +226,7 @@ export function OrderHistoryVendor() {
                             elevation: 3,
                         }}
                     >
-                        {["All", "Success", "Failed"].map((item, index) => (
+                        {["All", "NOT_STARTED","ON_PROGRESS" , "FINISHED"].map((item, index) => (
                             <TouchableOpacity
                                 key={item}
                                 onPress={() => handlePress(item, index)}
@@ -239,12 +246,12 @@ export function OrderHistoryVendor() {
                                         borderRadius: 15,
                                     }}
                                 >
-                                    {item}
+                                 {item.replace('_', ' ').charAt(0).toUpperCase() + item.replace('_', ' ').slice(1).toLowerCase()}
                                 </Text>
                             </TouchableOpacity>
                         ))}
 
-                        <Animated.View
+                        {/* <Animated.View
                             style={[
                                 animatedIndicatorStyle,
                                 {
@@ -257,7 +264,7 @@ export function OrderHistoryVendor() {
                                     borderRadius: 2,
                                 },
                             ]}
-                        />
+                        /> */}
                     </View>
                 </View>
 
@@ -267,6 +274,21 @@ export function OrderHistoryVendor() {
                         data={filteredItems}
                         renderItem={renderItem}
                         keyExtractor={(item, index) => index.toString()}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                                colors={['#00F279']}
+                                tintColor="#00F279"
+                            />
+                        }
+                        ListEmptyComponent={() => (
+                            <View className="flex-1 justify-center items-center">
+                                <Text className="text-gray-500 text-lg font-outfitBold">
+                                    No Order History
+                                </Text>
+                            </View>
+                        )}
                     />
                 </View>
             </Animated.View>

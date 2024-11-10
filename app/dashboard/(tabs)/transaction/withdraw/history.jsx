@@ -9,9 +9,12 @@ import moment from 'moment'
 export default function WithdrawHistoryScreen() {
     const dispatch = useDispatch()
     const {withdrawHistory, status} = useSelector(state => state.withdrawHistory)
+    const {user} = useSelector(state => state.auth)
+
+    const userId = user?.detail?.userId
 
     useEffect(() => {
-        dispatch(loadWithdrawHistory())
+        dispatch(loadWithdrawHistory(userId))
     }, [dispatch])
 
     const formatDate = (date) => {

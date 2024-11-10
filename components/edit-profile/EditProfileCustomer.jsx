@@ -1,4 +1,4 @@
-import {FlatList, Text, TextInput, TouchableOpacity, View, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView} from "react-native";
+import {FlatList, Text, TextInput, TouchableOpacity, View, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView, Alert} from "react-native";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {router} from "expo-router";
@@ -195,19 +195,36 @@ export default function EditProfileCustomer() {
             address,
         };
 
-        try {
-            dispatch(
-                editCustomerProfile({
-                    updatedCustomerProfile: newRegisterData,
-                    id: userInfo?.detail.customerId,
-                })
-            );
-            dispatch(clearProfile());
-            dispatch(fetchUserProfile())
-            router.back();
-        } catch (error) {
-            console.log(error);
-        }
+
+        Alert.alert(
+            "Confirm Update",
+            "Are you sure you want to update your profile?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Update cancelled"),
+                    style: "cancel"
+                },
+                {
+                    text: "OK",
+                    onPress: async () => {
+                        try {
+                            dispatch(
+                                editCustomerProfile({
+                                    updatedCustomerProfile: newRegisterData,
+                                    id: userInfo?.detail.id,
+                                })
+                            );
+                            dispatch(clearProfile());
+                            dispatch(fetchUserProfile());
+                            router.back();
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    }
+                }
+            ]
+        );
     };
 
     const renderInput = (label, value, onChangeText, placeholder, additionalProps = {}) => (

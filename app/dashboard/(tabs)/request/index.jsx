@@ -1,4 +1,4 @@
-import {FlatList, Text, TouchableOpacity, useWindowDimensions, View, StatusBar} from 'react-native'
+import {FlatList, Text, TouchableOpacity, useWindowDimensions, View, StatusBar, RefreshControl} from 'react-native'
 import React, {useCallback, useEffect, useState} from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
@@ -38,6 +38,7 @@ export default function ListRequestScreen() {
 
     const [selected, setSelected] = useState("All");
     const [filteredItems, setFilteredItems] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
 
     const slideAnim = useSharedValue(0);
     const paddingHorizontal = 20;
@@ -59,8 +60,18 @@ export default function ListRequestScreen() {
     }));
 
     useEffect(() => {
+        getRequestList();
+    }, []);
+
+    const getRequestList = useCallback(() => {
         dispatch(fetchRequestLists(id));
     }, [dispatch, id]);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        getRequestList();
+        setTimeout(() => setRefreshing(false), 2000);
+    }, [getRequestList]);
 
     useEffect(() => {
         setFilteredItems(requestList);
@@ -242,6 +253,21 @@ export default function ListRequestScreen() {
                         data={filteredItems}
                         renderItem={renderItem}
                         keyExtractor={(item) => item.eventDetailId.toString()}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                                colors={['#00F279']}
+                                tintColor="#00F279"
+                            />
+                        }
+                        ListEmptyComponent={() => (
+                            <View className="flex-1 items-center justify-center mt-10">
+                                <Text className="text-gray-500 text-lg font-outfitRegular">
+                                    No products available
+                                </Text>
+                            </View>
+                        )}
                     />
                 </View>
             </Animated.View>
