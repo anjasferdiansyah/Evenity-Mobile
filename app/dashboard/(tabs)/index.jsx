@@ -74,7 +74,7 @@ export default function HomeScreen() {
             <SafeAreaView className="flex-1">
                 <ScrollView 
                     showsVerticalScrollIndicator={false}
-                    className="flex-1"
+                    contentContainerStyle={{ paddingBottom: 50, flexGrow: 1 }} // Add flexGrow
                 >
                     {/* Header Section */}
                     <View className="px-6 pt-4 flex-row justify-between items-center">
@@ -95,11 +95,6 @@ export default function HomeScreen() {
                                 })}
                             </Text>
                         </View>
-                        {/* <MaterialCommunityIcons 
-                            name="bell-outline" 
-                            size={28} 
-                            color="#10B981" 
-                        /> */}
                     </View>
 
                     {/* Event Carousel */}
@@ -124,12 +119,12 @@ export default function HomeScreen() {
                     </View>
 
                     {/* Dashboard Buttons */}
-                    <View className="px-6 mt-8 space-y-4 mb-2">
+                    <View className="px-6 mt-8">
                         <View className="flex-row space-x-4 gap-2">
                             <ButtonMakeEvent 
                                 onPress={handleButtonPressOne(role)} 
                                 role={role}
-                                className="flex-1 w-[70%]"
+                                className="flex-1 justify-center"
                             />
                             <ButtonListRequests 
                                 onPress={() => router.push(ROUTES.DASHBOARD.REQUEST.INDEX)} 
@@ -137,7 +132,7 @@ export default function HomeScreen() {
                                 className="flex-1 w-[30%]"
                             />
                         </View>
-                        <View className="flex-row space-x-4 gap-2 mt-2">
+                        <View className="flex-row space-x-4 gap-1 mt-2">
                             <ButtonListTransactions 
                                 onPress={() => router.push(ROUTES.DASHBOARD.TRANSACTION.INDEX)}
                                 className="flex-1"

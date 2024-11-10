@@ -99,10 +99,10 @@ const InvoiceDetailUser = () => {
                     </TouchableOpacity>
                     <View className="mt-12 mb-6">
                         <Text className="text-4xl font-outfitBold text-white">
-                            Order Details
+                            Event Details
                         </Text>
                         <Text className="text-base font-outfitRegular text-white">
-                            Detailed information about your order
+                            Detailed information about your event
                         </Text>
                     </View>
                 </Animated.View>
@@ -165,45 +165,38 @@ const InvoiceDetailUser = () => {
 
                     {/* List of Vendors */}
                     <DetailCard title="List Vendor Choose">
-                        {selectedHistoryEvent?.eventDetailResponseList.map(
-                            (item, index) => (
-                                <Animated.View
-                                    key={index}
-                                    entering={FadeInDown.delay(index * 100)}
-                                    style={animatedCardStyle}
+                        {selectedHistoryEvent?.eventDetailResponseList.map((item, index) => (
+                            <View
+                                key={index}
+                                className={`flex flex-row gap-4 w-full items-center mt-2`}
+                            >
+                                <View
+                                    className={`flex flex-col gap-2 p-4 rounded-xl w-full ${
+                                        item.approvalStatus === "APPROVED"
+                                            ? "bg-[#DFF7E6]"
+                                            : item.approvalStatus === "REJECTED"
+                                                ? "bg-[#FDE4E1]"
+                                                : "bg-[#FFF7E6]"
+                                    }`}
                                 >
-                                    <View
-                                        className={`flex flex-row gap-4 w-full items-center mt-2`}
-                                    >
-                                        <View
-                                            className={`flex flex-col gap-2 p-4 rounded-xl w-full ${
-                                                item.approvalStatus === "APPROVED"
-                                                    ? "bg-[#DFF7E6]"
-                                                    : item.approvalStatus === "REJECTED"
-                                                        ? "bg-[#FDE4E1]"
-                                                        : "bg-[#FFF7E6]"
-                                            }`}
-                                        >
-                                            <View>
-                                                <Text className="font-outfitSemiBold text-xl">
-                                                    {item.productName}
-                                                </Text>
-                                                <Text className="font-outfitRegular text-sm">
-                                                    {item.approvalStatus}
-                                                </Text>
-                                            </View>
-
-                                            <Text className="font-outfitRegular text-xl text-right flex-1">
-                                                {`Rp ${item.cost
-                                                    .toString()
-                                                    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}
-                                            </Text>
-                                        </View>
+                                    <View>
+                                        <Text className="font-outfitSemiBold text-xl">
+                                            {item.productName}
+                                        </Text>
+                                        <Text className="font-outfitRegular text-sm">
+                                            {item.approvalStatus}
+                                        </Text>
                                     </View>
-                                </Animated.View>
-                            )
-                        )}
-                 </DetailCard>
+
+                                    <Text className="font-outfitRegular text-xl text-right flex-1">
+                                        {`Rp ${item.cost
+                                            .toString()
+                                            .replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}
+                                    </Text>
+                                </View>
+                            </View>
+                        ))} 
+                    </DetailCard>
 
                     {/* Total Price */}
                     <DetailCard title="Total Cost">

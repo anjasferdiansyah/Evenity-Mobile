@@ -1,4 +1,4 @@
-import {FlatList, RefreshControl, ScrollView, Text, TouchableOpacity, useWindowDimensions, View,} from "react-native";
+import {FlatList, RefreshControl, ScrollView, Text, TouchableOpacity, useWindowDimensions, View, Dimensions,} from "react-native";
 import React, {useCallback, useEffect, useState} from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
@@ -18,7 +18,7 @@ export default function CheckApprove() {
 
     const slideAnim = useSharedValue(0);
     const paddingHorizontal = 20;
-    const itemWidth = (width - paddingHorizontal * 2) / 3;
+    const itemWidth = width / 4.6;
 
     // Add state for refresh
     const [refreshing, setRefreshing] = useState(false);
@@ -166,45 +166,42 @@ export default function CheckApprove() {
             <View className="w-full h-full px-6">
                 <View className="flex flex-col items-center mb-6">
                     <View className="bg-[#00AA55] px-6 py-3 rounded-b-[30px] w-full items-center">
-                        <Text className="text-3xl font-outfitBold text-white mb-1">
+                        <Text className="text-4xl font-outfitBold text-white mb-1">
                             Event
                         </Text>
                         <Text className="text-xl font-outfitRegular text-white">
-                            History List
+                            History
                         </Text>
                     </View>
                 </View>
 
                <View className="mb-4">
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{paddingHorizontal: 10}}
-                    >
-                        <View className="flex flex-row bg-gray-200 rounded-full p-1">
-                            {["All", "Accepted", "Pending", "Rejected"].map((item, index) => (
-                                <TouchableOpacity
-                                    key={item}
-                                    onPress={() => handlePress(item, index)}
-                                    className={`px-4 py-2 rounded-full ${
+                    <View className="flex flex-row bg-gray-200 rounded-full p-1">
+                        {["All", "Accepted", "Pending", "Rejected"].map((item) => (
+                            <TouchableOpacity
+                                key={item}
+                                onPress={() => handlePress(item)}
+                                className={`rounded-full mx-auto`}
+                                style={{
+                                    width: itemWidth, // Set lebar item
+                                    paddingVertical: 10, // Padding vertikal
+                                    backgroundColor: selected === item ? "#00AA55" : "transparent",
+                                    
+                                }}
+                            >
+                                <Text 
+                                    className={`font-outfitBold text-base ${
                                         selected === item 
-                                        ? "bg-[#00AA55]" 
-                                        : "bg-transparent"
+                                        ? "text-white" 
+                                        : "text-gray-600"
                                     }`}
+                                    style={{ textAlign: 'center' }} // Center text
                                 >
-                                    <Text 
-                                        className={`font-outfitBold text-base ${
-                                            selected === item 
-                                            ? "text-white" 
-                                            : "text-gray-600"
-                                        }`}
-                                    >
-                                        {item}
-                                    </Text>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
-                    </ScrollView>
+                                    {item}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View> 
                 </View>
 
                 <View className="list-history space-y-4 flex-1">
@@ -225,6 +222,26 @@ export default function CheckApprove() {
                             />
                         }
                         contentContainerStyle={{paddingBottom: 20}}
+                        ListEmptyComponent={()=>(
+                            <View className="flex-1 items-center justify-center px-6 mt-20">
+                                <View 
+                                    className="w-32 h-32 rounded-full bg-gray-100 
+                                    items-center justify-center mb-6"
+                                >
+                                    <AntDesignIcons 
+                                        name="inbox" 
+                                        size={64} 
+                                        color="#00AA55" 
+                                    />
+                                </View>
+                                <Text className="text-2xl font-outfitBold text-gray-800 mb-2 text-center">
+                                    No Event Available
+                                </Text>
+                                <Text className="text-base font-outfitRegular text-gray-500 text-center">
+                                    It seems there are no upcoming events at the moment. Please check back later!
+                                </Text>
+                            </View>
+    )}
                     />
                 </View>
             </View>
