@@ -1,4 +1,4 @@
-import {FlatList, RefreshControl, ScrollView, Text, TouchableOpacity, useWindowDimensions, View, Dimensions,} from "react-native";
+import {FlatList, RefreshControl, Text, TouchableOpacity, useWindowDimensions, View,} from "react-native";
 import React, {useCallback, useEffect, useState} from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
@@ -8,6 +8,7 @@ import {useSharedValue, withTiming,} from "react-native-reanimated";
 import moment from "moment";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {ROUTES} from "@/constant/ROUTES";
+import BottomPadding from "@/components/misc/BottomPadding";
 
 export default function CheckApprove() {
     const dispatch = useDispatch();
@@ -175,7 +176,7 @@ export default function CheckApprove() {
                     </View>
                 </View>
 
-               <View className="mb-4">
+                <View className="mb-4">
                     <View className="flex flex-row bg-gray-200 rounded-full p-1">
                         {["All", "Accepted", "Pending", "Rejected"].map((item) => (
                             <TouchableOpacity
@@ -186,22 +187,22 @@ export default function CheckApprove() {
                                     width: itemWidth, // Set lebar item
                                     paddingVertical: 10, // Padding vertikal
                                     backgroundColor: selected === item ? "#00AA55" : "transparent",
-                                    
+
                                 }}
                             >
-                                <Text 
+                                <Text
                                     className={`font-outfitBold text-base ${
-                                        selected === item 
-                                        ? "text-white" 
-                                        : "text-gray-600"
+                                        selected === item
+                                            ? "text-white"
+                                            : "text-gray-600"
                                     }`}
-                                    style={{ textAlign: 'center' }} // Center text
+                                    style={{textAlign: 'center'}} // Center text
                                 >
                                     {item}
                                 </Text>
                             </TouchableOpacity>
                         ))}
-                    </View> 
+                    </View>
                 </View>
 
                 <View className="list-history space-y-4 flex-1">
@@ -221,17 +222,17 @@ export default function CheckApprove() {
                                 tintColor="#00AA55"
                             />
                         }
-                        contentContainerStyle={{paddingBottom: 20}}
-                        ListEmptyComponent={()=>(
+                        contentContainerStyle={{paddingBottom: 100}}
+                        ListEmptyComponent={() => (
                             <View className="flex-1 items-center justify-center px-6 mt-20">
-                                <View 
+                                <View
                                     className="w-32 h-32 rounded-full bg-gray-100 
                                     items-center justify-center mb-6"
                                 >
-                                    <AntDesignIcons 
-                                        name="inbox" 
-                                        size={64} 
-                                        color="#00AA55" 
+                                    <AntDesignIcons
+                                        name="inbox"
+                                        size={64}
+                                        color="#00AA55"
                                     />
                                 </View>
                                 <Text className="text-2xl font-outfitBold text-gray-800 mb-2 text-center">
@@ -241,10 +242,11 @@ export default function CheckApprove() {
                                     It seems there are no upcoming events at the moment. Please check back later!
                                 </Text>
                             </View>
-    )}
+                        )}
                     />
                 </View>
             </View>
+            <BottomPadding/>
         </SafeAreaView>
     );
 }

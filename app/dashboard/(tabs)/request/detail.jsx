@@ -1,10 +1,11 @@
-import {ScrollView, Text, TouchableOpacity, View, SafeAreaView} from 'react-native'
-import React, {useEffect} from 'react'
+import {SafeAreaView, ScrollView, Text, TouchableOpacity, View} from 'react-native'
+import React from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 import {approveRequest, rejectRequest} from "@/redux/slices/requestSlice";
+import BottomPadding from "@/components/misc/BottomPadding";
 
 export default function DetailRequest() {
     const {selectedRequest} = useSelector(state => state.request)
@@ -29,7 +30,7 @@ export default function DetailRequest() {
     }
 
     const renderDetailItem = (label, value, isStatus = false) => (
-        
+
         <View className="py-4 border-b border-[#E5E7EB]">
             <Text className="text-base font-outfitRegular text-[#6B7280] mb-2">
                 {label}
@@ -46,12 +47,12 @@ export default function DetailRequest() {
         </View>
     )
 
-//     useEffect(() => {
-//     console.log("selectedRequest", selectedRequest);
-// }, [selectedRequest]);
+    //     useEffect(() => {
+    //     console.log("selectedRequest", selectedRequest);
+    // }, [selectedRequest]);
 
     const getStatusBadgeStyle = (status) => {
-    switch(status) {
+        switch (status) {
         case 'PENDING':
             return 'bg-yellow-100 text-yellow-800';
         case 'APPROVED':
@@ -60,16 +61,16 @@ export default function DetailRequest() {
             return 'bg-red-100 text-red-800';
         default:
             return 'bg-gray-100 text-gray-800';
+        }
     }
-}
 
     return (
         <SafeAreaView className="flex-1 bg-[#F9FAFB]">
             <View className="flex-1 px-6 pt-6">
                 {/* Header */}
                 <View className="flex-row items-center mb-6 mt-10">
-                    <TouchableOpacity 
-                        onPress={() => router.back()} 
+                    <TouchableOpacity
+                        onPress={() => router.back()}
                         className="mr-4 p-2 rounded-full bg-[#F3F4F6]"
                     >
                         <AntDesignIcons name='arrowleft' size={20} color={'#374151'}/>
@@ -80,14 +81,14 @@ export default function DetailRequest() {
                 </View>
 
                 {/* Content */}
-                <ScrollView 
+                <ScrollView
                     showsVerticalScrollIndicator={false}
                     className="flex-1"
                 >
                     <View className="bg-white rounded-2xl p-6 shadow-md mb-6"
                         style={{
                             shadowColor: "#000",
-                            shadowOffset: { width: 0, height: 2 },
+                            shadowOffset: {width: 0, height: 2},
                             shadowOpacity: 0.1,
                             shadowRadius: 4,
                             elevation: 2
@@ -105,13 +106,13 @@ export default function DetailRequest() {
                 {/* Action Buttons */}
                 {selectedRequest?.approvalStatus === "PENDING" && (
                     <View className="flex-row justify-between mb-6">
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             className="flex-1 mr-4 bg-[#10B981] items-center rounded-xl"
                             onPress={handleApprove(selectedRequest?.eventDetailId)}
                         >
                             <Text className="text-white text-base font-outfitBold">Approve</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             className="flex-1 bg-[#EF4444] items-center rounded-xl"
                             onPress={handleReject(selectedRequest?.eventDetailId)}
                         >
@@ -120,6 +121,7 @@ export default function DetailRequest() {
                     </View>
                 )}
             </View>
+            <BottomPadding/>
         </SafeAreaView>
     )
 }
