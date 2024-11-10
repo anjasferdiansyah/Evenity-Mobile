@@ -189,7 +189,7 @@ const OrderDetailUser = () => {
                     </DetailCard>
 
                     {/* Action Buttons */}
-                    {selectedInvoiceCustomer?.paymentStatus === "UNPAID" && (
+                    {selectedInvoiceCustomer?.paymentStatus === "UNPAID" && selectedInvoiceCustomer?.totalCost > 0 && (
                         <View className="flex-row space-x-4  gap-2">
                             <TouchableOpacity
                                 className="flex-1 bg-[#00F279] items-center justify-center py-4 rounded-full"

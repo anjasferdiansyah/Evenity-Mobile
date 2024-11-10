@@ -176,7 +176,7 @@ export default function DashboardLayout() {
                             icon={(iconColor) => (
                                 role === ROLE.CUSTOMER 
                                     ? <MaterialIcons 
-                                        name="work-history" 
+                                        name="account-balance-wallet" 
                                         size={42} 
                                         color={iconColor}
                                       />
@@ -199,9 +199,9 @@ export default function DashboardLayout() {
                             focused={focused} 
                             color={color} 
                             icon={(iconColor) => (
-                                <MaterialCommunityIcons 
-                                    name="account-cog" 
-                                    size={45} 
+                                <Ionicons 
+                                    name="person" 
+                                    size={35} 
                                     color={iconColor}
                                 />
                             )} 
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     tabBarStyle: {
-        backgroundColor: 'rgba(255,255,255,0.7)',
+        backgroundColor: 'rgba(255,255,255,1)',
         borderTopWidth: 0,
         borderTopColor: 'transparent',
         borderRadius: 30,

@@ -1,4 +1,4 @@
-import {Image, ScrollView, Text, TouchableOpacity, View, Dimensions} from "react-native";
+import {Dimensions, Image, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import React, {useEffect} from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {useDispatch, useSelector} from "react-redux";
@@ -7,16 +7,11 @@ import {AntDesign, Entypo, FontAwesome, Fontisto, MaterialIcons} from "@expo/vec
 import {router} from "expo-router";
 import {fetchUserProfile} from "@/redux/slices/profileSlice";
 import {SafeAreaView} from "react-native-safe-area-context";
-import BottomPadding from "@/components/misc/BottomPadding";
 import {ROUTES} from "@/constant/ROUTES";
 import {ROLE} from "@/constant/USER";
-import Animated, {
-    useAnimatedStyle, 
-    useSharedValue, 
-    withSpring,
-    FadeInDown,
-    interpolate
-} from 'react-native-reanimated';
+import Animated, {FadeInDown, interpolate, useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
+import VendorAvatar from "@/assets/group.webp";
+import CustomerAvatar from "@/assets/customer.webp"
 
 const {width} = Dimensions.get('window');
 
@@ -31,7 +26,7 @@ export default function ProfileScreen() {
     const animatedProfileStyle = useAnimatedStyle(() => {
         return {
             transform: [
-                { scale: withSpring(scale.value) }
+                {scale: withSpring(scale.value)}
             ],
             opacity: interpolate(scale.value, [0.8, 1], [0.8, 1])
         };
@@ -44,7 +39,7 @@ export default function ProfileScreen() {
     const userDetail = userInfo?.detail;
 
     const ProfileSection = ({icon, title, value}) => (
-        <Animated.View 
+        <Animated.View
             entering={FadeInDown}
             className="flex-row items-center py-4 border-b border-gray-200/30"
         >
@@ -55,16 +50,16 @@ export default function ProfileScreen() {
                 <Text className="text-sm text-gray-500 font-outfitRegular">
                     {title}
                 </Text>
-                <Text className="text-lg font-outfitSemiBold text-gray-800">
+                <Text className="text-lg font-outfitSemiBold text-gray-800 max-w-96">
                     {value}
-                    
+
                 </Text>
             </View>
         </Animated.View>
     );
 
     const ProfileActionButton = ({icon, title, onPress, textColor = "text-white"}) => (
-        <TouchableOpacity 
+        <TouchableOpacity
             onPress={onPress}
             className="flex-row items-center py-4 border-b border-gray-200/30"
         >
@@ -80,7 +75,7 @@ export default function ProfileScreen() {
     return (
         <View className="flex-1 bg-[#F5F5F5]">
             {/* Background Overlay */}
-            <View 
+            <View
                 className="absolute top-0 left-0 right-0 h-[35%] bg-[#00AA55]"
                 style={{
                     borderBottomLeftRadius: 50,
@@ -89,25 +84,23 @@ export default function ProfileScreen() {
             />
 
             <SafeAreaView className="flex-1">
-                <ScrollView 
+                <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{paddingBottom: 50}}
                 >
                     {/* Profile Header */}
-                    <Animated.View 
+                    <Animated.View
                         style={animatedProfileStyle}
                         className="items-center mt-8 mb-6 px-6"
                     >
-                        <TouchableOpacity 
+                        <TouchableOpacity
                             onPressIn={() => scale.value = 0.9}
                             onPressOut={() => scale.value = 1}
                         >
                             <View className="w-36 h-36 rounded-full border-4 border-white shadow-2xl">
                                 <Image
                                     className="w-full h-full rounded-full"
-                                    source={{
-                                        uri: "https://i.pravatar.cc/300",
-                                    }}
+                                    source={user?.role === ROLE.VENDOR ? VendorAvatar : CustomerAvatar}
                                 />
                             </View>
                         </TouchableOpacity>
@@ -121,33 +114,33 @@ export default function ProfileScreen() {
 
                     {/* Profile Details */}
                     <View className="px-6">
-                        <Animated.View 
+                        <Animated.View
                             entering={FadeInDown.delay(200)}
                             className="bg-white rounded-3xl shadow-md p-6"
                         >
-                            <ProfileSection 
+                            <ProfileSection
                                 icon={<Entypo name="location" size={24} color="#00AA55"/>}
                                 title="Location"
-                                value={`${userDetail?.district}, ${userDetail?.city}, ${userDetail?.province}`}
+                                value={`${userDetail?.district}, ${userDetail?.city},\n${userDetail?.province}`}
                             />
-                            <ProfileSection 
+                            <ProfileSection
                                 icon={<MaterialIcons name="contact-phone" size={24} color="#00AA55"/>}
                                 title="Phone Number"
                                 value={userDetail?.phoneNumber}
                             />
-                            <ProfileSection 
+                            <ProfileSection
                                 icon={<MaterialCommunityIcons name="email" size={24} color="#00AA55"/>}
                                 title="Email"
                                 value={userDetail?.email}
                             />
                             {user?.role === ROLE.VENDOR && (
-                                <ProfileSection 
+                                <ProfileSection
                                     icon={<Fontisto name="person" size={24} color="#00AA55"/>}
                                     title="Owner"
                                     value={userDetail?.owner}
                                 />
                             )}
-                            <ProfileSection 
+                            <ProfileSection
                                 icon={<Entypo name="address" size={24} color="#00AA55"/>}
                                 title="Address"
                                 value={userDetail?.address}
@@ -157,21 +150,21 @@ export default function ProfileScreen() {
 
                     {/* Profile Actions */}
                     <View className="px-6 mt-6 mb-20">
-                        <Animated.View 
+                        <Animated.View
                             entering={FadeInDown.delay(400)}
                             className="bg-white rounded-3xl shadow-md p-6"
                         >
-                            <ProfileActionButton 
+                            <ProfileActionButton
                                 icon={<FontAwesome name="gear" size={24} color="#00AA55"/>}
                                 title="Edit Profile"
                                 onPress={() => router.push(ROUTES.DASHBOARD.PROFILE.EDIT)}
                             />
-                            <ProfileActionButton 
+                            <ProfileActionButton
                                 icon={<MaterialCommunityIcons name="form-textbox-password" size={24} color="#00AA55"/>}
                                 title="Change Password"
                                 onPress={() => router.push(ROUTES.DASHBOARD.PROFILE.CHANGE_PASSWORD)}
                             />
-                            <ProfileActionButton 
+                            <ProfileActionButton
                                 icon={<AntDesign name="logout" size={24} color="red"/>}
                                 title="Logout"
                                 onPress={() => dispatch(logout())}
