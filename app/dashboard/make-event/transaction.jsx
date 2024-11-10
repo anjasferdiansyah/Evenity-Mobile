@@ -2,7 +2,6 @@ import tailwind from "twrnc";
 import {
     Modal,
     ScrollView,
-    StyleSheet,
     Text,
     TouchableOpacity,
     View,
@@ -32,25 +31,17 @@ const MakeEventTransactionNote = () => {
         selectedDetailCategories,
     } = useSelector((state) => state.makeEventSlice);
 
-    useEffect(() => {
-        console.log("listSelectedPas", listSelected);
-    }, [listSelected]);
     const { id } = useSelector((state) => state.auth);
-
     const [modalDetailVisible, setModalDetailVisible] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState(null);
 
     const handleVendorPress = (vendor) => {
-        setSelectedVendor(vendor); // Set selected vendor data
-        setModalDetailVisible(true); // Open modal
-        // console.log("Selected vendor:", vendor);
-        // console.log("Current makeEventData:", makeEventData);
+        setSelectedVendor(vendor);
+        setModalDetailVisible(true);
 
-        //ini
         const updatedVendorData = {
             productId: vendor.productId,
             newVendorData: {
-                // add necessary vendor fields, like cost, qty, etc.
                 qty: vendor.qty || 1,
                 cost: vendor.cost || 0,
                 notes: vendor.notes || "No specific notes",
@@ -58,22 +49,9 @@ const MakeEventTransactionNote = () => {
             },
         };
         dispatch(updateRecommendedList(updatedVendorData));
-    // ini
     };
 
     const handleRegenerateVendor = () => {
-        console.log("id ", id);
-        console.log("recommendedListTrx", recommendedList);
-        console.log("listSelected", listSelected);
-        console.log("makeEventData", makeEventData);
-        console.log("selectedDetailCategories", selectedDetailCategories);
-        const recommendedArray = Object.values(recommendedList);
-        console.log("recommendedArray", recommendedArray);
-        const previousProductIds = recommendedArray.map(
-            (vendor) => vendor.productId
-        );
-        console.log("previousProductIds", previousProductIds);
-
         const newEventData = {
             ...makeEventRegist,
             customerId: id,
@@ -88,10 +66,7 @@ const MakeEventTransactionNote = () => {
     };
 
     const acceptMakeEvent = () => {
-        console.log("recommendedListTrx2", recommendedList);
-
         const recommendedArray = Object.values(recommendedList);
-        console.log("recommendedArray", recommendedArray);
         const newEventData = recommendedArray.map((vendor) => ({
             productId: vendor.productId,
             qty: vendor.qty || 1,
@@ -99,8 +74,6 @@ const MakeEventTransactionNote = () => {
             notes: vendor.notes || "No specific notes",
             cost: vendor.cost || 0,
         }));
-
-        console.log("newEventData to accept", newEventData);
 
         const eventDataCopy = { ...makeEventData };
         delete eventDataCopy.recommendedList;
@@ -110,23 +83,15 @@ const MakeEventTransactionNote = () => {
             eventDetail: newEventData,
         };
 
-        console.log("eventData body", eventData);
-
         try {
             dispatch(acceptAndMakeEvent(eventData));
-        // router.replace(`/dashboard/transaction`);
-            if(makeEventData){
+            if (makeEventData) {
                 router.replace(`/dashboard/transaction`);
             }
         } catch (error) {
             console.error("Error accepting make event:", error);
         }
-        
     };
-
-    useEffect(() => {
-        console.log("makeEventData todays", makeEventData);
-    }, [makeEventData]);
 
     return (
         <MakeEventLayout
@@ -137,45 +102,39 @@ const MakeEventTransactionNote = () => {
             nextInfor="Make Event"
             resetRecommendedList={resetRecommendedList}
         >
-            <View className="px-10" style={tailwind`my-2 mx-auto`}>
-                <Text className="font-outfitSemiBold text-2xl" style={tailwind`mb-3`}>
-          Vendor Generated
+            <View style={tailwind`px-10 my-2 mx-auto`}>
+                <Text className="font-outfitSemiBold text-2xl">
+                    Vendor Generated
                 </Text>
             </View>
-            <ScrollView style={tailwind`mt-2 `} className="vendor-choosen">
-                {makeEventData &&
-        makeEventData.recommendedList &&
-        makeEventData.recommendedList.length > 0 ? (
-                        makeEventData.recommendedList.map((item) => (
-                            // <ListChooseVendor key={item.productId} item={item} radius="xl" />
-                            <TouchableOpacity
-                                key={item.productId}
-                                onPress={() => handleVendorPress(item)}
-                            >
-                                <ListChooseVendor item={item} radius="xl" />
-                            </TouchableOpacity>
-                        ))
-                    ) : (
-                        <Text>No recommended vendors available.</Text>
-                    )}
+            <ScrollView style={tailwind`mt-2`} className="vendor-choosen">
+                {makeEventData?.recommendedList?.length > 0 ? (
+                    makeEventData.recommendedList.map((item) => (
+                        <TouchableOpacity
+                            key={item.productId}
+                            onPress={() => handleVendorPress(item)}
+                        >
+                            <ListChooseVendor item={item} radius="xl" />
+                        </TouchableOpacity>
+                    ))
+                ) : (
+                    <Text style={tailwind`text-center text-gray-500`}>
+                        No recommended vendors available.
+                    </Text>
+                )}
             </ScrollView>
-            <View className="flex flex-row gap-4 w-full mt-12 items-center">
-                <View
-                    className="flex flex-row gap-2 justify-center"
-                    style={tailwind` p-4 rounded-full`}
-                >
+            <View style={tailwind`flex flex-row gap-4 w-full mt-12 items-center mb-5`}>
+                <View style={tailwind`flex flex-row gap-2 justify-center p-4 rounded-full bg-gray-100`}>
                     <Text className="font-outfitSemiBold text-xl">Total</Text>
                     <Text
                         className="font-outfitRegular text-xl"
                         style={{ textAlign: "right", flex: 1 }}
                     >
-                        {totalCost > 0
-                            ? totalCost
-                                .toLocaleString("id-ID", {
-                                    style: "currency",
-                                    currency: "IDR",
-                                })
-                                .replace("IDR", "")
+                        {typeof totalCost === 'number' && totalCost > 0
+                            ? totalCost.toLocaleString("id-ID", {
+                                style: "currency",
+                                currency: "IDR",
+                            }).replace("IDR", "")
                             : "Rp 0"}
                     </Text>
                 </View>
@@ -188,34 +147,32 @@ const MakeEventTransactionNote = () => {
                     setModalVisible(!modalVisible);
                 }}
             >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.modalText} className="text-3xl font-outfitBold">
-              Confirm Payment
+                <View style={tailwind`flex-1 justify-center items-center bg-black bg-opacity-50`}>
+                    <View style={tailwind`bg-white rounded-lg shadow-lg w-11/12 max-w-md p-5`}>
+                        <Text style={tailwind`text-3xl font-outfitBold text-center mb-4`}>
+                            Confirm Payment
                         </Text>
                         <TouchableOpacity
-                            // onPress={handleAccept}
-                            className=" mx-auto items-center justify-center  py-3 rounded-full"
-                            style={tailwind`w-full bg-[#19ff8c] w-52 mb-2`}
+                            onPress={acceptMakeEvent}
+                            style={tailwind`mx-auto items-center justify-center py-3 rounded-full bg-[#19ff8c] w-52 mb-2`}
                         >
-                            <Text className="text-white text-xl font-outfitBold py-1.5">
-                Pay Now!
+                            <Text style={tailwind`text-white text-xl font-outfitBold py-1.5`}>
+                                Pay Now!
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => setModalVisible(!modalVisible)}
-                            className=" mx-auto items-center justify-center py-3 rounded-full"
-                            style={tailwind`w-full bg-[#00AA55] w-52 px-10`}
+                            style={tailwind`mx-auto items-center justify-center py-3 rounded-full bg-[#00AA55] w-52`}
                         >
-                            <Text className="text-white text-xl font-outfitBold py-1.5">
-                Later
+                            <Text style={tailwind`text-white text-xl font-outfitBold py-1.5`}>
+                                Later
                             </Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </Modal>
 
-            {/* modal detail vendor */}
+            {/* Modal Detail Vendor */}
             <Modal
                 animationType="slide"
                 transparent={true}
@@ -224,165 +181,35 @@ const MakeEventTransactionNote = () => {
                     setModalDetailVisible(false);
                 }}
             >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
+                <View style={tailwind`flex-1 justify-center items-center bg-black bg-opacity-50 py-10`}>
+                    <View style={tailwind`bg-white rounded-lg shadow-lg w-11/12 max-w-md max-h-3/4`}>
                         <TouchableOpacity
-                            style={styles.closeButton}
+                            style={tailwind`absolute top-3 right-3 p-2 bg-red-500 rounded-full`}
                             onPress={() => setModalDetailVisible(!modalDetailVisible)}
                         >
                             <MaterialCommunityIcons name="close" size={20} color="white" />
                         </TouchableOpacity>
-                        <Text style={styles.modalTitle}>Detail Vendor</Text>
-                        <View style={styles.scrollContainer}>
-                            <ScrollView contentContainerStyle={styles.scrollView}>
-                                <View style={styles.card}>
-                                    <Text style={styles.cardTitle}>Date Event</Text>
-                                    <Text style={styles.cardContent}>
-                    20 November - 21 November
+                        <Text className="text-3xl font-outfitBold text-center my-4">Detail Vendor</Text>
+                        <ScrollView contentContainerStyle={tailwind`p-4`} style={tailwind`max-h-3/4`}>
+                            {selectedVendor && Object.entries(selectedVendor).map(([key, value], index) => (
+                                <View key={index} style={tailwind`bg-gray-100 p-4 rounded-lg mb-2`}>
+                                    <Text className="font-outfitSemiBold text-lg text-gray-800">
+                                        {key
+                                            .replace(/([A-Z])/g, ' $1') // Menambahkan spasi sebelum huruf kapital
+                                            .replace(/^./, (str) => str.toUpperCase()) // Mengubah huruf pertama menjadi kapital
+                                        }
+                                    </Text>
+                                    <Text className="font-outfitRegular text-sm text-gray-600">
+                                        {value}
                                     </Text>
                                 </View>
-                                <View style={styles.card}>
-                                    <Text style={styles.cardTitle}>Days</Text>
-                                    <Text style={styles.cardContent}>2</Text>
-                                </View>
-                                <View style={styles.card}>
-                                    <Text style={styles.cardTitle}>Quantity (pcs)</Text>
-                                    <Text style={styles.cardContent}>2</Text>
-                                </View>
-                                <View style={styles.card}>
-                                    <Text style={styles.cardTitle}>Product Name</Text>
-                                    <Text style={styles.cardContent}>Catering</Text>
-                                </View>
-                                <View style={styles.card}>
-                                    <Text style={styles.cardTitle}>Event Name</Text>
-                                    <Text style={styles.cardContent}>Halloween</Text>
-                                </View>
-                                <View style={styles.card}>
-                                    <Text style={styles.cardTitle}>Address</Text>
-                                    <Text style={styles.cardContent}>
-                    Jalan Sekartaji 1 No 20 Malang, Jawa Timur
-                                    </Text>
-                                </View>
-                                <View style={styles.card}>
-                                    <Text style={styles.cardTitle}>Note</Text>
-                                    <Text style={styles.cardContent}>Harus Pedess Lurrr!</Text>
-                                </View>
-                            </ScrollView>
-                        </View>
+                            ))}
+                        </ScrollView>
                     </View>
                 </View>
             </Modal>
         </MakeEventLayout>
     );
 };
-
-const styles = StyleSheet.create({
-    card: {
-        backgroundColor: "#f9f9f9",
-        borderRadius: 15,
-        elevation: 5,
-        marginBottom: 15,
-        padding: 15,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        width: "90%",
-    },
-    cardContent: {
-        color: "#333",
-        fontSize: 18,
-        fontWeight: "600",
-    },
-    cardTitle: {
-        color: "#888",
-        fontSize: 16,
-        marginBottom: 5,
-    },
-    centeredView: {
-        alignItems: "center",
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        flex: 1,
-        justifyContent: "center",
-    },
-    closeButton: {
-        backgroundColor: "red",
-        borderRadius: 50,
-        padding: 8,
-        position: "absolute",
-        right: 20,
-        top: 20,
-    },
-    modalTitle: {
-        color: "#333",
-        fontSize: 20,
-        fontWeight: "bold",
-        marginBottom: 20,
-    },
-    modalView: {
-        alignItems: "center",
-        backgroundColor: "white",
-        borderRadius: 20,
-        elevation: 10,
-        height: "85%",
-        padding: 20,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 5 },
-        shadowOpacity: 0.3,
-        shadowRadius: 6,
-        width: "90%",
-    },
-    scrollContainer: {
-        height: "85%",
-        width: "100%",
-    },
-    scrollView: {
-        alignItems: "center",
-        paddingBottom: 20,
-    },
-
-    // centeredView: {
-    //   flex: 1,
-    //   justifyContent: "center",
-    //   alignItems: "center",
-    //   backgroundColor: "rgba(0, 0, 0, 0.5)",
-    // },
-    // modalView: {
-    //   backgroundColor: "white",
-    //   borderRadius: 20,
-    //   padding: 35,
-    //   alignItems: "center",
-    //   shadowColor: "#000",
-    //   shadowOffset: {
-    //     width: 0,
-    //     height: 2,
-    //   },
-    //   shadowOpacity: 0.25,
-    //   shadowRadius: 4,
-    //   elevation: 5,
-    //   width: "80%",
-    //   height: "80%",
-    // },
-    // button: {
-    //   borderRadius: 20,
-    //   padding: 10,
-    //   elevation: 2,
-    //   marginTop: 10,
-    // },
-    // buttonClose: {
-    //   backgroundColor: "#00AA55",
-    // },
-    // textStyle: {
-    //   color: "white",
-    //   fontWeight: "bold",
-    //   textAlign: "center",
-    // },
-    // modalText: {
-    //   marginBottom: 15,
-    //   textAlign: "center",
-    //   fontSize: 18,
-    //   fontWeight: "bold",
-    // },
-});
 
 export default MakeEventTransactionNote;
