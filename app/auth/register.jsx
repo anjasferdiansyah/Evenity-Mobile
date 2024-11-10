@@ -73,39 +73,29 @@ export default function RegisterScreen() {
 
     // City Search Handler
     const handleCitySearch = (text) => {
-        const newText = text.trim();
-    
-        // Reset city and district if text is reduced
-        if (newText.length < citySearchText.length) {
-            setCitySearchText(newText);
-            setSelectedCityId(null);
-            setDistrictSearchText("");
-            return;
-        }
+
+        setCitySearchText(text); // Langsung set text tanpa trim
+
+        if (!selectedProvinceId) return;
 
         // Filter cities
         const filtered = availableCities.filter((city) =>
-            city.name.toLowerCase().includes(newText.toLowerCase())
+            city.name.toLowerCase().includes(text.toLowerCase())
         );
-        setFilteredCities(newText === "" ? [] : filtered);
+        setFilteredCities(text === "" ? [] : filtered);
     };
 
     // District Search Handler
     const handleDistrictSearch = (text) => {
-        const newText = text.trim();
+         setDistrictSearchText(text); // Langsung set text
 
-        if (newText.length < districtSearchText.length) {
-            setDistrictSearchText("");
-            return;
-        }
-
-        setDistrictSearchText(newText);
+        if (!selectedCityId) return;
 
         // Filter districts
         const filtered = availableDistricts.filter((district) =>
-            district.name.toLowerCase().includes(newText.toLowerCase())
+            district.name.toLowerCase().includes(text.toLowerCase())
         );
-        setFilteredDistricts(newText === "" ? [] : filtered);
+        setFilteredDistricts(text === "" ? [] : filtered);
     };
 
    
@@ -255,6 +245,8 @@ export default function RegisterScreen() {
                                 maxLength={50}
                                 onChangeText={handleCitySearch}
                                 value={citySearchText}
+                                autoCorrect={false}
+                                autoCapitalize="none"
                             />
                             {filteredCities.length > 0 && (
                                 <FlatList

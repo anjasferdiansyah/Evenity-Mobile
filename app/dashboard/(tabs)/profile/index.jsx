@@ -1,4 +1,4 @@
-import {Image, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {Image, ScrollView, Text, TouchableOpacity, View, Dimensions} from "react-native";
 import React, {useEffect} from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {useDispatch, useSelector} from "react-redux";
@@ -10,152 +10,177 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import BottomPadding from "@/components/misc/BottomPadding";
 import {ROUTES} from "@/constant/ROUTES";
 import {ROLE} from "@/constant/USER";
+import Animated, {
+    useAnimatedStyle, 
+    useSharedValue, 
+    withSpring,
+    FadeInDown,
+    interpolate
+} from 'react-native-reanimated';
+
+const {width} = Dimensions.get('window');
 
 export default function ProfileScreen() {
     const dispatch = useDispatch();
-
-
     const {user} = useSelector((state) => state.auth);
     const {userInfo} = useSelector((state) => state.profile)
+
+    // Animasi scaling
+    const scale = useSharedValue(1);
+
+    const animatedProfileStyle = useAnimatedStyle(() => {
+        return {
+            transform: [
+                { scale: withSpring(scale.value) }
+            ],
+            opacity: interpolate(scale.value, [0.8, 1], [0.8, 1])
+        };
+    });
 
     useEffect(() => {
         dispatch(fetchUserProfile());
     }, [dispatch]);
 
-
     const userDetail = userInfo?.detail;
 
+    const ProfileSection = ({icon, title, value}) => (
+        <Animated.View 
+            entering={FadeInDown}
+            className="flex-row items-center py-4 border-b border-gray-200/30"
+        >
+            <View className="w-12 items-center justify-center mr-4">
+                {icon}
+            </View>
+            <View>
+                <Text className="text-sm text-gray-500 font-outfitRegular">
+                    {title}
+                </Text>
+                <Text className="text-lg font-outfitSemiBold text-gray-800">
+                    {value}
+                    
+                </Text>
+            </View>
+        </Animated.View>
+    );
+
+    const ProfileActionButton = ({icon, title, onPress, textColor = "text-white"}) => (
+        <TouchableOpacity 
+            onPress={onPress}
+            className="flex-row items-center py-4 border-b border-gray-200/30"
+        >
+            <View className="w-12 items-center justify-center mr-4">
+                {icon}
+            </View>
+            <Text className={`text-lg font-outfitSemiBold text-gray-800`}>
+                {title}
+            </Text>
+        </TouchableOpacity>
+    );
+
     return (
-        <SafeAreaView className="flex-1 relative items-center justify-center bg-white">
-            <ScrollView className="w-full">
-                <View>
-                    <Text className="text-5xl font-outfitBold text-center text-[#00AA55] my-4">
-                        Profile
-                    </Text>
-                    <View
-                        className="flex flex-row items-center justify-center gap-6 bg-gray-100 w-[90%] mx-auto rounded-xl mt-4 shadow-md blur-md">
-                        <Image
-                            className="rounded-full self-center"
-                            source={{
-                                uri: "https://i.pravatar.cc/300",
-                                scale: 2,
-                            }}
-                            width={100}
-                            height={100}
-                        />
-                        <View className="w-1/2 mt-12 pb-10 self-center items-center justify-around">
-                            <Text className="text-3xl text-[#00AA55] font-outfitBold text-center">
-                                {userDetail?.fullName || userDetail?.name}
-                            </Text>
-                            <Text className="text-gray-500 text-xl font-outfitRegular text-center capitalize">
-                                {user?.role === ROLE.VENDOR ? "Vendor" : "Customer"}
-                            </Text>
-                        </View>
+        <View className="flex-1 bg-[#F5F5F5]">
+            {/* Background Overlay */}
+            <View 
+                className="absolute top-0 left-0 right-0 h-[35%] bg-[#00AA55]"
+                style={{
+                    borderBottomLeftRadius: 50,
+                    borderBottomRightRadius: 50,
+                }}
+            />
 
+            <SafeAreaView className="flex-1">
+                <ScrollView 
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{paddingBottom: 50}}
+                >
+                    {/* Profile Header */}
+                    <Animated.View 
+                        style={animatedProfileStyle}
+                        className="items-center mt-8 mb-6 px-6"
+                    >
+                        <TouchableOpacity 
+                            onPressIn={() => scale.value = 0.9}
+                            onPressOut={() => scale.value = 1}
+                        >
+                            <View className="w-36 h-36 rounded-full border-4 border-white shadow-2xl">
+                                <Image
+                                    className="w-full h-full rounded-full"
+                                    source={{
+                                        uri: "https://i.pravatar.cc/300",
+                                    }}
+                                />
+                            </View>
+                        </TouchableOpacity>
+                        <Text className="text-3xl font-outfitBold text-white mt-4">
+                            {userDetail?.fullName || userDetail?.name}
+                        </Text>
+                        <Text className="text-base font-outfitRegular text-white/80 capitalize">
+                            {user?.role === ROLE.VENDOR ? "Vendor" : "Customer"}
+                        </Text>
+                    </Animated.View>
+
+                    {/* Profile Details */}
+                    <View className="px-6">
+                        <Animated.View 
+                            entering={FadeInDown.delay(200)}
+                            className="bg-white rounded-3xl shadow-md p-6"
+                        >
+                            <ProfileSection 
+                                icon={<Entypo name="location" size={24} color="#00AA55"/>}
+                                title="Location"
+                                value={`${userDetail?.district}, ${userDetail?.city}, ${userDetail?.province}`}
+                            />
+                            <ProfileSection 
+                                icon={<MaterialIcons name="contact-phone" size={24} color="#00AA55"/>}
+                                title="Phone Number"
+                                value={userDetail?.phoneNumber}
+                            />
+                            <ProfileSection 
+                                icon={<MaterialCommunityIcons name="email" size={24} color="#00AA55"/>}
+                                title="Email"
+                                value={userDetail?.email}
+                            />
+                            {user?.role === ROLE.VENDOR && (
+                                <ProfileSection 
+                                    icon={<Fontisto name="person" size={24} color="#00AA55"/>}
+                                    title="Owner"
+                                    value={userDetail?.owner}
+                                />
+                            )}
+                            <ProfileSection 
+                                icon={<Entypo name="address" size={24} color="#00AA55"/>}
+                                title="Address"
+                                value={userDetail?.address}
+                            />
+                        </Animated.View>
                     </View>
-                </View>
 
-                <View className="mt-4 mx-auto bg-gray-100 w-[90%] rounded-xl shadow-md">
-                    <View className="px-8 py-4">
-                        <View className="py-4 border-b border-white flex flex-row gap-4 items-center">
-                            <Entypo name="location" size={30} className="px-4 text-center" color="black"/>
-                            <View>
-                                <Text className="text-lg text-gray-500 font-outfitBold">
-                                    Location
-                                </Text>
-                                <Text className="text-xl w-[90%] font-outfitBold capitalize">
-                                    {userDetail?.district}, {userDetail?.city},{" "}
-                                    {userDetail?.province}
-                                </Text>
-                            </View>
-                        </View>
-                        <View className="py-4 border-b border-white flex flex-row gap-4 items-center">
-                            <MaterialIcons className="px-4 text-center" name="contact-phone" size={30} color="black"/>
-                            <View>
-                                <Text className="text-lg text-gray-500 font-outfitBold">
-                                    Phone Number
-                                </Text>
-                                <Text className="text-xl font-outfitBold">
-                                    {userDetail?.phoneNumber}
-                                </Text>
-                            </View>
-
-                        </View>
-                        <View className="py-4 border-b border-white flex flex-row gap-4 items-center">
-                            <MaterialCommunityIcons name="email" className="px-4 text-center" size={30} color="black"/>
-                            <View>
-                                <Text className="text-lg text-gray-500 font-outfitBold">
-                                    Email
-                                </Text>
-                                <Text className="text-xl font-outfitBold">
-                                    {userDetail?.email}
-                                </Text>
-                            </View>
-
-                        </View>
-                        {user?.role === ROLE.VENDOR && (
-                            <View className="py-4 border-b border-white flex flex-row gap-4 items-center">
-                                <Fontisto name="person" size={30} className="px-4 text-center" color="black"/>
-                                <View>
-                                    <Text className="text-lg text-gray-500 font-outfitBold">
-                                        Owner
-                                    </Text>
-                                    <Text className="text-xl font-outfitBold">
-                                        {userDetail?.owner}
-                                    </Text>
-                                </View>
-
-                            </View>
-                        )}
-                        <View className="py-4 border-b border-white flex flex-row gap-4 items-center">
-                            <Entypo name="address" size={30} className="px-4 text-center" color="black"/>
-                            <View>
-                                <Text className="text-lg text-gray-500 font-outfitBold">
-                                    Address
-                                </Text>
-                                <Text className="text-xl font-outfitBold capitalize">
-                                    {userDetail?.address}
-                                </Text>
-                            </View>
-                        </View>
+                    {/* Profile Actions */}
+                    <View className="px-6 mt-6 mb-20">
+                        <Animated.View 
+                            entering={FadeInDown.delay(400)}
+                            className="bg-white rounded-3xl shadow-md p-6"
+                        >
+                            <ProfileActionButton 
+                                icon={<FontAwesome name="gear" size={24} color="#00AA55"/>}
+                                title="Edit Profile"
+                                onPress={() => router.push(ROUTES.DASHBOARD.PROFILE.EDIT)}
+                            />
+                            <ProfileActionButton 
+                                icon={<MaterialCommunityIcons name="form-textbox-password" size={24} color="#00AA55"/>}
+                                title="Change Password"
+                                onPress={() => router.push(ROUTES.DASHBOARD.PROFILE.CHANGE_PASSWORD)}
+                            />
+                            <ProfileActionButton 
+                                icon={<AntDesign name="logout" size={24} color="red"/>}
+                                title="Logout"
+                                onPress={() => dispatch(logout())}
+                                textColor="text-red-500"
+                            />
+                        </Animated.View>
                     </View>
-                </View>
-
-                <View className="mt-10 mx-auto bg-gray-100 w-[90%] rounded-xl shadow-md ">
-                    <View className="px-8">
-                        <View className="py-4 border-b border-white ">
-                            <TouchableOpacity className="flex flex-row gap-4 items-center"
-                                onPress={() => router.push(ROUTES.DASHBOARD.PROFILE.EDIT)}>
-                                <FontAwesome className="w-10 text-center" name="gear" size={24} color="black"/>
-                                <Text className="text-xl text-black-500 font-outfitBold">
-                                    Edit Profile
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View className="py-4 border-b border-white ">
-                            <TouchableOpacity className="flex flex-row gap-4 items-center"
-                                onPress={() => router.push(ROUTES.DASHBOARD.PROFILE.CHANGE_PASSWORD)}>
-                                <MaterialCommunityIcons className="w-10 text-center" name="form-textbox-password"
-                                    size={24}
-                                    color="black"/>
-                                <Text className="text-xl text-black-500 font-outfitBold">
-                                    Change Password
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View className="py-4 border-b border-white">
-                            <TouchableOpacity className="flex flex-row gap-4 items-center"
-                                onPress={() => dispatch(logout())}>
-                                <AntDesign className="w-10 text-center" name="logout" size={24} color="red"/>
-                                <Text className="text-xl text-red-500 font-outfitBold">
-                                    Logout
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-                <BottomPadding/>
-            </ScrollView>
-        </SafeAreaView>
+                </ScrollView>
+            </SafeAreaView>
+        </View>
     );
 }

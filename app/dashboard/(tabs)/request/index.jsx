@@ -1,12 +1,34 @@
-import {FlatList, Text, TouchableOpacity, useWindowDimensions, View} from 'react-native'
+import {FlatList, Text, TouchableOpacity, useWindowDimensions, View, StatusBar} from 'react-native'
 import React, {useCallback, useEffect, useState} from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
 import {useDispatch, useSelector} from 'react-redux';
 import {fetchRequestLists, setSelectedRequest} from '@/redux/slices/requestSlice';
 import moment from 'moment';
-import Animated, {useAnimatedStyle, useSharedValue, withTiming} from 'react-native-reanimated';
+import Animated, {
+    useAnimatedStyle, 
+    useSharedValue, 
+    withTiming, 
+    FadeInDown, 
+    FadeInUp
+} from 'react-native-reanimated';
 import {ROUTES} from "@/constant/ROUTES";
+
+// Color Palette
+const COLORS = {
+    primary: '#00AA55',
+    background: '#F5F5F5',
+    white: '#FFFFFF',
+    text: {
+        dark: '#2C3E50',
+        light: '#7F8C8D'
+    },
+    status: {
+        approved: '#00AA55',
+        pending: '#FFC107',
+        rejected: '#FF5722'
+    }
+};
 
 export default function ListRequestScreen() {
     const dispatch = useDispatch();
@@ -48,65 +70,124 @@ export default function ListRequestScreen() {
         return moment(date).format('DD/MM/YYYY')
     }, []);
 
+    const getStatusColor = useCallback((status) => {
+        switch(status) {
+            case 'APPROVED': return COLORS.status.approved;
+            case 'PENDING': return COLORS.status.pending;
+            case 'REJECTED': return COLORS.status.rejected;
+            default: return COLORS.text.light;
+        }
+    }, []);
+
     const handleSelectedItem = useCallback((item) => {
         dispatch(setSelectedRequest(item));
         router.push(ROUTES.DASHBOARD.REQUEST.DETAIL);
     }, [dispatch]);
 
-    const renderItem = useCallback(({item}) => (
-        <TouchableOpacity
-            onPress={() => handleSelectedItem(item)}
-            key={item.eventDetailId}
-            style={{
-                shadowColor: "#000",
-                shadowOpacity: 0.2,
-                shadowOffset: {width: 0, height: 2},
-                shadowRadius: 4,
-                elevation: 4,
-                padding: 10,
-            }}
-        >
-            <View
-                className={`flex flex-row justify-between items-center p-5 ${
-                    item.approvalStatus === "APPROVED" ? "bg-[#00AA55]" : "bg-[#FF0000]"
-                } rounded-xl`}
-            >
-                <View>
-                    <Text className="text-md font-outfitSemiBold text-white">
-                        {formatDate(item.date)}
-                    </Text>
-                    <Text className="text-xl font-outfitBold text-white">
-                        {item.eventName}
-                    </Text>
-                </View>
+    const renderItem = useCallback(({item}) => {
+        const statusColor = getStatusColor(item.approvalStatus);
+        
+        return (
+            <Animated.View entering={FadeInDown}>
+                <TouchableOpacity
+                    onPress={() => handleSelectedItem(item)}
+                    key={item.eventDetailId}
+                    style={{
+                        shadowColor: "#000",
+                        shadowOpacity: 0.1,
+                        shadowOffset: {width: 0, height: 4},
+                        shadowRadius: 10,
+                        elevation: 5,
+                        marginBottom: 15,
+                    }}
+                >
+                    <View
+                        className="flex flex-row justify-between items-center p-5 rounded-2xl"
+                        style={{
+                            backgroundColor: statusColor + '20', // 20 for opacity
+                            borderLeftWidth: 5,
+                            borderLeftColor: statusColor
+                        }}
+                    >
+                        <View className="flex-1 pr-4">
+                            <Text className="text-md font-outfitSemiBold" style={{color: statusColor}}>
+                                {formatDate(item.date)}
+                            </Text>
+                            <Text className="text-xl font-outfitBold text-[#2C3E50]">
+                                {item.eventName}
+                            </Text>
+                        </View>
 
-                <View className="p-3 bg-white rounded-full">
-                    <AntDesignIcons
-                        name="right"
-                        size={24}
-                        color={item.approvalStatus === "APPROVED" ? "#00AA55" : "red"}
-                    />
-                </View>
-            </View>
-        </TouchableOpacity>
-    ), [formatDate, handleSelectedItem]);
+                        <View 
+                            className="p-3 bg-white rounded-full"
+                            style={{
+                                shadowColor: "#000",
+                                shadowOpacity: 0.1,
+                                shadowOffset: {width: 0, height: 2},
+                                shadowRadius: 5,
+                                elevation: 3,
+                            }}
+                        >
+                            <AntDesignIcons
+                                name="right"
+                                size={24}
+                                color={statusColor}
+                            />
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            </Animated.View>
+        );
+    }, [formatDate, handleSelectedItem, getStatusColor]);
 
     return (
-        <View className="flex-1 bg-gray-50">
-            <View className="w-full h-full pt-14 px-6">
-                <View className="flex flex-col items-center">
-                    <Text className="text-2xl font-outfitBold text-center text-gray-800 mb-1">
-                        Order
-                    </Text>
-                    <View className="flex flex-col items-center">
-                        <Text className="text-4xl font-outfitBold text-center text-[#00AA55]">
-                            Request
-                        </Text>
-                    </View>
-                </View>
+        <View className="flex-1" style={{backgroundColor: COLORS.background}}>
+            <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
+            
+            <Animated.View 
+                entering={FadeInUp}
+                className="w-full h-full pt-14 px-6"
+            >
+                {/* Header */}
+                <Animated.View 
+                    entering={FadeInUp}
+                    className="w-full pt-6 px-6"
+                >
+                    <Animated.View 
+                        entering={FadeInUp} 
+                        className="items-center mb-6"
+                    >
+                        <View className="mb-4 items-center">
+                            <Text 
+                                className="text-lg font-outfitRegular text-gray-500 mb-1"
+                            >
+                                Your
+                            </Text>
+                            <Text 
+                                className="text-4xl font-outfitBold text-[#2C3E50] tracking-tight"
+                            >
+                                REQUESTS
+                            </Text>
+                            <View 
+                                className="h-[2px] w-16 mt-2 self-center" 
+                                style={{ backgroundColor: COLORS.primary }}
+                            />
+                        </View>
+                    </Animated.View>
+                </Animated.View>
 
-                <View className="mt-6">
-                    <View className="flex flex-row justify-around relative bg-gray-100 p-4 rounded-full">
+                {/* Segment Control */}
+                <View>
+                    <View 
+                        className="flex flex-row justify-around relative bg-white p-2 rounded-full"
+                        style={{
+                            shadowColor: "#000",
+                            shadowOpacity: 0.1,
+                            shadowOffset: {width: 0, height: 2},
+                            shadowRadius: 5,
+                            elevation: 3,
+                        }}
+                    >
                         {["All", "Pending", "Approved", "Rejected"].map((item, index) => (
                             <TouchableOpacity
                                 key={index}
@@ -119,11 +200,10 @@ export default function ListRequestScreen() {
                             >
                                 <Text
                                     style={{
-                                        color: selected === item ? "white" : "black",
+                                        color: selected === item ? "white" : COLORS.text.dark,
                                         fontWeight: "bold",
                                         fontSize: 16,
-                                        backgroundColor:
-                                            selected === item ? "#00AA55" : "transparent",
+                                        backgroundColor: selected === item ? COLORS.primary : "transparent",
                                         paddingHorizontal: 15,
                                         paddingVertical: 5,
                                         borderRadius: 15,
@@ -148,13 +228,15 @@ export default function ListRequestScreen() {
                                                 : itemWidth - 120,
                                     width: itemWidth - 30,
                                     height: 3,
-                                    backgroundColor: "#00AA55",
+                                    backgroundColor: COLORS.primary,
                                     borderRadius: 2,
                                 },
                             ]}
                         />
                     </View>
                 </View>
+
+                {/* Request List */}
                 <View className="list-history space-y-4 mt-6">
                     <FlatList
                         data={filteredItems}
@@ -162,7 +244,7 @@ export default function ListRequestScreen() {
                         keyExtractor={(item) => item.eventDetailId.toString()}
                     />
                 </View>
-            </View>
+            </Animated.View>
         </View>
     )
 }

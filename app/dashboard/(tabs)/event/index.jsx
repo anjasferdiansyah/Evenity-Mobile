@@ -164,46 +164,40 @@ export default function CheckApprove() {
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
             <View className="w-full h-full px-6">
-                <View className="flex flex-col items-center">
-                    <Text className="text-3xl font-outfitBold text-center text-gray-800 mb-1">
-                        List
-                    </Text>
-                    <View className="flex flex-col items-center">
-                        <Text className="text-5xl font-outfitBold text-center text-[#00AA55]">
-                            Events
+                <View className="flex flex-col items-center mb-6">
+                    <View className="bg-[#00AA55] px-6 py-3 rounded-b-[30px] w-full items-center">
+                        <Text className="text-3xl font-outfitBold text-white mb-1">
+                            Event
                         </Text>
-                        {/* <View className="h-1 bg-[#00AA55] w-24 rounded-full mt-1" /> */}
+                        <Text className="text-xl font-outfitRegular text-white">
+                            History List
+                        </Text>
                     </View>
                 </View>
 
-                <View className="mt-6">
+               <View className="mb-4">
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{paddingHorizontal: 10}}
                     >
-                        <View className="flex flex-row justify-around bg-gray-100 p-4 rounded-full">
-                            {["All", "Accepted", "Pending", "Rejected"].map((item) => (
+                        <View className="flex flex-row bg-gray-200 rounded-full p-1">
+                            {["All", "Accepted", "Pending", "Rejected"].map((item, index) => (
                                 <TouchableOpacity
                                     key={item}
-                                    onPress={() => handlePress(item)}
-                                    style={{
-                                        alignItems: "center",
-                                        paddingVertical: 2,
-                                        marginRight: 10,
-                                    }}
+                                    onPress={() => handlePress(item, index)}
+                                    className={`px-4 py-2 rounded-full ${
+                                        selected === item 
+                                        ? "bg-[#00AA55]" 
+                                        : "bg-transparent"
+                                    }`}
                                 >
-                                    <Text
-                                        style={{
-                                            color: selected === item ? "white" : "black",
-                                            fontWeight: "bold",
-                                            fontSize: 16,
-                                            backgroundColor:
-                                                selected === item ? "#00AA55" : "transparent",
-                                            paddingHorizontal: 15,
-                                            paddingVertical: 5,
-                                            borderRadius: 15,
-                                        }}
+                                    <Text 
+                                        className={`font-outfitBold text-base ${
+                                            selected === item 
+                                            ? "text-white" 
+                                            : "text-gray-600"
+                                        }`}
                                     >
                                         {item}
                                     </Text>
@@ -213,7 +207,7 @@ export default function CheckApprove() {
                     </ScrollView>
                 </View>
 
-                <View className="list-history space-y-4 mt-6">
+                <View className="list-history space-y-4 flex-1">
                     <FlatList
                         data={filteredItems}
                         renderItem={renderItem}
@@ -226,10 +220,11 @@ export default function CheckApprove() {
                             <RefreshControl
                                 refreshing={refreshing}
                                 onRefresh={onRefresh}
-                                colors={['#00AA55']} // Optional: customize the loading indicator color
-                                tintColor="#00AA55" // iOS
+                                colors={['#00AA55']}
+                                tintColor="#00AA55"
                             />
                         }
+                        contentContainerStyle={{paddingBottom: 20}}
                     />
                 </View>
             </View>

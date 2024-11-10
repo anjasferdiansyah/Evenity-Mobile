@@ -1,12 +1,13 @@
-import {FlatList, Text, TextInput, TouchableOpacity, View,} from "react-native";
+import {FlatList, Text, TextInput, TouchableOpacity, View, SafeAreaView, KeyboardAvoidingView, Platform, ScrollView} from "react-native";
 import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {router} from "expo-router";
-import {clearProfile, editCustomerProfile, fetchUserProfile,} from "@/redux/slices/profileSlice";
+import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import RNPickerSelect from "react-native-picker-select";
+import {clearProfile, editCustomerProfile, fetchUserProfile} from "@/redux/slices/profileSlice";
 
 export default function EditProfileCustomer() {
-    const provinceData = [
+       const provinceData = [
         {label: "JAWA BARAT", value: "32", name: "JAWA BARAT"},
         {label: "JAWA TENGAH", value: "33", name: "JAWA TENGAH"},
         {label: "JAWA TIMUR", value: "35", name: "JAWA TIMUR"},
@@ -184,26 +185,7 @@ export default function EditProfileCustomer() {
         );
         setFilteredDistricts(newText === "" ? [] : filtered);
     };
-
-    const renderCityListItem = ({item}) => (
-        <TouchableOpacity
-            className="p-5 bg-white border-b border-gray-400 w-full"
-            onPress={() => handleCitySelection(item)}
-        >
-            <Text className="text-sm font-outfitSemiBold">{item.name}</Text>
-        </TouchableOpacity>
-    );
-
-    const renderDistrictListItem = ({item}) => (
-        <TouchableOpacity
-            className="p-5 bg-white border-b border-gray-400 w-full"
-            onPress={() => handleDistrictSelection(item)}
-        >
-            <Text className="text-sm font-outfitSemiBold">{item.name}</Text>
-        </TouchableOpacity>
-    );
-
-    const handleEditProfile = async () => {
+        const handleEditProfile = async () => {
         const newRegisterData = {
             fullName,
             phoneNumber,
@@ -228,137 +210,184 @@ export default function EditProfileCustomer() {
         }
     };
 
-    return (
-        <View className="flex-1 items-center justify-center bg-white">
-            <View className="w-full p-10">
-                <Text className="text-2xl font-outfitBold w-full">Edit Profile</Text>
-                <View className="flex flex-col gap-4 py-safe-or-12">
-                    <View className="flex flex-col gap-2">
-                        <Text className="font-outfitRegular text-gray-500">Full Name</Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                            placeholder="Enter name.."
-                            onChangeText={(text) => setFullName(text)}
-                            value={fullName}
-                        />
-                    </View>
-                    <View className="flex flex-col gap-2">
-                        <Text className="font-outfitRegular text-gray-500">
-                            Phone Number
-                        </Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                            placeholder="Enter phone number"
-                            onChangeText={(text) => setPhoneNumber(text)}
-                            value={phoneNumber}
-                        />
-                    </View>
-                    <View className="flex flex-col gap-2">
-                        <Text className="font-outfitRegular text-gray-500">Address</Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitRegular"
-                            placeholder="Enter address detail"
-                            onChangeText={(text) => setAddress(text)}
-                            value={address}
-                        />
-                    </View>
-                    <View className="flex flex-col gap-2">
-                        <Text className="font-outfitRegular">Province</Text>
-                        <View
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full">
-                            <RNPickerSelect
-                                onValueChange={(value) => {
-                                    setSelectedProvinceId(value);
-
-                                    // Mengatur nama provinsi yang dipilih
-
-                                    const selectedProvince = provinceData.find(
-                                        (p) => p.value === value
-                                    );
-
-                                    setProvinceSearchText(
-                                        selectedProvince ? selectedProvince.name : ""
-                                    );
-                                }}
-                                placeholder={{label: "Select province", value: null}}
-                                items={provinceData}
-                                value={selectedProvinceId} // Mengisi picker dengan state selectedProvinceId
-                            />
-                        </View>
-                    </View>
-                    <View className="flex flex-row gap-2">
-                        <View className="flex flex-col gap-2 w-[50%]">
-                            <Text
-                                className={
-                                    selectedProvinceId !== null
-                                        ? "font-outfitRegular"
-                                        : "font-outfitRegular opacity-50"
-                                }
-                            >
-                                City
-                            </Text>
-                            <TextInput
-                                editable={selectedProvinceId !== null}
-                                // className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                                className={
-                                    selectedProvinceId !== null
-                                        ? "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                                        : "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full opacity-50"
-                                }
-                                placeholder="Enter your email.."
-                                maxLength={50}
-                                onChangeText={handleCitySearch}
-                                value={citySearchText}
-                            />
-                            {filteredCities.length > 0 && (
-                                <FlatList
-                                    data={filteredCities}
-                                    renderItem={renderCityListItem}
-                                    keyExtractor={(item) => item.id}
-                                    className="absolute z-10 top-20 w-full border-[0.5px] h-fit max-h-[300%] rounded-lg border-gray-400"
-                                />
-                            )}
-                        </View>
-                        <View className="flex flex-col gap-2 w-[50%]">
-                            <Text
-                                className={
-                                    selectedCityId !== null
-                                        ? "font-outfitRegular"
-                                        : "font-outfitRegular opacity-50"
-                                }
-                            >
-                                District
-                            </Text>
-                            <TextInput
-                                // className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                                editable={selectedCityId !== null}
-                                className={
-                                    selectedCityId !== null
-                                        ? "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                                        : "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full opacity-50"
-                                }
-                                placeholder="Enter district"
-                                onChangeText={handleDistrictSearch}
-                                value={districtSearchText}
-                            />
-                            {filteredDistricts.length > 0 && (
-                                <FlatList
-                                    data={filteredDistricts}
-                                    renderItem={renderDistrictListItem}
-                                    keyExtractor={(item) => item.id}
-                                    className="absolute z-10 top-20 w-full border-[0.5px] h-fit max-h-[300%] rounded-lg border-gray-400"
-                                />
-                            )}
-                        </View>
-                    </View>
-                    <TouchableOpacity
-                        onPress={handleEditProfile}
-                        className="bg-[#00AA55] mx-auto w-[90%] mt-12 items-center justify-center px-8 py-3 rounded-full"
-                    >
-                        <Text className="text-white text-xl font-outfitBold">Save</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+    const renderInput = (label, value, onChangeText, placeholder, additionalProps = {}) => (
+        <View className="mb-4">
+            <Text className="text-sm font-outfitRegular text-[#6B7280] mb-2">{label}</Text>
+            <TextInput
+                className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl px-4 py-3 text-[#1F2937] text-base font-outfitRegular"
+                placeholder={placeholder}
+                placeholderTextColor="#9CA3AF"
+                onChangeText={onChangeText}
+                value={value}
+                {...additionalProps}
+            />
         </View>
+    )
+
+    const renderCityListItem = ({item}) => (
+        <TouchableOpacity
+            className="p-4 bg-white border-b border-[#E5E7EB]"
+            onPress={() => handleCitySelection(item)}
+        >
+            <Text className="text-base text-[#1F2937]">{item.name}</Text>
+        </TouchableOpacity>
+    );
+
+    const renderDistrictListItem = ({item}) => (
+        <TouchableOpacity
+            className="p-4 bg-white border-b border-[#E5E7EB]"
+            onPress={() => handleDistrictSelection(item)}
+        >
+            <Text className="text-base text-[#1F2937]">{item.name}</Text>
+        </TouchableOpacity>
+    );
+
+    return (
+        <SafeAreaView className="flex-1 bg-white">
+            <KeyboardAvoidingView 
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                className="flex-1"
+            >
+                <View className="flex-1 px-6 pt-6">
+                    {/* Header */}
+                    <View className="flex-row items-center mb-6 mt-10">
+                        <TouchableOpacity 
+                            onPress={() => router.back()} 
+                            className="mr-4 p-2 rounded-full bg-[#F3F4F6]"
+                        >
+                            <AntDesignIcons name='arrowleft' size={20} color={'#374151'}/>
+                        </TouchableOpacity>
+                        <Text className="text-2xl font-outfitBold text-[#111827]">
+                            Edit Profile
+                        </Text>
+                    </View>
+
+                    {/* Content */}
+                    <ScrollView 
+                        showsVerticalScrollIndicator={false}
+                        className="flex-1"
+                    >
+                        <View 
+                            className="bg-white rounded-2xl p-6 shadow-md"
+                            style={{
+                                shadowColor: "#000",
+                                shadowOffset: { width: 0, height: 2 },
+                                shadowOpacity: 0.1,
+                                shadowRadius: 4,
+                                elevation: 2
+                            }}
+                        >
+                            {renderInput(
+                                "Full Name", 
+                                fullName, 
+                                (text) => setFullName(text), 
+                                "Enter your full name"
+                            )}
+
+                            {renderInput(
+                                "Phone Number", 
+                                phoneNumber, 
+                                (text) => setPhoneNumber(text), 
+                                "Enter your phone number"
+                            )}
+
+                            {renderInput(
+                                "Address", 
+                                address, 
+                                (text) => setAddress(text), 
+                                "Enter your address"
+                            )}
+
+                            {/* Province Picker */}
+                            <View className="mb-4">
+                                <Text className="text-sm font-semibold text-[#6B7280] mb-2">Province</Text>
+                                <View className="bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl">
+                                    <RNPickerSelect
+                                        onValueChange={(value) => {
+                                            setSelectedProvinceId(value);
+                                            const selectedProvince = provinceData.find(
+                                                (p) => p.value === value
+                                            );
+                                            setProvinceSearchText(
+                                                selectedProvince ? selectedProvince.name : ""
+                                            );
+                                        }}
+                                        placeholder={{label: "Select province", value: null}}
+                                        items={provinceData}
+                                        value={selectedProvinceId}
+                                        style={{
+                                            inputIOS: {
+                                                padding: 12,
+                                                color: '#1F2937'
+                                            },
+                                            inputAndroid: {
+                                                padding: 12,
+                                                color: '#1F2937'
+                                            }
+                                        }}
+                                    />
+                                </View>
+                            </View>
+
+                            {/* City and District Row */}
+                            <View className="flex-row justify-between">
+                                <View className="w-[48%]">
+                                    {renderInput(
+                                        "City", 
+                                        citySearchText, 
+                                        handleCitySearch, 
+                                        "Enter city",
+                                        {
+                                            editable: selectedProvinceId !== null,
+                                            className: selectedProvinceId !== null 
+                                                ? "bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl px-4 py-3 text-[#1F2937] text-base" 
+                                                : "bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl px-4 py-3 text-[#1F2937] text-base opacity-50"
+                                        }
+                                    )}
+                                    {filteredCities.length > 0 && (
+                                        <FlatList
+                                            data={filteredCities}
+                                            renderItem={renderCityListItem}
+                                            keyExtractor={(item) => item.id}
+                                            className="absolute z-10 w-full border border-[#E5E7EB] rounded-lg bg-white"
+                                        />
+                                    )}
+                                </View>
+                                <View className="w-[48%]">
+                                    {renderInput(
+                                        "District", 
+                                        districtSearchText, 
+                                        handleDistrictSearch, 
+                                        "Enter district",
+                                        {
+                                            editable: selectedCityId !== null,
+                                            className: selectedCityId !== null 
+                                                ? "bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl px-4 py-3 text-[#1F2937] text-base" 
+                                                : "bg-[#F9FAFB] border border-[#E5E7EB] rounded-xl px-4 py-3 text-[#1F2937] text-base opacity-50"
+                                        }
+                                    )}
+                                    {filteredDistricts.length > 0 && (
+                                        <FlatList
+                                            data={filteredDistricts}
+                                            renderItem={renderDistrictListItem}
+                                            keyExtractor={(item) => item.id}
+                                            className="absolute z-10 w-full border border-[#E5E7EB] rounded-lg bg-white"
+                                        />
+                                    )}
+                                </View>
+                            </View>
+
+                            {/* Save Button */}
+                            <TouchableOpacity
+                                onPress={handleEditProfile}
+                                className="bg-[#10B981] mt-6 items-center justify-center py-4 rounded-xl"
+                            >
+                                <Text className="text-white text-base font-bold">Save Changes</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </ScrollView>
+                </View>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
