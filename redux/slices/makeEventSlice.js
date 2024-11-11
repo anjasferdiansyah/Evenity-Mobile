@@ -114,6 +114,15 @@ const MakeEventSlice = createSlice({
             state.recommendedList = {};
             console.log("ke hit reset")
         },
+
+        resetMakeEventState : (state) => {
+            state.makeEventRegist = null;
+            state.makeEventData = null;
+            state.recommendedList = {};
+            state.listSelected = [];
+            state.selectedDetailCategories = null;
+            state.totalCost = 0;
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -228,5 +237,6 @@ export const {
     resetRecommendedList,
     removeListSelected,
     addDetailCategories,
+    resetMakeEventState
 } = MakeEventSlice.actions;
 export default MakeEventSlice.reducer;

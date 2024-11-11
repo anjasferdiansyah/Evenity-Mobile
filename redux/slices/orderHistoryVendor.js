@@ -39,6 +39,12 @@ const orderHistoryVendorSlice = createSlice({
     reducers: {
         setSelectedOrderHistoryVendor: (state, action) => {
             state.selectedOrderHistoryVendor = action.payload
+        },
+        resetOrderHistoryVendor: (state) => {
+            state.orderHistoryVendor = []
+            state.selectedOrderHistoryVendor = null
+            state.eventOnVendor = null
+            state.status = ""
         }
     },
 
@@ -65,5 +71,5 @@ const orderHistoryVendorSlice = createSlice({
 
 })
 
-export const { setSelectedOrderHistoryVendor } = orderHistoryVendorSlice.actions
+export const { setSelectedOrderHistoryVendor, resetOrderHistoryVendor } = orderHistoryVendorSlice.actions
 export default orderHistoryVendorSlice.reducer

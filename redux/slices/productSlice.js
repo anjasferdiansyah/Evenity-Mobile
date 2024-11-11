@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios, {isAxiosError} from "axios";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
+import { resetProductState } from "./productVendorSlice";
 
 export const getPriceRange = createAsyncThunk(
     "product/getPriceRange",
@@ -40,7 +41,14 @@ const ProductSlice = createSlice({
         status: "idle",
         error: null,
     },
-    reducers: {},
+    reducers: {
+        resetProductCustomerState: (state) => {
+            state.priceRange = null;
+            state.status = "idle";
+            state.error = null;
+            state.isLoading = false;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getPriceRange.fulfilled, (state, action) => {
@@ -59,5 +67,7 @@ const ProductSlice = createSlice({
             });
     },
 });
+
+export const {resetProductCustomerState} = ProductSlice.actions
 
 export default ProductSlice.reducer;

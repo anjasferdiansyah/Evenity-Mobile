@@ -26,7 +26,13 @@ const CategorySlice = createSlice({
         categories: [],
         status: "idle",
     },
-    reducers: {},
+    reducers: {
+        resetCategoryState : (state) => {
+            state.isLoading = false;
+            state.categories = [];
+            state.status = "idle";
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(loadCategories.pending, (state) => {
@@ -45,4 +51,6 @@ const CategorySlice = createSlice({
     },
 });
 
+
+export const {resetCategoryState} = CategorySlice.actions
 export default CategorySlice.reducer

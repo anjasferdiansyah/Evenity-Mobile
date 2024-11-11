@@ -48,6 +48,11 @@ const requestSlice = createSlice({
     reducers: {
         setSelectedRequest: (state, action) => {
             state.selectedRequest = action.payload
+        },
+        resetRequestState : (state) => {
+            state.requestList = []
+            state.selectedRequest = null
+            state.status = ""
         }
     },
     extraReducers: (builder) => {
@@ -77,6 +82,6 @@ const requestSlice = createSlice({
     }
 })
 
-export const {setSelectedRequest} = requestSlice.actions
+export const {setSelectedRequest, resetRequestState} = requestSlice.actions
 
 export default requestSlice.reducer
