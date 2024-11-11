@@ -152,7 +152,7 @@ export default function ListRequestScreen() {
     }, [formatDate, handleSelectedItem, getStatusColor]);
 
     return (
-        <View className="flex-1" style={{backgroundColor: COLORS.background}}>
+        <View className="flex-1 pb-[75r%]" style={{backgroundColor: COLORS.background}}>
             <StatusBar barStyle="dark-content" backgroundColor={COLORS.background} />
             
             <Animated.View 
@@ -212,13 +212,13 @@ export default function ListRequestScreen() {
                                 <Text
                                     style={{
                                         color: selected === item ? "white" : COLORS.text.dark,
-                                        fontWeight: "bold",
                                         fontSize: 16,
                                         backgroundColor: selected === item ? COLORS.primary : "transparent",
                                         paddingHorizontal: 15,
                                         paddingVertical: 5,
                                         borderRadius: 15,
                                     }}
+                                    className="font-outfitSemiBold text-center"
                                 >
                                     {item}
                                 </Text>
