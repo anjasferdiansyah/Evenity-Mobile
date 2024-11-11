@@ -131,8 +131,8 @@ const withdrawHistorySlice = createSlice({
       })
       .addCase(getUserBalance.fulfilled, (state, action) => {
         console.log("Action Payload", action.payload);
-        if(action.payload.amount){
-          state.userBalance = action.payload.amount;
+        if(action.payload){
+          state.userBalance = action?.payload.amount;
         }
         state.status = "success";
       })

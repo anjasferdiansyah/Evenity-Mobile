@@ -42,9 +42,11 @@ export default function ProfileScreen() {
         };
     });
 
-    // useEffect(() => {
-    //     dispatch(fetchUserProfile());
-    // }, [dispatch]);
+    useEffect(() => {
+        if(!userInfo){
+            dispatch(fetchUserProfile());
+        }
+    }, [dispatch, userInfo]);
 
     const userDetail = userInfo?.detail;
 
