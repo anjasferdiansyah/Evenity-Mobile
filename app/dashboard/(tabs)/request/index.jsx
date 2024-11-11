@@ -203,29 +203,29 @@ export default function ListRequestScreen() {
                             <TouchableOpacity
                                 key={index}
                                 onPress={() => handlePress(item, index)}
+                                className={`rounded-full mx-auto`}
                                 style={{
                                     width: itemWidth,
-                                    alignItems: "center",
-                                    paddingVertical: 2,
+                                    paddingVertical: 10,
+                                    backgroundColor:selected === item ? "#00AA55" : "transparent",
                                 }}
                             >
                                 <Text
                                     style={{
-                                        color: selected === item ? "white" : COLORS.text.dark,
-                                        fontSize: 16,
-                                        backgroundColor: selected === item ? COLORS.primary : "transparent",
-                                        paddingHorizontal: 15,
-                                        paddingVertical: 5,
-                                        borderRadius: 15,
+                                        textAlign: "center",
                                     }}
-                                    className="font-outfitSemiBold text-center"
+                                    className={`font-outfitBold text-base ${
+                                                    selected === item
+                                                        ? "text-white"
+                                                        : "text-gray-600"
+                                                }`}
                                 >
                                     {item}
                                 </Text>
                             </TouchableOpacity>
                         ))}
 
-                        <Animated.View
+                        {/* <Animated.View
                             style={[
                                 animatedIndicatorStyle,
                                 {
@@ -233,9 +233,11 @@ export default function ListRequestScreen() {
                                     bottom: -2,
                                     left:
                                         selected === "All"
-                                            ? 25
-                                            : selected === "Accepted"
-                                                ? itemWidth - 109
+                                            ? 60
+                                            : selected === "Approved"
+                                                ? itemWidth - 109 :
+                                                selected === "Pending" ?
+                                                    itemWidth - 60 
                                                 : itemWidth - 120,
                                     width: itemWidth - 30,
                                     height: 3,
@@ -243,7 +245,7 @@ export default function ListRequestScreen() {
                                     borderRadius: 2,
                                 },
                             ]}
-                        />
+                        /> */}
                     </View>
                 </View>
 
