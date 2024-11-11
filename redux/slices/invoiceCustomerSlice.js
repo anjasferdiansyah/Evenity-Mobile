@@ -28,6 +28,13 @@ const invoiceCustomerSlice = createSlice({
         setSelectedInvoiceCustomer: (state, action) => {
             state.selectedInvoiceCustomer = action.payload;
         },
+        resetInvoiceCustomerState : (state) => {
+            state.invoiceCustomer = [];
+            state.selectedInvoiceCustomer = null;
+            state.status = "idle";
+            state.error = null;
+            state.isLoading = false;
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -47,5 +54,5 @@ const invoiceCustomerSlice = createSlice({
     },
 });
 
-export const { setSelectedInvoiceCustomer } = invoiceCustomerSlice.actions;
+export const { setSelectedInvoiceCustomer, resetInvoiceCustomerState } = invoiceCustomerSlice.actions;
 export default invoiceCustomerSlice.reducer;

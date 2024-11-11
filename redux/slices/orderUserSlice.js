@@ -25,7 +25,14 @@ const orderUserSlice = createSlice({
     reducers: {
         setSelectedOrderUser: (state, action) => {
             state.selectedOrder = action.payload;
-        }
+        },
+        resetOrderUserState: (state) => {
+            state.selectedOrder = null;
+            state.ordersUser = [];
+            state.status = "idle";
+            state.error = null;
+            state.isLoading = false;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -43,5 +50,5 @@ const orderUserSlice = createSlice({
     },
 });
 
-export const {setSelectedOrderUser} = orderUserSlice.actions;
+export const {setSelectedOrderUser, resetOrderUserState} = orderUserSlice.actions;
 export default orderUserSlice.reducer;

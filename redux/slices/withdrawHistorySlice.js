@@ -86,6 +86,20 @@ const withdrawHistorySlice = createSlice({
     statusWithdraw: "",
     isValidBankAccount: false,
   },
+
+  reducers: {
+    resetWithdrawHistory: (state) => {
+      state.withdrawHistory = [];
+      state.listBank = [];
+      state.userBalance = 0;
+      state.accountName = "";
+      state.accountNumber = "";
+      state.bankName = "";
+      state.status = "";
+      state.statusWithdraw = "";
+      state.isValidBankAccount = false;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loadWithdrawHistory.pending, (state) => {
@@ -117,7 +131,9 @@ const withdrawHistorySlice = createSlice({
       })
       .addCase(getUserBalance.fulfilled, (state, action) => {
         console.log("Action Payload", action.payload);
-        state.userBalance = action.payload.amount;
+        if(action.payload.amount){
+          state.userBalance = action.payload.amount;
+        }
         state.status = "success";
       })
       .addCase(makeWithdrawRequest.fulfilled, (state, action) => {
@@ -131,5 +147,7 @@ const withdrawHistorySlice = createSlice({
       );
   },
 });
+
+export const { resetWithdrawHistory } = withdrawHistorySlice.actions
 
 export default withdrawHistorySlice.reducer;
