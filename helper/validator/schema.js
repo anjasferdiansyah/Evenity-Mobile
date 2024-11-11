@@ -33,7 +33,7 @@ export const eventDateSchema = z
     endDate: z.date(),
     endTime: z.date(),
   })
-  .refine((data) => data.endDate > data.startDate, {
+  .refine((data) => data.endDate >= data.startDate, {
     message: "End date cannot be earlier than start date.",
     path: ["endDate"],
   })
@@ -77,30 +77,66 @@ export const eventCapacitySchema = z
     path: ["capacityEvent"],
   });
 
-export const priceSchema = z
+  export const priceSchema = z
   .object({
     tempLowestPrice: z
       .string()
       .min(1, { message: "Lowest price is required" })
-      .refine((value) => /^\d+$/.test(value.replace(/,/g, "")), {
-        message: "Lowest price must be a valid number",
+      .refine(
+        (value) => {
+
+          // Hapus semua koma dari input
+
+          const cleanedValue = value.replace(/,/g, '');
+
+          // Pastikan hanya berisi digit
+          return /^\d+$/.test(cleanedValue);
+        }, 
+
+        { 
+          message: "Lowest price must be a valid number without commas" 
+        }
+
+      )
+
+      .transform((value) => {
+        // Hapus semua koma sebelum parsing
+        const cleanedValue = value.replace(/,/g, '');
+        return parseInt(cleanedValue, 10);
       })
-      .transform((value) => parseInt(value.replace(/,/g, ""), 10))
+
       .refine((value) => value > 0, {
         message: "Lowest price must be greater than 0",
       }),
 
+
     tempHighestPrice: z
       .string()
       .min(1, { message: "Highest price is required" })
-      .refine((value) => /^\d+$/.test(value.replace(/,/g, "")), {
-        message: "Highest price must be a valid number",
+      .refine(
+
+        (value) => {
+
+          // Hapus semua koma dari input
+          const cleanedValue = value.replace(/,/g, '');
+
+          // Pastikan hanya berisi digit
+          return /^\d+$/.test(cleanedValue);
+        }, 
+        { 
+          message: "Highest price must be a valid number without commas" 
+        }
+      )
+      .transform((value) => {
+        // Hapus semua koma sebelum parsing
+        const cleanedValue = value.replace(/,/g, '');
+        return parseInt(cleanedValue, 10);
       })
-      .transform((value) => parseInt(value.replace(/,/g, ""), 10))
       .refine((value) => value > 0, {
         message: "Highest price must be greater than 0",
       }),
-  }) .refine(
+  })
+  .refine(
     (data) => data.tempHighestPrice >= data.tempLowestPrice,
     {
       message: "Highest price must be greater than or equal to lowest price",

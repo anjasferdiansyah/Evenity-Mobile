@@ -53,6 +53,10 @@ const OrderDetailUser = () => {
 
     };
 
+
+    
+
+
     const DetailCard = ({title, children, style}) => (
         <Animated.View 
             entering={FadeInDown}
@@ -77,6 +81,10 @@ const OrderDetailUser = () => {
             {children}
         </Animated.View>
     );
+
+    const handleFinishEvent = async () => {
+        
+    }
 
     return (
         <View className="flex-1 bg-[#F5F5F5]">
@@ -248,6 +256,20 @@ const OrderDetailUser = () => {
                             </TouchableOpacity>
                         </View>
                     )}
+                    {
+                        selectedInvoiceCustomer?.paymentStatus === "COMPLETE" && (
+                            <View className="flex-row space-x-4  gap-2">
+                                <TouchableOpacity
+                                    className="flex-1 bg-[#00F279] items-center justify-center py-6 rounded-full"
+                                    onPress={handleFinishEvent}
+                                >
+                                    <Text className="text-white text-2xl font-outfitBold">
+                                        Confirm Event Finished!
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        )
+                    }
                     <BottomPadding />
                 </ScrollView>
             </View>
