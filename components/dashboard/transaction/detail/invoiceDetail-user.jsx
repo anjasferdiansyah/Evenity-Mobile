@@ -36,7 +36,15 @@ const InvoiceDetailUser = () => {
     };
 
     const getCityName = (city) => {
-        return city.replace(/^(KABUPATEN|KOTA)\s+/i, "");
+        if (!city) return '';
+        
+        // Pastikan city adalah string
+        const cityString = String(city);
+        
+        // Hapus prefix KABUPATEN atau KOTA (case insensitive)
+        return cityString
+            .replace(/^(KABUPATEN|KOTA)\s+/i, "")
+            .trim();
     };
 
     const totalCost = selectedHistoryEvent?.eventDetailResponseList?.reduce(

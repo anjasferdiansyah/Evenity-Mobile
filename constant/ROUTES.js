@@ -42,6 +42,7 @@ export const ROUTES = {
                 INDEX: 'dashboard/transaction/withdraw',
                 HISTORY: 'dashboard/transaction/withdraw/history',
                 FINAL: 'dashboard/transaction/withdraw/final',
+                SPLASH_AFTER: 'dashboard/transaction/withdraw/splash',
             },
         },
     },
