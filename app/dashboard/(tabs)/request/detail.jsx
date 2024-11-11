@@ -1,5 +1,5 @@
 import {SafeAreaView, ScrollView, Text, TouchableOpacity, View, RefreshControl} from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
 import {useDispatch, useSelector} from 'react-redux';
@@ -120,18 +120,18 @@ export default function DetailRequest() {
 
                 {/* Action Buttons */}
                 {selectedRequest?.approvalStatus === "PENDING" && (
-                    <View className="flex-row justify-between absolute bottom-[200px] left-6 right-6">
+                    <View className="flex-row justify-between absolute bottom-[100px] left-6 right-6">
                         <TouchableOpacity 
-                            className="flex-1 mr-4 bg-[#10B981] items-center rounded-xl"
+                            className="flex-1 mr-4 py-4 bg-[#10B981] items-center rounded-xl"
                             onPress={handleApprove(selectedRequest?.eventDetailId)}
                         >
-                            <Text className="text-white text-base font-outfitBold">Approve</Text>
+                            <Text className="text-white text-xl font-outfitBold">Approve</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            className="flex-1 bg-[#EF4444] items-center rounded-xl"
+                            className="flex-1 py-4 bg-[#EF4444] items-center rounded-xl"
                             onPress={handleReject(selectedRequest?.eventDetailId)}
                         >
-                            <Text className="text-white text-base font-outfitBold">Reject</Text>
+                            <Text className="text-white text-xl font-outfitBold">Reject</Text>
                         </TouchableOpacity>
                     </View>
                 )}

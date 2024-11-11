@@ -14,6 +14,9 @@ import { ROUTES } from "@/constant/ROUTES";
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { loadCategories } from '@/redux/slices/categorySlice';
+import RNPickerSelect from 'react-native-picker-select';
+import axios from 'axios';
 
 const CompletingRegisterVendor = () => {
     const [vendorName, setVendorName] = useState("");
@@ -21,6 +24,7 @@ const CompletingRegisterVendor = () => {
     const [address, setAddress] = useState("");
     const [ownerName, setOwnerName] = useState("");
     const { registerData, status, error } = useSelector(state => state.auth)
+    const [categoryId, setCategoryId] = useState(null);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -38,16 +42,26 @@ const CompletingRegisterVendor = () => {
         }
     }, [dispatch, error])
 
-    const handleRegister = () => {
+    const handleRegister = () => {    
         const newRegisterData = {
             ...registerData,
             name: vendorName,
             phoneNumber,
             address,
-            ownerName
+            ownerName,
+            mainCategory : "CATERING"
         }
         dispatch(completingRegisterVendor(newRegisterData))
     }
+
+
+    const mapToLabelAndValue = (categories) => {
+        return categories.map((category) => ({
+            label: category.mainCategory,
+            value: category.id,
+        }));
+    }
+
 
     return (
         <LinearGradient 

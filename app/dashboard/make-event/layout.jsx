@@ -20,10 +20,10 @@ const MakeEventLayout = ({
 }) => {
     const dispatch = useDispatch();
 
-    const handleBack = () => {
+    const handleClose = () => {
         dispatch(resetRegistMakeEvent());
         dispatch(resetRecommendedList());
-        router.back();
+        router.push(ROUTES.DASHBOARD.EVENT.INDEX);
     };
 
     return (
@@ -40,7 +40,7 @@ const MakeEventLayout = ({
                     zIndex: 10,
                 }}
                 onPress={() => {
-                    router.replace(ROUTES.DASHBOARD.INDEX);
+                    handleClose();
                 }}
             >
                 <MaterialCommunityIcons name="close" size={24} color="white" />
@@ -91,7 +91,7 @@ const MakeEventLayout = ({
                 ) : (
                     <View className="flex flex-row justify-between mt-12">
                         <TouchableOpacity
-                            onPress={handleBack}
+                            onPress={() => router.back()}
                             className="mx-auto w-[30%] items-center justify-center rounded-full bg-red-500 p-4"
                         >
                             <MaterialCommunityIcons name="chevron-left" size={24} color="white" />

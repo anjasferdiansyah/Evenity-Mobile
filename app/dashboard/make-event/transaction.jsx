@@ -184,8 +184,8 @@ const MakeEventTransactionNote = () => {
                 <View style={tailwind`flex-1 justify-center items-center bg-black bg-opacity-50 py-10`}>
                     <View style={tailwind`bg-white rounded-lg shadow-lg w-11/12 max-w-md max-h-3/4`}>
                         <TouchableOpacity
-                            style={tailwind`absolute top-3 right-3 p-2 bg-red-500 rounded-full`}
-                            onPress={() => setModalDetailVisible(!modalDetailVisible)}
+                            style={tailwind`absolute top-3 right-3 p-2 bg-red-500 rounded-full z-20`}
+                            onPress={() => setModalDetailVisible(false)}
                         >
                             <MaterialCommunityIcons name="close" size={20} color="white" />
                         </TouchableOpacity>

@@ -218,18 +218,11 @@ const OrderDetailUser = () => {
                     {selectedInvoiceCustomer?.paymentStatus === "UNPAID" && selectedInvoiceCustomer?.totalCost > 0 && (
                         <View className="flex-row space-x-4  gap-2">
                             <TouchableOpacity
-                                className="flex-1 bg-[#00F279] items-center justify-center py-4 rounded-full"
+                                className="flex-1 bg-[#00F279] items-center justify-center py-6 rounded-full"
                                 onPress={handlePayment}
                             >
-                                <Text className="text-white text-lg font-outfitBold">
+                                <Text className="text-white text-2xl font-outfitBold">
                                     Pay Now
-                                </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                className="flex-1 bg-red-500 items-center justify-center py-4 rounded-full"
-                            >
-                                <Text className="text-white text-lg font-outfitBold">
-                                    Cancel Order
                                 </Text>
                             </TouchableOpacity>
                         </View>
