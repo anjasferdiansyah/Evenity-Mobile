@@ -43,7 +43,7 @@ const productVendorSlice = createSlice({
         setSelectedProduct: (state, action) => {
             state.selectedProduct = action.payload;
         },
-        resetProductState: () => initialState
+        resetProductVendorState: () => initialState
     },
     extraReducers: (builder) => {
         builder
@@ -63,6 +63,6 @@ const productVendorSlice = createSlice({
     }
 });
 
-export const {setSelectedProduct, resetProductState} = productVendorSlice.actions;
+export const {setSelectedProduct, resetProductVendorState} = productVendorSlice.actions;
 
 export default productVendorSlice.reducer;

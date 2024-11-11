@@ -21,6 +21,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
+import { fetchUserProfile } from "@/redux/slices/profileSlice";
 
 
 
@@ -50,6 +51,8 @@ export default function LoginScreen() {
     const [hidePassword, setHidePassword] = useState(true);
     const dispatch = useDispatch();
     const { isLoggedIn, error, status } = useSelector((state) => state.auth);
+    const { userInfo } = useSelector((state) => state.profile);
+    console.log("userInfo", userInfo);
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -71,6 +74,7 @@ export default function LoginScreen() {
             alert(error);
         } else {
             dispatch(login(data));
+            dispatch(fetchUserProfile())
         }
     };
 

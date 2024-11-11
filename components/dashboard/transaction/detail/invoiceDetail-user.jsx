@@ -56,7 +56,7 @@ const InvoiceDetailUser = () => {
         setRefreshing(true);
 
         try {
-            dispatch(fetchEventDetail(selectedHistoryEvent?.eventId)); // Fetch event details again
+            dispatch(fetchEventDetail(selectedHistoryEvent?.id)); // Fetch event details again
         } catch (error) {
             console.error("Failed to refresh event details:", error);
         } finally {
