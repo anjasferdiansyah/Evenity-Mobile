@@ -1,17 +1,19 @@
 import {SafeAreaView, ScrollView, Text, TouchableOpacity, View, RefreshControl} from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
-import {approveRequest, rejectRequest, fetchRequestDetail} from "@/redux/slices/requestSlice";
+import {approveRequest, rejectRequest, fetchRequestDetail, fetchRequestLists} from "@/redux/slices/requestSlice";
 import BottomPadding from "@/components/misc/BottomPadding";
+
 
 
 export default function DetailRequest() {
     const {selectedRequest} = useSelector(state => state.request)
     const dispatch = useDispatch()
     const [refreshing, setRefreshing] = useState(false);
+    const {id} = useSelector((state) => state.auth);
 
 
     const onRefresh = () => {
@@ -25,6 +27,10 @@ export default function DetailRequest() {
     const formatedDate = (date) => {
         return moment(date).format('DD MMM YYYY')
     }
+
+    const getRequestList = useCallback(() => {
+        dispatch(fetchRequestLists(id));
+    }, [dispatch, id]);
 
     function handleApprove(id) {
         return () => {
@@ -86,7 +92,9 @@ export default function DetailRequest() {
                 {/* Header */}
                 <View className="flex-row items-center mb-6 mt-10">
                     <TouchableOpacity
-                        onPress={() => router.back()}
+                        onPress={() => {
+                            getRequestList();
+                            router.back()}}
                         className="mr-4 p-2 rounded-full bg-[#F3F4F6]"
                     >
                         <AntDesignIcons name='arrowleft' size={20} color={'#374151'}/>
@@ -127,7 +135,7 @@ export default function DetailRequest() {
 
                 {/* Action Buttons */}
                 {selectedRequest?.approvalStatus === "PENDING" && (
-                    <View className="flex-row justify-between absolute bottom-[100px] left-6 right-6">
+                    <View className="flex-row justify-between absolute left-6 right-6 bottom-0">
                         <TouchableOpacity 
                             className="flex-1 mr-4 py-4 bg-[#10B981] items-center rounded-xl"
                             onPress={handleApprove(selectedRequest?.eventDetailId)}
