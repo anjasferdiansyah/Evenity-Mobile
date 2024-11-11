@@ -83,6 +83,7 @@ const withdrawHistorySlice = createSlice({
     accountNumber: "",
     bankName: "",
     status: "",
+    statusWithdraw: "",
     isValidBankAccount: false,
   },
   extraReducers: (builder) => {
@@ -120,7 +121,7 @@ const withdrawHistorySlice = createSlice({
         state.status = "success";
       })
       .addCase(makeWithdrawRequest.fulfilled, (state, action) => {
-        state.status = "success";
+        state.statusWithdraw = "success";
       })
       .addMatcher(
         (action) => action.type.endsWith("/rejected"),

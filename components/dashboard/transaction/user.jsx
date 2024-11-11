@@ -7,8 +7,6 @@ import {
     StatusBar, 
     RefreshControl
 } from "react-native";
-import React, {useEffect, useState} from "react";
-import {FlatList, StatusBar, Text, TouchableOpacity, View} from "react-native";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
 import {useDispatch, useSelector} from "react-redux";

@@ -110,6 +110,7 @@ const RegisterScreen = () => {
     const dispatch = useDispatch();
 
     const handleRegister = () => {
+        console.log(registerData)
         if (password !== confirmPassword) {
             alert("Passwords do not match");
             return;

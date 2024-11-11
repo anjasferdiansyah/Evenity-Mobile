@@ -1,29 +1,62 @@
-import {Alert, Text, TextInput, TouchableOpacity, View} from 'react-native'
-import React, { useEffect } from 'react'
+import {Alert, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserBalance, makeWithdrawRequest } from '@/redux/slices/withdrawHistorySlice';
+import { getUserBalance, loadWithdrawHistory, makeWithdrawRequest } from '@/redux/slices/withdrawHistorySlice';
 import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { withdrawSchema } from '@/helper/validator/schema';
+import { ROUTES } from '@/constant/ROUTES';
 
 export default function WithdrawScreen() {
 
 
-    const { accountNumber, bankName, accountName, userBalance, withdrawHistory } = useSelector(state => state.withdrawHistory)
+    const { accountNumber, bankName, accountName, userBalance, withdrawHistory, statusWithdraw } = useSelector(state => state.withdrawHistory)
+
+    console.log("withdrawHistory", withdrawHistory)
+    console.log()
 
     const {user} = useSelector(state => state.auth)
+    const [refreshing, setRefreshing] = useState(false);
+
+    useEffect(() => {
+        fetchWithdrawHistory();
+    }, []);
+
+    const fetchWithdrawHistory = useCallback(() => {
+        dispatch(loadWithdrawHistory(user.detail.userId));
+    }, [dispatch, user]);
+
+
+    const onRefresh = useCallback(() => {
+
+      setRefreshing(true);
+      Promise.all([
+          dispatch(getUserBalance({ id: user.detail.userId })),
+          dispatch(loadWithdrawHistory(user.detail.userId))
+      ]).then(() => {
+        setRefreshing(false);
+      }).catch(() => {
+          setRefreshing(false);
+      });
+  }, [dispatch, user]);
+
 
     const dispatch = useDispatch()
     console.log("withdrawHistory", withdrawHistory)
 
 
 
+
     useEffect(() => {
         dispatch(getUserBalance({ id: user.detail.userId }))
     }, [])
+
+    useEffect(() => {
+      dispatch(loadWithdrawHistory(user.detail.userId))
+    }, [dispatch])
 
 
     const { control, handleSubmit, formState: { errors }, reset } = useForm({
@@ -33,30 +66,72 @@ export default function WithdrawScreen() {
         },
       });
 
-    const onSubmit = async (data) => {
-
+      const onSubmit = async (data) => {
         const hasPending = withdrawHistory.some(item => item.approvalStatus === 'PENDING');
-
+      
         if (hasPending) {
           Alert.alert("Pending Withdraw Request", "You have a pending withdraw request. Please wait for it to be processed.");
           return;
         }
+      
+        // Tambahkan alert konfirmasi
+        Alert.alert(
+          "Confirm Withdrawal", 
+          `Are you sure you want to withdraw ${data.amount}?`,
+          [
+            {
+              text: "Cancel",
+              style: "cancel"
+            },
+            {
+              text: "Confirm",
+              onPress: async () => {
 
+                try {
+                  const result = dispatch(makeWithdrawRequest({ 
+                    amount: parseFloat(data.amount), 
+                    id: user.detail.userId 
+                  }));
 
-        try {
-          const result = dispatch(makeWithdrawRequest({ amount: parseFloat(data.amount), id: user.detail.userId }));
-          if (makeWithdrawRequest.fulfilled.match(result)) {
-            Alert.alert("Success", "Withdraw request submitted successfully.");
-          }
-          reset(); // Reset the form after successful submission
-        } catch (error) {
-          console.log(error);
-        }
+                  console.log(statusWithdraw)
+      
+                    Alert.alert(
+                      "Success", 
+                      "Withdraw request submitted successfully.",
+                      [
+                        {
+                          text: "OK",
+                          onPress: () => {
+                            reset();
+                            router.push(ROUTES.DASHBOARD.TRANSACTION.INDEX)
+                          } // Reset form after user acknowledges success
+                        }
+                      ]
+                    );
+ 
+                  
+                } catch (error) {
+                  console.log(error);
+                  Alert.alert("Error", "Failed to submit withdraw request.");
+                }
+              }
+            }
+          ]
+        );
       };
 
-
     return (
-        <View className="flex-1 items-center justify-center bg-white">
+        <ScrollView
+        refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['#2563EB']}
+            />
+          }
+        className=" bg-white"
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
             <View className="w-full h-full pt-20 px-10">
                 <TouchableOpacity onPress={() => router.back()}
                     className="p-2 bg-[#00F279] rounded-full self-start">
@@ -94,6 +169,6 @@ export default function WithdrawScreen() {
                     </View>
                 </View>
             </View>
-        </View>
+        </ScrollView>
     )
 }

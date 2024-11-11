@@ -33,14 +33,26 @@ export const eventDateSchema = z
     endDate: z.date(),
     endTime: z.date(),
   })
-  .refine((data) => data.endDate >= data.startDate, {
+  .refine((data) => data.endDate > data.startDate, {
     message: "End date cannot be earlier than start date.",
     path: ["endDate"],
   })
-  .refine((data) => data.endTime >= data.startTime, {
-    message: "End time cannot be earlier than start time.",
-    path: ["endTime"],
-  });
+  .refine(
+    (data) => {
+      // Jika endDate berbeda dari startDate, maka validasi waktu diabaikan
+      if (data.endDate.toDateString() !== data.startDate.toDateString()) {
+        return true;
+      }
+      // Jika endDate sama dengan startDate, maka endTime harus lebih akhir dari startTime
+      return data.endTime > data.startTime;
+    },
+
+    {
+      message: "End time cannot be earlier than start time on the same day.",
+      path: ["endTime"],
+    }
+
+  );
 
 export const eventThemeSchema = z.object({
   themeEvent: z
@@ -106,7 +118,7 @@ export const priceSchema = z
             message: "Amount must be a valid number",
           })
           .transform((value) => parseInt(value.replace(/,/g, ""), 10))
-          .refine((value) => value > 100000, {
+          .refine((value) => value >= 100000, {
             message: "Amount must be greater than 100000",
           }),
       })
