@@ -2,8 +2,8 @@ import {Alert, FlatList, Text, TextInput, TouchableOpacity, View, ScrollView} fr
 import tailwind from "twrnc";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
 import React, {useCallback, useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
-import {registMakeEvent} from "@/redux/slices/makeEventSlice";
+import {useDispatch, useSelector} from "react-redux";
+import {registMakeEvent, checkVendorAvailability} from "@/redux/slices/makeEventSlice";
 import RNPickerSelect from "react-native-picker-select";
 
 const provinceData = [
@@ -33,19 +33,22 @@ const MakeEventLocation = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const [addressEvent, setAddressEvent] = useState("");
+    const [isVendorAvailable, setIsVendorAvailable] = useState(false); // Tambahkan state untuk ketersediaan vendor
+
 
     const validateInputs = useCallback(() => {
         if (
             citySearchText &&
             provinceSearchText &&
             districtSearchText &&
-            addressEvent
+            addressEvent &&
+            isVendorAvailable
         ) {
             setIsInputValid(true);
         } else {
             setIsInputValid(false);
         }
-    }, [citySearchText, provinceSearchText, districtSearchText, addressEvent]);
+    }, [citySearchText, provinceSearchText, districtSearchText, addressEvent, isVendorAvailable]);
 
     useEffect(() => {
         validateInputs();
@@ -194,12 +197,41 @@ const MakeEventLocation = () => {
         </TouchableOpacity>
     );
 
-    const handleMakeEvent = () => {
+    // cek vendor exist
+    useEffect(() => {
+        const checkVendor = async () => {
+            try {
+                const response = await dispatch(checkVendorAvailability({ 
+                    city: citySearchText, 
+                    province: provinceSearchText 
+                })).unwrap();
+
+                if (response) {
+                    setIsVendorAvailable(true);
+                }
+            } catch (error) {
+                setIsVendorAvailable(false);
+                Alert.alert("Vendor Not Found", "No vendor exists for the specified location.");
+            }
+        };
+
+        console.log("citySearchText", citySearchText);
+        console.log("provinceSearchText", provinceSearchText);
+
+        if (citySearchText && provinceSearchText) {
+            checkVendor();
+        } else {
+            setIsVendorAvailable(false);
+        }
+    }, [districtSearchText, dispatch]);
+
+    const handleMakeEvent = async() => {
         if (!isInputValid) {
             Alert.alert(
                 "Invalid Input",
                 "Please enter a valid province, city, district and address."
             );
+            return;
 
         } else {
             dispatch(
