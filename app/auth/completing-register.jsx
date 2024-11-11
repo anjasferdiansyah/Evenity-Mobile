@@ -3,6 +3,7 @@ import {useSelector} from "react-redux";
 import {ROLE} from "@/constant/USER";
 import CompletingRegisterVendor from "@/components/auth/completing-register/vendor";
 import CompletingRegisterUser from "@/components/auth/completing-register/user";
+import SplashScreen from '../dashboard/(tabs)/transaction/withdraw/splash';
 
 export default function CompletingRegisterScreen() {
     const {registerAs} = useSelector(state => state.auth)
@@ -11,4 +12,5 @@ export default function CompletingRegisterScreen() {
         return <CompletingRegisterVendor/>
     }
     return <CompletingRegisterUser/>
+    // return <SplashScreen/>
 }
