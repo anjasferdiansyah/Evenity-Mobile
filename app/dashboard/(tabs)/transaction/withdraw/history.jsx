@@ -43,14 +43,14 @@ export default function WithdrawHistoryScreen() {
                     </Text>
                     <Text 
                         className={`
-                            px-3 py-1 rounded-full text-xs 
-                            ${item.status === 'Success' 
+                            px-3 py-1 rounded-full text-xs font-outfitSemiBold 
+                            ${item.approvalStatus === 'APPROVED' 
                                 ? 'bg-green-100 text-green-700' 
-                                : 'bg-yellow-100 text-yellow-700'
+                                : 'bg-red-100 text-yellow-700'
                             }
                         `}
                     >
-                        {item.status}
+                        {item.approvalStatus}
                     </Text>
                 </View>
                 <Text className="text-2xl font-bold text-[#333] mb-2">

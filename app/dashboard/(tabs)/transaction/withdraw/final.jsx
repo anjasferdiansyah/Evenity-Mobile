@@ -47,7 +47,10 @@ export default function WithdrawScreen() {
     const dispatch = useDispatch()
     console.log("withdrawHistory", withdrawHistory)
 
-
+    const formatNumberWithCommas = (number) => {
+        if (!number) return '';
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
 
 
     useEffect(() => {
@@ -141,7 +144,7 @@ export default function WithdrawScreen() {
                     <Text className="text-3xl font-outfitBold text-center">Withdraw</Text>
                     <View>
                         <Text className="text-xl font-outfitRegular text-center text-gray-500 mt-12">Your Balance</Text>
-                        <Text className="text-3xl font-outfitBold text-center">{userBalance}</Text>
+                        <Text className="text-3xl font-outfitBold text-center">{`Rp ${formatNumberWithCommas(userBalance)}`}</Text>
                     </View>
                     <Text className="text-xl font-outfitRegular text-center text-gray-500 mt-12">{accountName}</Text>
                     <Text className="text-xl font-outfitBold text-center">{bankName} - {accountNumber}</Text>
