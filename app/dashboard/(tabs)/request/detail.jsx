@@ -4,8 +4,9 @@ import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
-import {approveRequest, rejectRequest} from "@/redux/slices/requestSlice";
+import {approveRequest, rejectRequest, fetchRequestDetail} from "@/redux/slices/requestSlice";
 import BottomPadding from "@/components/misc/BottomPadding";
+
 
 export default function DetailRequest() {
     const {selectedRequest} = useSelector(state => state.request)

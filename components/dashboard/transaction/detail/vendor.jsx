@@ -43,7 +43,7 @@ const OrderDetailVendor = () => {
 
     return (
         <SafeAreaView className="flex-1 bg-[#F9FAFB]">
-            <View className="flex-1 px-6 pt-6">
+            <View className="flex-1 px-6 pt-6 py-28">
                 {/* Header */}
                 <View className="flex-row items-center mb-6 mt-10">
                     <TouchableOpacity 

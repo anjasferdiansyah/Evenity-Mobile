@@ -1,4 +1,4 @@
-import {FlatList, Text, TouchableOpacity, useWindowDimensions, View, StatusBar, RefreshControl} from "react-native";
+import {FlatList, Text, TouchableOpacity, useWindowDimensions, View, StatusBar, RefreshControl, ScrollView} from "react-native";
 import React, {useCallback, useEffect, useState} from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
@@ -148,7 +148,7 @@ export function OrderHistoryVendor() {
             
             <Animated.View 
                 entering={FadeInUp}
-                className="w-full h-full pt-20 px-6"
+                className="w-full h-full pt-20 px-6 pb-80"
             >
                 {/* Balance Section */}
                 <View className="pb-10 px-4">
@@ -176,7 +176,7 @@ export function OrderHistoryVendor() {
                         </View>
 
                         <Text className="text-4xl font-outfitBold text-[#2C3E50] mb-6">
-                            Rp {userBalance}
+                            Rp {userBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
                         </Text>
                         
                         <View className="flex-row space-x-4 gap-2">
@@ -215,61 +215,55 @@ export function OrderHistoryVendor() {
                 </View>
 
                 {/* Segment Control */}
-                <View className="mt-6">
-                    <View 
-                        className="flex flex-row justify-around relative bg-white p-2 rounded-full"
-                        style={{
-                            shadowColor: "#000",
-                            shadowOpacity: 0.1,
-                            shadowOffset: {width: 0, height: 2},
-                            shadowRadius: 5,
-                            elevation: 3,
+                <View className="mt-2">
+                    <ScrollView 
+                        horizontal 
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            paddingHorizontal: 10, // Optional: tambahkan padding horizontal
                         }}
                     >
-                        {["All", "NOT_STARTED","ON_PROGRESS" , "FINISHED"].map((item, index) => (
-                            <TouchableOpacity
-                                key={item}
-                                onPress={() => handlePress(item, index)}
-                                style={{
-                                    width: itemWidth,
-                                    alignItems: "center",
-                                    paddingVertical: 2,
-                                }}
-                            >
-                                <Text
+                        <View 
+                            className="flex flex-row justify-around relative bg-white p-2 rounded-full"
+                            style={{
+                                shadowColor: "#000",
+                                shadowOpacity: 0.1,
+                                shadowOffset: {width: 0, height: 2},
+                                shadowRadius: 5,
+                                elevation: 3,
+                            }}
+                        >
+                            {["All", "NOT_STARTED","ON_PROGRESS" , "FINISHED"].map((item, index) => (
+                                <TouchableOpacity
+                                    key={item}
+                                    onPress={() => handlePress(item, index)}
                                     style={{
-                                        color: selected === item ? "white" : COLORS.text.dark,
-                                        fontWeight: "bold", fontSize: 16,
-                                        backgroundColor: selected === item ? COLORS.primary : "transparent",
-                                        paddingHorizontal: 15,
-                                        paddingVertical: 5,
-                                        borderRadius: 15,
+                                        alignItems: "center",
+                                        paddingVertical: 2,
+                                        marginHorizontal: 5, // Tambahkan margin antar item
                                     }}
                                 >
-                                 {item.replace('_', ' ').charAt(0).toUpperCase() + item.replace('_', ' ').slice(1).toLowerCase()}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
-
-                        {/* <Animated.View
-                            style={[
-                                animatedIndicatorStyle,
-                                {
-                                    position: "absolute",
-                                    bottom: -2,
-                                    left: selected === "All" ? 25 : selected === "Success" ? itemWidth - 109 : itemWidth - 120,
-                                    width: itemWidth - 30,
-                                    height: 3,
-                                    backgroundColor: COLORS.primary,
-                                    borderRadius: 2,
-                                },
-                            ]}
-                        /> */}
-                    </View>
+                                    <Text
+                                        style={{
+                                            color: selected === item ? "white" : COLORS.text.dark,
+                                            fontSize: 16,
+                                            backgroundColor: selected === item ? COLORS.primary : "transparent",
+                                            paddingHorizontal: 15,
+                                            paddingVertical: 5,
+                                            borderRadius: 15,
+                                        }}
+                                        className="font-outfitBold"
+                                    >
+                                        {item.replace('_', ' ').charAt(0).toUpperCase() + item.replace('_', ' ').slice(1).toLowerCase()}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </ScrollView>
                 </View>
 
                 {/* Order History List */}
-                <View className="list-history space-y-4 mt-6">
+                <View className="list-history space-y-4 mt-6 pb-32">
                     <FlatList
                         data={filteredItems}
                         renderItem={renderItem}
