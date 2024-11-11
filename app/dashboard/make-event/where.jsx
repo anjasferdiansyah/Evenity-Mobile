@@ -1,4 +1,4 @@
-import {Alert, FlatList, Text, TextInput, TouchableOpacity, View,} from "react-native";
+import {Alert, FlatList, Text, TextInput, TouchableOpacity, View, ScrollView} from "react-native";
 import tailwind from "twrnc";
 import MakeEventLayout from "@/app/dashboard/make-event/layout";
 import React, {useCallback, useEffect, useState} from "react";
@@ -282,12 +282,34 @@ const MakeEventLocation = () => {
                             value={citySearchText}
                         />
                         {filteredCities.length > 0 && (
-                            <FlatList
-                                data={filteredCities}
-                                renderItem={renderCityListItem}
-                                keyExtractor={(item) => item.id}
-                                className="absolute z-10 top-20 w-full border-[0.5px] h-fit max-h-[300%] rounded-lg border-gray-400"
-                            />
+                            <View 
+                                style={{
+                                    position: 'absolute', 
+                                    top: '100%', 
+                                    zIndex: 10, 
+                                    width: '100%', 
+                                    maxHeight: 200,
+                                    borderWidth: 0.5,
+                                    borderColor: 'gray',
+                                    borderRadius: 8,
+                                    backgroundColor: 'white'
+                                }}
+                            >   
+                                <ScrollView 
+                                    nestedScrollEnabled={true}
+                                    keyboardShouldPersistTaps="handled"
+                                >
+                                    {filteredCities.map((item) => (
+                                        <TouchableOpacity
+                                            key={item.id}
+                                            className="p-5 border-b border-gray-400 w-full"
+                                            onPress={() => handleCitySelection(item)}
+                                        >
+                                            <Text className="text-sm font-outfitSemiBold">{item.name}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </ScrollView>
+                            </View>
                         )}
                     </View>
                     <View className="flex flex-col gap-2 w-[50%]">
@@ -313,12 +335,34 @@ const MakeEventLocation = () => {
                             value={districtSearchText}
                         />
                         {filteredDistricts.length > 0 && (
-                            <FlatList
-                                data={filteredDistricts}
-                                renderItem={renderDistrictListItem}
-                                keyExtractor={(item) => item.id}
-                                className="absolute z-10 top-20 w-full border-[0.5px] h-fit max-h-[300%] rounded-lg border-gray-400"
-                            />
+                            <View 
+                                style={{
+                                    position: 'absolute', 
+                                    top: '100%', 
+                                    zIndex: 10, 
+                                    width: '100%', 
+                                    maxHeight: 200,
+                                    borderWidth: 0.5,
+                                    borderColor: 'gray',
+                                    borderRadius: 8,
+                                    backgroundColor: 'white'
+                                }}
+                            >
+                                <ScrollView 
+                                    nestedScrollEnabled={true}
+                                    keyboardShouldPersistTaps="handled"
+                                >
+                                    {filteredDistricts.map((item) => (
+                                        <TouchableOpacity
+                                            key={item.id}
+                                            className="p-5 border-b border-gray-400 w-full"
+                                            onPress={() => handleDistrictSelection(item)}
+                                        >
+                                            <Text className="text-sm font-outfitSemiBold">{item.name}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </ScrollView>
+                            </View>
                         )}
                     </View>
                 </View>
