@@ -71,6 +71,45 @@ export const acceptAndMakeEvent = createAsyncThunk(
     }
 );
 
+
+export const checkVendorAvailability = createAsyncThunk(
+    "makeEvent/checkVendorAvailability",
+    async ({
+        city,
+        province
+    }, {
+        rejectWithValue
+    }) => {
+        const token = await asyncStorage.getItem("token");
+        console.log("data", {
+            city,
+            province
+        });
+
+        try {
+            const response = await axios.get(`/vendor/check?city=${city}&province=${province}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            return true;
+        } catch (error) {
+
+            if (error.response) {
+
+                if (error.response.status === 404) {
+                    return rejectWithValue(false);
+                }
+
+                return rejectWithValue(error.response.data.message || "Terjadi kesalahan yang tidak terduga.");
+            } else {
+                console.error("Error without response", error);
+                return rejectWithValue("Kesalahan jaringan atau server tidak dapat dijangkau.");
+            }
+        }
+    }
+);
+
 const MakeEventSlice = createSlice({
     name: "makeEvent",
     initialState: {
@@ -82,6 +121,7 @@ const MakeEventSlice = createSlice({
         listSelected: [],
         selectedDetailCategories: null,
         totalCost: 0,
+        statusCheck: null
     },
     reducers: {
         registMakeEvent: (state, action) => {
@@ -272,6 +312,16 @@ const MakeEventSlice = createSlice({
                     state.isLoading = false;
             
                 }
+            })
+            .addCase(checkVendorAvailability.fulfilled, (state, action) => {
+                state.isLoading = false;
+                console.log("Action Payload", action.payload);
+                state.statusCheck = true;
+            })
+            .addCase(checkVendorAvailability.rejected, (state, action) => {
+                state.isLoading = false;
+                console.log("Action Payload", action.payload);
+                state.statusCheck = false;
             })
             .addCase(regenerateEvent.rejected, (state, action) => {
                 state.isLoading = false;

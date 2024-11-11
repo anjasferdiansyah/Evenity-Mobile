@@ -207,18 +207,16 @@ export default function ListRequestScreen() {
                                 style={{
                                     width: itemWidth,
                                     paddingVertical: 10,
-                                    backgroundColor:selected === item ? "#00AA55" : "transparent",
+                                    // backgroundColor:selected === item ? "#00AA55" : "transparent",
                                 }}
                             >
                                 <Text
                                     style={{
                                         textAlign: "center",
                                     }}
-                                    className={`font-outfitBold text-base ${
-                                                    selected === item
-                                                        ? "text-white"
-                                                        : "text-gray-600"
-                                                }`}
+                                    className={`font-outfitBold text-base 
+                                                  
+                                                `}
                                 >
                                     {item}
                                 </Text>
