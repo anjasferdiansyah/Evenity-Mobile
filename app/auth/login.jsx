@@ -21,7 +21,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
-import { fetchUserProfile } from "@/redux/slices/profileSlice";
+import { clearProfile, fetchUserProfile } from "@/redux/slices/profileSlice";
 
 
 
@@ -74,7 +74,6 @@ export default function LoginScreen() {
             alert(error);
         } else {
             dispatch(login(data));
-            dispatch(fetchUserProfile())
         }
     };
 

@@ -25,17 +25,29 @@ export const regenerateEvent = createAsyncThunk(
     async (data, { rejectWithValue }) => {
         const token = await asyncStorage.getItem("token");
         console.log("data regenerate", data);
-        const response = await axios
+
+        try {
+            const response = await axios
             .post("/event/generate", data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             })
-            .catch((e) => e.response);
-        console.log("response regenerate", response);
+            console.log("response regenerate", response.data);          
         if (response.status !== 200) return rejectWithValue(response.data.message);
 
+        // Cek apakah recommended list null atau kosong
+            const recommendedList = response.data.data.recommendedList;
+            if (recommendedList.length === 0 || recommendedList.some(item => item === null)) {
+                console.log("No vendors found for regeneration");
+
+                return rejectWithValue("No vendors found for regeneration");
+
+            }
         return response.data.data;
+        } catch (error) {
+            rejectWithValue(error.response.data.message);
+        }
     }
 );
 
@@ -162,7 +174,7 @@ const MakeEventSlice = createSlice({
             state.listSelected = [];
             state.selectedDetailCategories = null;
             state.totalCost = 0;
-        }
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -172,7 +184,6 @@ const MakeEventSlice = createSlice({
             })
             .addCase(makeEvent.fulfilled, (state, action) => {
                 state.totalCost = 0;
-                console.log("Action Payload", state);
                 state.isLoading = false;
                 state.status = "succeeded";
                 state.makeEventData = action.payload;
@@ -204,37 +215,103 @@ const MakeEventSlice = createSlice({
             .addCase(makeEvent.rejected, (state, action) => {
                 state.isLoading = false;
                 state.status = "failed";
-                console.log("error fetching");
             })
             .addCase(regenerateEvent.pending, (state) => {
                 state.isLoading = true;
                 state.status = "loading";
             })
             .addCase(regenerateEvent.fulfilled, (state, action) => {
-                state.totalCost = 0;
-                console.log("Before recommendedList:", state.recommendedList);
-                console.log("Before makeEventData:", state.makeEventData);
-                console.log("Action Payload", action.payload);
-                state.isLoading = false;
-                state.status = "succeeded";
-                state.makeEventData = action.payload;
-                state.makeEventData.recommendedList.forEach((vendor) => {
-                    state.recommendedList[vendor.productId] = vendor;
-                });
 
-                const newProductIds = state.makeEventData.recommendedList.map(
-                    (vendor) => vendor.productId
-                );
-                state.listSelected = [...state.listSelected, ...newProductIds];
-
-                const totalCost = Object.values(state.recommendedList)
-                    .map((vendor) => vendor.cost || 0)
-                    .reduce((a, b) => a + b, 0);
-
-                state.totalCost = totalCost;
-
-                console.log("Updated recommendedList:", state.recommendedList);
-                console.log("Updated makeEventData:", state.makeEventData);
+                console.log("Action Payload Regenerate", action.payload);
+                try {
+                    state.totalCost = 0;
+                    state.isLoading = false;
+                    state.status = "succeeded";
+            
+            
+                    // Tambahkan pengecekan null/undefined
+            
+                    if (action.payload.recommendedList.length < 1) {
+            
+                        console.log("Data recommendedList tidak ada");
+                        return state;
+            
+                    }
+            
+                    // Update makeEventData dengan pengecekan
+                    state.makeEventData = action.payload;
+            
+            
+                    // Filter dan validasi vendor sebelum diproses
+                    const validVendors = action.payload.recommendedList.filter(         
+                        (vendor) => vendor && vendor.productId
+                    );
+            
+            
+                    // Proses vendor yang valid
+                    validVendors.forEach((vendor) => {
+                        if (vendor && vendor.productId) {
+                            state.recommendedList[vendor.productId] = vendor;
+                        } else {
+                            console.log("Vendor tidak valid:", vendor);
+                        }
+            
+                    });
+            
+            
+                    // Buat daftar product ID dengan pengecekan
+            
+                    const newProductIds = validVendors
+            
+                        .map((vendor) => vendor.productId)
+            
+                        .filter(Boolean); // Hapus null/undefined
+            
+            
+                    // Update listSelected dengan menghindari duplikasi
+            
+                    state.listSelected = [
+                        ...new Set([...state.listSelected, ...newProductIds])
+                    ];
+            
+            
+                    // Hitung total biaya dengan pengecekan tambahan
+            
+                    const totalCost = Object.values(state.recommendedList)
+            
+                        .reduce((total, vendor) => {
+            
+                            // Pastikan vendor dan cost valid
+            
+                            return total + (vendor && vendor.cost ? vendor.cost : 0);
+            
+                        }, 0);
+            
+            
+                    state.totalCost = totalCost;
+            
+            
+                    // Log untuk debugging
+                    console.log("Updated recommendedList:", state.recommendedList);
+                    console.log("Updated makeEventData:", state.makeEventData);
+                    console.log("Updated listSelected:", state.listSelected);
+                    console.log("Total Cost:", state.totalCost);
+            
+                } catch (error) {
+            
+                    // Tangani error yang tidak terduga
+            
+                    console.error("Error in regenerateEvent fulfilled:", error);
+            
+                    
+            
+                    // Reset state atau set error state
+            
+                    state.status = "failed";
+            
+                    state.isLoading = false;
+            
+                }
             })
             .addCase(checkVendorAvailability.fulfilled, (state, action) => {
                 state.isLoading = false;
@@ -248,8 +325,7 @@ const MakeEventSlice = createSlice({
             })
             .addCase(regenerateEvent.rejected, (state, action) => {
                 state.isLoading = false;
-                state.status = "failed";
-                console.log("error fetching");
+                state.status = "regenerate_failed";
             })
             .addCase(acceptAndMakeEvent.pending, (state) => {
                 state.isLoading = true;
@@ -287,6 +363,8 @@ export const {
     resetRecommendedList,
     removeListSelected,
     addDetailCategories,
-    resetMakeEventState
+    resetMakeEventState,
+    incrementRegenerationCount, 
+    resetRegenerationCount 
 } = MakeEventSlice.actions;
 export default MakeEventSlice.reducer;

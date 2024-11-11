@@ -29,6 +29,7 @@ const MakeEventTransactionNote = () => {
         listSelected,
         totalCost,
         selectedDetailCategories,
+        status,
     } = useSelector((state) => state.makeEventSlice);
 
     const { id } = useSelector((state) => state.auth);
@@ -92,6 +93,12 @@ const MakeEventTransactionNote = () => {
             console.error("Error accepting make event:", error);
         }
     };
+
+    useEffect(() => {
+        if (status === "regenerate_failed") {
+            alert("Failed to regenerate vendors. Please try again.");
+        }
+    }, [status]);
 
     return (
         <MakeEventLayout

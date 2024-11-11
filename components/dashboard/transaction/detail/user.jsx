@@ -53,6 +53,10 @@ const OrderDetailUser = () => {
 
     };
 
+
+    
+
+
     const DetailCard = ({title, children, style}) => (
         <Animated.View 
             entering={FadeInDown}
@@ -77,6 +81,10 @@ const OrderDetailUser = () => {
             {children}
         </Animated.View>
     );
+
+    const handleFinishEvent = async () => {
+        
+    }
 
     return (
         <View className="flex-1 bg-[#F5F5F5]">
@@ -173,46 +181,67 @@ const OrderDetailUser = () => {
                     </DetailCard>
 
                     {/* Vendor List */}
-                    <DetailCard title="Selected Vendors">
-                        {selectedInvoiceCustomer?.invoiceDetailResponseList.map((item, index) => (
-                            <Animated.View 
-                                key={index} 
-                                entering={FadeInDown.delay(index * 100)}
-                                className={`
-                                    flex flex-row gap-4 w-full items-center mt-2
-                                    ${item.approvalStatus === 'APPROVED' 
-                                        ? 'bg-green-50' 
-                                        : 'bg-red-50'
-                                    } p-4 rounded-xl
-                                `}
-                            >
-                                <View className="flex-1">
-                                    <Text className="text-lg font-outfitSemiBold text-gray-800 mb-1">
-                                        {item.productName}
+                    {
+                        selectedInvoiceCustomer?.invoiceDetailResponseList.length > 0 && (
+                            <DetailCard title="Selected Vendors">
+                            {selectedInvoiceCustomer?.invoiceDetailResponseList.map((item, index) => (
+                                <Animated.View 
+                                    key={index} 
+                                    entering={FadeInDown.delay(index * 100)}
+                                    className={`
+                                        flex flex-row gap-4 w-full items-center mt-2
+                                        ${item.approvalStatus === 'APPROVED' 
+                                            ? 'bg-green-50' 
+                                            : 'bg-red-50'
+                                        } p-4 rounded-xl
+                                    `}
+                                >
+                                    <View className="flex-1">
+                                        <Text className="text-lg font-outfitSemiBold text-gray-800 mb-1">
+                                            {item.productName}
+                                        </Text>
+                                        {/* <Text 
+                                            className={`text-sm font-outfitRegular ${
+                                                item.approvalStatus === 'APPROVED' 
+                                                ? 'text-green-600' 
+                                                : 'text-red-600'
+                                            }`}
+                                        >
+                                            Approval Status: {item.approvalStatus}
+                                        </Text> */}
+                                    </View>
+                                    <Text className="text-lg font-outfitBold text-gray-800">
+                                        {`Rp ${item.cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}
                                     </Text>
-                                    {/* <Text 
-                                        className={`text-sm font-outfitRegular ${
-                                            item.approvalStatus === 'APPROVED' 
-                                            ? 'text-green-600' 
-                                            : 'text-red-600'
-                                        }`}
-                                    >
-                                        Approval Status: {item.approvalStatus}
-                                    </Text> */}
-                                </View>
-                                <Text className="text-lg font-outfitBold text-gray-800">
-                                    {`Rp ${item.cost.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}
-                                </Text>
-                            </Animated.View>
-                        ))}
-                    </DetailCard>
+                                </Animated.View>
+                            ))}
+                        </DetailCard>
+                        )
+                    }
+                 
 
                     {/* Total Cost */}
-                    <DetailCard title="Total Cost">
-                        <Text className="text-3xl font-outfitBold text-gray-800">
-                            {`Rp ${selectedInvoiceCustomer?.totalCost?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}
-                        </Text>
-                    </DetailCard>
+                    {
+                        selectedInvoiceCustomer?.paymentStatus === "UNPAID" && selectedInvoiceCustomer?.totalCost > 0 && (
+                            <DetailCard title="Total Cost">
+                            <Text className="text-3xl font-outfitBold text-gray-800">
+                                {`Rp ${selectedInvoiceCustomer?.totalCost?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}
+                            </Text>
+                        </DetailCard>
+                        )
+                    }
+
+
+                    {
+                        selectedInvoiceCustomer?.paymentStatus === "UNPAID" && selectedInvoiceCustomer?.totalCost === 0 && (
+                            <DetailCard title="Vendor Status">
+                            <Text className="text-xl font-outfitBold text-gray-800">
+                                Waiting Vendor to Approve
+                            </Text>
+                        </DetailCard>
+                        ) 
+                    }
+                  
 
                     {/* Action Buttons */}
                     {selectedInvoiceCustomer?.paymentStatus === "UNPAID" && selectedInvoiceCustomer?.totalCost > 0 && (
@@ -227,6 +256,20 @@ const OrderDetailUser = () => {
                             </TouchableOpacity>
                         </View>
                     )}
+                    {
+                        selectedInvoiceCustomer?.paymentStatus === "COMPLETE" && (
+                            <View className="flex-row space-x-4  gap-2">
+                                <TouchableOpacity
+                                    className="flex-1 bg-[#00F279] items-center justify-center py-6 rounded-full"
+                                    onPress={handleFinishEvent}
+                                >
+                                    <Text className="text-white text-2xl font-outfitBold">
+                                        Confirm Event Finished!
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                        )
+                    }
                     <BottomPadding />
                 </ScrollView>
             </View>

@@ -49,10 +49,8 @@ export default function HomeScreen() {
     const role = user?.role
 
     useEffect(() => {
-        if (!userInfo) {
             dispatch(fetchUserProfile())
-        }
-    }, [dispatch, userInfo])
+    }, [dispatch])
 
     const { width } = Dimensions.get('window');
 

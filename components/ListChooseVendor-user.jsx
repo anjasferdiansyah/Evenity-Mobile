@@ -4,7 +4,7 @@ import tailwind from "twrnc";
 export default function ListChooseVendor({ item, radius }) {
     return (
         <View
-            key={item.id}
+            key={item?.id}
             className="flex flex-row w-full px-4 items-center"
             style={tailwind`mt-4`}
         >
@@ -19,13 +19,13 @@ export default function ListChooseVendor({ item, radius }) {
                 }}
             >
                 <Text className="font-outfitSemiBold text-lg text-textPrimary">
-                    {item.vendorName}
+                    {item?.vendorName}
                 </Text>
                 <Text className="font-outfitRegular text-sm text-textSecondary">
-                    {item.productName}
+                    {item?.productName}
                 </Text>
                 <Text className="font-outfitRegular text-sm text-textSecondary">
-                    {item.cost}
+                    {item?.cost}
                 </Text>
             </View>
         </View>
