@@ -53,6 +53,12 @@ const historyEventSlice = createSlice({
         setSelectedHistoryEvent: (state, action) => {
             state.selectedHistoryEvent = action.payload;
         },
+        resetHistoryEvent: (state) => {
+            state.historyEvent = [];
+            state.selectedHistoryEvent = null;
+            state.status = "idle";
+            state.error = null;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -78,5 +84,5 @@ const historyEventSlice = createSlice({
     },
 });
 
-export const {setSelectedHistoryEvent} = historyEventSlice.actions;
+export const {setSelectedHistoryEvent, resetHistoryEvent} = historyEventSlice.actions;
 export default historyEventSlice.reducer;

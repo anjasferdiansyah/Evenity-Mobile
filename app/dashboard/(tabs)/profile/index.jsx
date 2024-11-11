@@ -5,13 +5,23 @@ import {useDispatch, useSelector} from "react-redux";
 import {logout} from "@/redux/slices/authSlice";
 import {AntDesign, Entypo, FontAwesome, Fontisto, MaterialIcons} from "@expo/vector-icons";
 import {router} from "expo-router";
-import {fetchUserProfile} from "@/redux/slices/profileSlice";
+import {clearProfile, fetchUserProfile, resetProfileState} from "@/redux/slices/profileSlice";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {ROUTES} from "@/constant/ROUTES";
 import {ROLE} from "@/constant/USER";
 import Animated, {FadeInDown, interpolate, useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
 import VendorAvatar from "@/assets/group.webp";
 import CustomerAvatar from "@/assets/customer.webp"
+import { resetCategoryState } from "@/redux/slices/categorySlice";
+import { resetHistoryEvent } from "@/redux/slices/historyEvent";
+import { resetInvoiceCustomerState } from "@/redux/slices/invoiceCustomerSlice";
+import { resetMakeEventState } from "@/redux/slices/makeEventSlice";
+import { resetOrderHistoryVendor } from "@/redux/slices/orderHistoryVendor";
+import { resetOrderUserState } from "@/redux/slices/orderUserSlice";
+import { resetProductCustomerState } from "@/redux/slices/productSlice";
+import { resetProductVendorState } from "@/redux/slices/productVendorSlice";
+import { resetWithdrawHistory } from "@/redux/slices/withdrawHistorySlice";
+import { resetRequestState } from "@/redux/slices/requestSlice";
 
 const {width} = Dimensions.get('window');
 
@@ -32,11 +42,28 @@ export default function ProfileScreen() {
         };
     });
 
-    useEffect(() => {
-        dispatch(fetchUserProfile());
-    }, [dispatch]);
+    // useEffect(() => {
+    //     dispatch(fetchUserProfile());
+    // }, [dispatch]);
 
     const userDetail = userInfo?.detail;
+
+
+    const handleLogout = () => {
+        dispatch(logout());
+        dispatch(resetCategoryState())
+        dispatch(resetHistoryEvent())
+        dispatch(resetInvoiceCustomerState())
+        dispatch(resetMakeEventState())
+        dispatch(resetOrderHistoryVendor())
+        dispatch(resetOrderUserState())
+        dispatch(resetProductCustomerState())
+        dispatch(resetProductVendorState())
+        dispatch(resetProfileState())
+        dispatch(clearProfile())
+        dispatch(resetRequestState())
+        dispatch(resetWithdrawHistory())
+    }
 
     const ProfileSection = ({icon, title, value}) => (
         <Animated.View
@@ -167,7 +194,7 @@ export default function ProfileScreen() {
                             <ProfileActionButton
                                 icon={<AntDesign name="logout" size={24} color="red"/>}
                                 title="Logout"
-                                onPress={() => dispatch(logout())}
+                                onPress={handleLogout}
                                 textColor="text-red-500"
                             />
                         </Animated.View>
