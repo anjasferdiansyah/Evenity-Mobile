@@ -40,6 +40,11 @@ export default function DetailRequest() {
         }
     }
 
+    const formatNumberWithCommas = (number) => {
+        if (!number) return '';
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
     const renderDetailItem = (label, value, isStatus = false) => (
 
         <View className="py-4 border-b border-[#E5E7EB]">
@@ -116,6 +121,7 @@ export default function DetailRequest() {
                         {renderDetailItem('Event Name', selectedRequest?.eventName)}
                         {renderDetailItem('Approval Status', selectedRequest?.approvalStatus, true)}
                         {renderDetailItem('Notes', selectedRequest?.notes)}
+                        {renderDetailItem('Cost', `Rp ${formatNumberWithCommas(selectedRequest?.cost)}`)}
                     </View>
                 </ScrollView>
 
