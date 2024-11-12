@@ -64,7 +64,7 @@ const historyEventSlice = createSlice({
         builder
             .addCase(historyEventCustomer.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.historyEvent = action.payload;
+                state.historyEvent = action.payload.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
                 state.status = "success";
             })
             .addCase(fetchEventDetail.fulfilled, (state, action) => {

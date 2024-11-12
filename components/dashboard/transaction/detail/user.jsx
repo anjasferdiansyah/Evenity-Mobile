@@ -1,22 +1,51 @@
 import {Text, TouchableOpacity, View, ScrollView, Dimensions, RefreshControl} from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import moment from "moment";
 import axios from "axios";
 import Animated, {FadeInDown, FadeInUp} from 'react-native-reanimated';
 import BottomPadding from "@/components/misc/BottomPadding";
+import { getEventById } from "@/redux/slices/eventSlice";
 
 const {width} = Dimensions.get('window');
 
 const OrderDetailUser = () => {
     const {selectedInvoiceCustomer} = useSelector((state) => state.invoiceCustomer);
     const [refreshing, setRefreshing] = useState(false);
+    const {event} = useSelector(state => state.event)
+    const dispatch = useDispatch()
+    const [allApproved, setAllApproved] = useState(false)
 
     const formatDate = (date) => {
         return moment(date).format('DD MMM YYYY')
     }
+
+    const getEventDetailResponse = (id) => {
+        dispatch(getEventById(id));
+    };
+
+    useEffect(() => {
+        console.log("selectedInvoice", selectedInvoiceCustomer)
+        console.log("invoice detail", selectedInvoiceCustomer.eventId)
+        if (selectedInvoiceCustomer?.eventId) {
+            getEventDetailResponse(selectedInvoiceCustomer.eventId);
+            // console.log("Ke HITT!")
+        }
+    }, [selectedInvoiceCustomer]);
+
+    // const allApproved = event?.eventDetailResponseList?.every(detail => detail.approvalStatus === 'APPROVED')
+    useEffect(() => {
+    if (event?.eventDetailResponseList) {
+        const filteredDetails = event.eventDetailResponseList.filter(detail => 
+            detail.approvalStatus === 'APPROVED' || detail.approvalStatus === 'PENDING'
+        );
+        const allApprovedStatus = filteredDetails.length > 0 && filteredDetails.every(detail => detail.approvalStatus === 'APPROVED');
+        // console.log("allApprovedStatus", allApprovedStatus);
+        setAllApproved(allApprovedStatus);
+    }
+}, [event]);
 
     const handlePayment = async () => {
         const invoiceId = selectedInvoiceCustomer?.invoiceId
@@ -52,10 +81,6 @@ const OrderDetailUser = () => {
         }
 
     };
-
-
-    
-
 
     const DetailCard = ({title, children, style}) => (
         <Animated.View 
@@ -224,16 +249,21 @@ const OrderDetailUser = () => {
                     {
                         selectedInvoiceCustomer?.paymentStatus === "UNPAID" && selectedInvoiceCustomer?.totalCost > 0 && (
                             <DetailCard title="Total Cost">
-                            <Text className="text-3xl font-outfitBold text-gray-800">
-                                {`Rp ${selectedInvoiceCustomer?.totalCost?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}
-                            </Text>
-                        </DetailCard>
+                                <Text className="text-3xl font-outfitBold text-gray-800">
+                                    {`Rp ${(selectedInvoiceCustomer?.totalCost + selectedInvoiceCustomer?.adminFeeResponse?.cost)
+                                        .toString()
+                                        .replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}
+                                </Text>
+                                <Text className="text-gray-500 text-sm mt-1">
+                                    {`(Termasuk admin fee 3%)`}
+                                </Text>
+                            </DetailCard>
                         )
                     }
 
 
                     {
-                        selectedInvoiceCustomer?.paymentStatus === "UNPAID" && selectedInvoiceCustomer?.totalCost === 0 && (
+                        !allApproved && selectedInvoiceCustomer?.paymentStatus === "UNPAID" && (
                             <DetailCard title="Vendor Status">
                             <Text className="text-xl font-outfitBold text-gray-800">
                                 Waiting Vendor to Approve
@@ -244,8 +274,8 @@ const OrderDetailUser = () => {
                   
 
                     {/* Action Buttons */}
-                    {selectedInvoiceCustomer?.paymentStatus === "UNPAID" && selectedInvoiceCustomer?.totalCost > 0 && (
-                        <View className="flex-row space-x-4  gap-2">
+                    {allApproved  && selectedInvoiceCustomer?.paymentStatus === "UNPAID" &&(
+                        <View className="flex-row space-x-4 gap-2">
                             <TouchableOpacity
                                 className="flex-1 bg-[#00F279] items-center justify-center py-6 rounded-full"
                                 onPress={handlePayment}
@@ -256,20 +286,7 @@ const OrderDetailUser = () => {
                             </TouchableOpacity>
                         </View>
                     )}
-                    {
-                        selectedInvoiceCustomer?.paymentStatus === "COMPLETE" && (
-                            <View className="flex-row space-x-4  gap-2">
-                                <TouchableOpacity
-                                    className="flex-1 bg-[#00F279] items-center justify-center py-6 rounded-full"
-                                    onPress={handleFinishEvent}
-                                >
-                                    <Text className="text-white text-2xl font-outfitBold">
-                                        Confirm Event Finished!
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        )
-                    }
+                    
                     <BottomPadding />
                 </ScrollView>
             </View>
