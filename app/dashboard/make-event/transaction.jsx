@@ -63,6 +63,7 @@ const MakeEventTransactionNote = () => {
         dispatch(resetRecommendedList());
 
         dispatch(regenerateEvent(newEventData));
+        setLockedVendor([])
     };
 
     const acceptMakeEvent = () => {
