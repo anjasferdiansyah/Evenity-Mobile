@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {Dimensions, Image, ScrollView, Text, View} from "react-native";
 import {router} from "expo-router";
 import {useDispatch, useSelector} from "react-redux";

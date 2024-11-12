@@ -45,8 +45,8 @@ const MakeEventChooseVendor = () => {
     }, [dispatch]);
 
 
-    const {control, handleSubmit, formState: {errors, isValid}} = useForm({
-        resolver: zodResolver(priceSchema),
+    const { control, handleSubmit, formState: { errors, isValid } } = useForm({
+        resolver: zodResolver(priceSchema(lowestPrice, highestPrice)),
         mode: "onChange",
         shouldFocusError: true,
     });
