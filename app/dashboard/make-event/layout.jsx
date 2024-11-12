@@ -23,7 +23,7 @@ const MakeEventLayout = ({
     const handleClose = () => {
         dispatch(resetRegistMakeEvent());
         dispatch(resetRecommendedList());
-        router.push(ROUTES.DASHBOARD.EVENT.INDEX);
+        router.replace(ROUTES.DASHBOARD.INDEX);
     };
 
     return (
