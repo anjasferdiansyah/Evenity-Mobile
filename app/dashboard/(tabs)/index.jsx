@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { 
-    Text, 
-    View, 
-    Dimensions, 
-    Image, 
-    ScrollView 
-} from "react-native";
-import { router } from "expo-router";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import {Dimensions, Image, ScrollView, Text, View} from "react-native";
+import {router} from "expo-router";
+import {useDispatch, useSelector} from "react-redux";
 import Carousel from 'react-native-reanimated-carousel';
-import { LinearGradient } from 'expo-linear-gradient';
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import {LinearGradient} from 'expo-linear-gradient';
 
 import {
     ButtonListRequests,
@@ -18,11 +11,9 @@ import {
     ButtonMakeEvent,
     ButtonSettingProfile
 } from "@/components/dashboard/home/DashboardButton";
-import { ROLE as ROLES } from "@/constant/USER";
-import { fetchUserProfile } from "@/redux/slices/profileSlice";
-import { SafeAreaView } from "react-native-safe-area-context";
-import BottomPadding from "@/components/misc/BottomPadding";
-import { ROUTES } from "@/constant/ROUTES";
+import {ROLE as ROLES} from "@/constant/USER";
+import {SafeAreaView} from "react-native-safe-area-context";
+import {ROUTES} from "@/constant/ROUTES";
 
 // Event image placeholders (you can replace with your own or fetch from an API)
 const EVENT_IMAGES = [
@@ -43,16 +34,15 @@ export default function HomeScreen() {
         }
     }
 
-    const { userInfo } = useSelector(state => state.profile)
     const dispatch = useDispatch()
-    const { user } = useSelector(state => state.auth)
+    const {user} = useSelector(state => state.auth)
     const role = user?.role
 
     // useEffect(() => {
     //     dispatch(fetchUserProfile())
     // }, [dispatch])
 
-    const { width } = Dimensions.get('window');
+    const {width} = Dimensions.get('window');
 
     if (!role) {
         return (
@@ -65,87 +55,87 @@ export default function HomeScreen() {
     }
 
     return (
- 
-            <LinearGradient 
-                colors={['#F0FFF4', '#E6FFF4', '#D4FAF0']} 
-                className="flex-1"
-            >
-                <SafeAreaView className="flex-1">
-                    <ScrollView 
-                        showsVerticalScrollIndicator={false}
-                        contentContainerStyle={{ paddingBottom: 50, flexGrow: 1 }} // Add flexGrow
-                    >
-                        {/* Header Section */}
-                        <View className="px-6 pt-4 flex-row justify-between items-center">
-                            <View>
-                                {userInfo?.detail && (
-                                    <Text className="text-4xl font-outfitBold">
-                                        Hi, <Text className="text-[#10B981]">
-                                            {userInfo?.detail.fullName || userInfo?.detail.name}
-                                        </Text>
-                                    </Text>
-                                )}
-                                <Text className="text-gray-500 font-outfitRegular">
-                                    {new Date().toLocaleDateString('en-US', { 
-                                        weekday: 'long', 
-                                        year: 'numeric', 
-                                        month: 'long', 
-                                        day: 'numeric' 
-                                    })}
-                                </Text>
-                            </View>
-                        </View>
 
-                        {/* Event Carousel */}
-                        <View className="mt-6">
-                            <Carousel
-                                loop
-                                width={width}
-                                height={width / 2}
-                                autoPlay={true}
-                                data={EVENT_IMAGES}
-                                scrollAnimationDuration={1000}
-                                renderItem={({ item }) => (
-                                    <View className="px-6">
-                                        <Image 
-                                            source={{ uri: item }}
-                                            className="w-full h-full rounded-2xl"
-                                            style={{ resizeMode: 'cover' }}
-                                        />
-                                    </View>
-                                )}
+        <LinearGradient
+            colors={['#F0FFF4', '#E6FFF4', '#D4FAF0']}
+            className="flex-1"
+        >
+            <SafeAreaView className="flex-1">
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{paddingBottom: 50, flexGrow: 1}} // Add flexGrow
+                >
+                    {/* Header Section */}
+                    <View className="px-6 pt-4 flex-row justify-between items-center">
+                        <View>
+                            {user?.detail && (
+                                <Text className="text-4xl font-outfitBold">
+                                    Hi, <Text className="text-[#10B981]">
+                                        {user?.detail.fullName || user?.detail.name}
+                                    </Text>
+                                </Text>
+                            )}
+                            <Text className="text-gray-500 font-outfitRegular">
+                                {new Date().toLocaleDateString('en-US', {
+                                    weekday: 'long',
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                })}
+                            </Text>
+                        </View>
+                    </View>
+
+                    {/* Event Carousel */}
+                    <View className="mt-6">
+                        <Carousel
+                            loop
+                            width={width}
+                            height={width / 2}
+                            autoPlay={true}
+                            data={EVENT_IMAGES}
+                            scrollAnimationDuration={1000}
+                            renderItem={({item}) => (
+                                <View className="px-6">
+                                    <Image
+                                        source={{uri: item}}
+                                        className="w-full h-full rounded-2xl"
+                                        style={{resizeMode: 'cover'}}
+                                    />
+                                </View>
+                            )}
+                        />
+                    </View>
+
+                    {/* Dashboard Buttons */}
+                    <View className="px-6 mt-8">
+                        <View className="flex-row space-x-4 gap-2">
+                            <ButtonMakeEvent
+                                onPress={handleButtonPressOne(role)}
+                                role={role}
+                                className="flex-1 justify-center"
+                            />
+                            <ButtonListRequests
+                                onPress={() => router.push(ROUTES.DASHBOARD.REQUEST.INDEX)}
+                                role={role}
+                                className="flex-1 w-[30%]"
                             />
                         </View>
-
-                        {/* Dashboard Buttons */}
-                        <View className="px-6 mt-8">
-                            <View className="flex-row space-x-4 gap-2">
-                                <ButtonMakeEvent 
-                                    onPress={handleButtonPressOne(role)} 
-                                    role={role}
-                                    className="flex-1 justify-center"
-                                />
-                                <ButtonListRequests 
-                                    onPress={() => router.push(ROUTES.DASHBOARD.REQUEST.INDEX)} 
-                                    role={role}
-                                    className="flex-1 w-[30%]"
-                                />
-                            </View>
-                            <View className="flex-row space-x-4 gap-1 mt-2">
-                                <ButtonListTransactions 
-                                    onPress={() => router.push(ROUTES.DASHBOARD.TRANSACTION.INDEX)}
-                                    className="flex-1"
-                                />
-                                <ButtonSettingProfile 
-                                    onPress={() => router.push(ROUTES.DASHBOARD.PROFILE.INDEX)}
-                                    className="flex-1"
-                                />
-                            </View>
+                        <View className="flex-row space-x-4 gap-1 mt-2">
+                            <ButtonListTransactions
+                                onPress={() => router.push(ROUTES.DASHBOARD.TRANSACTION.INDEX)}
+                                className="flex-1"
+                            />
+                            <ButtonSettingProfile
+                                onPress={() => router.push(ROUTES.DASHBOARD.PROFILE.INDEX)}
+                                className="flex-1"
+                            />
                         </View>
-                    </ScrollView>
-                </SafeAreaView>
-                
-            </LinearGradient>
-            // <BottomPadding/>
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
+
+        </LinearGradient>
+        // <BottomPadding/>
     );
 };

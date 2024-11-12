@@ -27,7 +27,7 @@ export const login = createAsyncThunk(
                 const {token} = response.data.data;
                 await asyncStorage.setItem("token", token);
                 setupAxios(token);
-                await dispatch(loadUser());
+                dispatch(loadUser());
                 return response.data.data;
             }
             return rejectWithValue("Invalid credentials");

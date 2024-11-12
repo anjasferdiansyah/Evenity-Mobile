@@ -1,14 +1,18 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 import axios from "axios";
 import asyncStorage from "@react-native-async-storage/async-storage/src/AsyncStorage";
 
 export const makeEvent = createAsyncThunk(
     "makeEvent/makeEvent",
-    async (data, { rejectWithValue }) => {
+    async (data, {rejectWithValue}) => {
         const token = await asyncStorage.getItem("token");
         console.log("data", data);
+        const newData = {
+            ...data,
+            lockedProduct: [],
+        };
         const response = await axios
-            .post("/event/generate", data, {
+            .post("/event/generate", newData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -22,21 +26,21 @@ export const makeEvent = createAsyncThunk(
 
 export const regenerateEvent = createAsyncThunk(
     "makeEvent/regenerateEvent",
-    async (data, { rejectWithValue }) => {
+    async (data, {rejectWithValue}) => {
         const token = await asyncStorage.getItem("token");
         console.log("data regenerate", data);
 
         try {
             const response = await axios
-            .post("/event/generate", data, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-            console.log("response regenerate", response.data);          
-        if (response.status !== 200) return rejectWithValue(response.data.message);
+                .post("/event/generate", data, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+            console.log("response regenerate", response.data.data);
+            if (response.status !== 200) return rejectWithValue(response.data.message);
 
-        // Cek apakah recommended list null atau kosong
+            // Cek apakah recommended list null atau kosong
             const recommendedList = response.data.data.recommendedList;
             if (recommendedList.length === 0 || recommendedList.some(item => item === null)) {
                 console.log("No vendors found for regeneration");
@@ -44,7 +48,7 @@ export const regenerateEvent = createAsyncThunk(
                 return rejectWithValue("No vendors found for regeneration");
 
             }
-        return response.data.data;
+            return response.data.data;
         } catch (error) {
             rejectWithValue(error.response.data.message);
         }
@@ -53,8 +57,8 @@ export const regenerateEvent = createAsyncThunk(
 
 export const acceptAndMakeEvent = createAsyncThunk(
     "makeEvent/acceptAndMakeEvent",
-    async (data, { rejectWithValue }) => {
-    // console.log("HITTTT!");
+    async (data, {rejectWithValue}) => {
+        // console.log("HITTTT!");
         const token = await asyncStorage.getItem("token");
         console.log("data", data);
         const response = await axios
@@ -126,7 +130,6 @@ const MakeEventSlice = createSlice({
     reducers: {
         registMakeEvent: (state, action) => {
 
-          
 
             state.makeEventRegist = {
                 ...state.makeEventRegist,
@@ -145,8 +148,8 @@ const MakeEventSlice = createSlice({
         },
         updateRecommendedList: (state, action) => {
             // Misalnya, kita ingin update recommendedList berdasarkan vendorId
-            const { productId, newVendorData } = action.payload;
-            state.recommendedList[productId] = { ...newVendorData };
+            const {productId, newVendorData} = action.payload;
+            state.recommendedList[productId] = {...newVendorData};
         },
         removeListSelected: (state, action) => {
             console.log("action.payload", action.payload);
@@ -167,7 +170,7 @@ const MakeEventSlice = createSlice({
             console.log("ke hit reset")
         },
 
-        resetMakeEventState : (state) => {
+        resetMakeEventState: (state) => {
             state.makeEventRegist = null;
             state.makeEventData = null;
             state.recommendedList = {};
@@ -227,27 +230,27 @@ const MakeEventSlice = createSlice({
                     state.totalCost = 0;
                     state.isLoading = false;
                     state.status = "succeeded";
-            
-            
+
+
                     // Tambahkan pengecekan null/undefined
-            
+
                     if (action.payload.recommendedList.length < 1) {
-            
+
                         console.log("Data recommendedList tidak ada");
                         return state;
-            
+
                     }
-            
+
                     // Update makeEventData dengan pengecekan
                     state.makeEventData = action.payload;
-            
-            
+
+
                     // Filter dan validasi vendor sebelum diproses
-                    const validVendors = action.payload.recommendedList.filter(         
+                    const validVendors = action.payload.recommendedList.filter(
                         (vendor) => vendor && vendor.productId
                     );
-            
-            
+
+
                     // Proses vendor yang valid
                     validVendors.forEach((vendor) => {
                         if (vendor && vendor.productId) {
@@ -255,62 +258,61 @@ const MakeEventSlice = createSlice({
                         } else {
                             console.log("Vendor tidak valid:", vendor);
                         }
-            
+
                     });
-            
-            
+
+
                     // Buat daftar product ID dengan pengecekan
-            
+
                     const newProductIds = validVendors
-            
+
                         .map((vendor) => vendor.productId)
-            
+
                         .filter(Boolean); // Hapus null/undefined
-            
-            
+
+
                     // Update listSelected dengan menghindari duplikasi
-            
+
                     state.listSelected = [
                         ...new Set([...state.listSelected, ...newProductIds])
                     ];
-            
-            
+
+
                     // Hitung total biaya dengan pengecekan tambahan
-            
+
                     const totalCost = Object.values(state.recommendedList)
-            
+
                         .reduce((total, vendor) => {
-            
+
                             // Pastikan vendor dan cost valid
-            
+
                             return total + (vendor && vendor.cost ? vendor.cost : 0);
-            
+
                         }, 0);
-            
-            
+
+
                     state.totalCost = totalCost;
-            
-            
+
+
                     // Log untuk debugging
                     console.log("Updated recommendedList:", state.recommendedList);
                     console.log("Updated makeEventData:", state.makeEventData);
                     console.log("Updated listSelected:", state.listSelected);
                     console.log("Total Cost:", state.totalCost);
-            
+
                 } catch (error) {
-            
+
                     // Tangani error yang tidak terduga
-            
+
                     console.error("Error in regenerateEvent fulfilled:", error);
-            
-                    
-            
+
+
                     // Reset state atau set error state
-            
+
                     state.status = "failed";
-            
+
                     state.isLoading = false;
-            
+
                 }
             })
             .addCase(checkVendorAvailability.fulfilled, (state, action) => {
@@ -364,7 +366,7 @@ export const {
     removeListSelected,
     addDetailCategories,
     resetMakeEventState,
-    incrementRegenerationCount, 
-    resetRegenerationCount 
+    incrementRegenerationCount,
+    resetRegenerationCount
 } = MakeEventSlice.actions;
 export default MakeEventSlice.reducer;

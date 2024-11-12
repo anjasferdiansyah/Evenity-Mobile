@@ -1,29 +1,23 @@
-import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    ScrollView,
-} from "react-native";
+import {ScrollView, Text, TextInput, TouchableOpacity, View,} from "react-native";
 import React from "react";
 import MakeEventLayout from "../../app/dashboard/make-event";
 import tailwind from "twrnc";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {MaterialCommunityIcons} from "@expo/vector-icons";
 import ListChooseVendor from "@/components/ListChooseVendor-user";
 
 const MakeEventChooseVendor = () => {
     const entertainmentItems = [
-        { id: 1, name: "Entertainment 1", price: "10.000.000" },
-        { id: 2, name: "Entertainment 2", price: "15.000.000" },
-        { id: 3, name: "Entertainment 2", price: "15.000.000" },
-        { id: 4, name: "Entertainment 2", price: "15.000.000" },
+        {id: 1, name: "Entertainment 1", price: "10.000.000"},
+        {id: 2, name: "Entertainment 2", price: "15.000.000"},
+        {id: 3, name: "Entertainment 2", price: "15.000.000"},
+        {id: 4, name: "Entertainment 2", price: "15.000.000"},
     ];
 
     return (
         <MakeEventLayout progress={90} nextRoute="./makeEvent-transactionNote">
             <View className="px-10" style={tailwind`my-2`}>
                 <Text className="text-6xl font-outfitSemiBold" style={tailwind`mb-3`}>
-          Choose
+                    Choose
                 </Text>
 
                 <Text className="text-6xl font-outfitExtraBold">Vendor?</Text>
@@ -55,7 +49,7 @@ const MakeEventChooseVendor = () => {
                         />
                     </View>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate("MakeEventCapacity")}
+                        // onPress={() => navigation.navigate("MakeEventCapacity")}
                         className="mx-auto mt-4 items-center justify-center rounded-full"
                         style={tailwind`bg-[#00AA55] p-4`}
                     >
@@ -70,7 +64,7 @@ const MakeEventChooseVendor = () => {
 
             <ScrollView style={tailwind`mt-5 `} className="vendor-choosen">
                 {entertainmentItems.map((item) => (
-                    <ListChooseVendor key={item.id} item={item} radius="xl" />
+                    <ListChooseVendor key={item.id} item={item} radius="xl"/>
                 ))}
             </ScrollView>
         </MakeEventLayout>

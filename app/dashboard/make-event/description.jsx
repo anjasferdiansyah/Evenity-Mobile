@@ -1,21 +1,21 @@
-import { Alert, Text, TextInput, View } from "react-native";
+import {Text, TextInput, View} from "react-native";
 import tailwind from "twrnc";
-import MakeEventLayout from "@/app/dashboard/make-event/layout";
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { registMakeEvent } from "@/redux/slices/makeEventSlice";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { descriptionSchema } from "@/helper/validator/schema"; // pastikan ini schema Zod Anda
+import MakeEventLayout from "@/components/make-event/layout";
+import React from "react";
+import {useDispatch} from "react-redux";
+import {registMakeEvent} from "@/redux/slices/makeEventSlice";
+import {Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {descriptionSchema} from "@/helper/validator/schema"; // pastikan ini schema Zod Anda
 
 const MakeEventName = () => {
     const dispatch = useDispatch();
-    
+
     // Setup useForm hook dengan resolver dari Zod
     const {
         control,
         handleSubmit,
-        formState: { errors, isValid },
+        formState: {errors, isValid},
     } = useForm({
         resolver: zodResolver(descriptionSchema), // Gunakan zodResolver untuk validasi
         mode: "onChange", // Memastikan validasi dijalankan setiap input berubah
@@ -52,7 +52,7 @@ const MakeEventName = () => {
                     <Controller
                         control={control}
                         name="description" // nama field
-                        render={({ field: { onChange, value } }) => (
+                        render={({field: {onChange, value}}) => (
                             <TextInput
                                 className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
                                 placeholder="my event is about ..."

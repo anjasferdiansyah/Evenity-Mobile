@@ -1,7 +1,7 @@
 import {Alert, ScrollView, Text, TextInput, TouchableOpacity, View,} from "react-native";
 import tailwind from "twrnc";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
-import MakeEventLayout from "@/app/dashboard/make-event/layout";
+import MakeEventLayout from "@/components/make-event/layout";
 // import { registMakeEvent, makeEvent, addListSelected } from "../../redux/slices/makeEventSlice";
 import {addDetailCategories, makeEvent, removeListSelected,} from "@/redux/slices/makeEventSlice";
 import React, {useEffect, useState} from "react";
@@ -10,9 +10,9 @@ import {Picker} from "@react-native-picker/picker";
 import {loadCategories} from "@/redux/slices/categorySlice";
 import {getPriceRange} from "@/redux/slices/productSlice";
 import ListVendor from "@/components/ListVendors";
-import { Controller, useForm } from "react-hook-form";
-import { priceSchema } from "@/helper/validator/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
+import {Controller, useForm} from "react-hook-form";
+import {priceSchema} from "@/helper/validator/schema";
+import {zodResolver} from "@hookform/resolvers/zod";
 
 const MakeEventChooseVendor = () => {
     const dispatch = useDispatch();
@@ -45,12 +45,11 @@ const MakeEventChooseVendor = () => {
     }, [dispatch]);
 
 
-    const { control, handleSubmit, formState: { errors, isValid } } = useForm({
+    const {control, handleSubmit, formState: {errors, isValid}} = useForm({
         resolver: zodResolver(priceSchema),
         mode: "onChange",
         shouldFocusError: true,
     });
-
 
 
     const handleCategoryChange = (itemValue) => {
@@ -265,40 +264,42 @@ const MakeEventChooseVendor = () => {
                     <View style={tailwind`w-[100%]`}>
                         <Text className="font-outfitRegular">Lowest Price</Text>
                         <Controller
-                    control={control}
-                    name="tempLowestPrice"
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <View style={tailwind`w-[100%]`}>
-                            <TextInput
-                                className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
-                                placeholder={`Min: ${formatPrice(lowestPrice)}`}
-                                keyboardType="numeric"
-                                value={value}
-                                onChangeText={onChange}
-                                onBlur={onBlur}
-                            />
-                            {errors.tempLowestPrice && <Text style={{ color: 'red' }}>{errors.tempLowestPrice.message}</Text>}
-                        </View>
-                    )}
-                />
+                            control={control}
+                            name="tempLowestPrice"
+                            render={({field: {onChange, onBlur, value}}) => (
+                                <View style={tailwind`w-[100%]`}>
+                                    <TextInput
+                                        className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
+                                        placeholder={`Min: ${formatPrice(lowestPrice)}`}
+                                        keyboardType="numeric"
+                                        value={value}
+                                        onChangeText={onChange}
+                                        onBlur={onBlur}
+                                    />
+                                    {errors.tempLowestPrice &&
+                                        <Text style={{color: 'red'}}>{errors.tempLowestPrice.message}</Text>}
+                                </View>
+                            )}
+                        />
                     </View>
                     <View style={tailwind`w-[100%]`}>
                         <Text className="font-outfitRegular">Highest Price</Text>
                         <Controller
-                    control={control}
-                    name="tempHighestPrice"
-                    render={({ field: { onChange, onBlur, value } }) => (
-                            <TextInput
-                                className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
-                                placeholder={`Max: ${formatPrice(highestPrice)}`}
-                                keyboardType="numeric"
-                                value={value}
-                                onChangeText={onChange}
-                                onBlur={onBlur}
-                            />
-                    )}
-                />
-                        {errors.tempHighestPrice && <Text style={{ color: 'red' }}>{errors.tempHighestPrice.message}</Text>}
+                            control={control}
+                            name="tempHighestPrice"
+                            render={({field: {onChange, onBlur, value}}) => (
+                                <TextInput
+                                    className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
+                                    placeholder={`Max: ${formatPrice(highestPrice)}`}
+                                    keyboardType="numeric"
+                                    value={value}
+                                    onChangeText={onChange}
+                                    onBlur={onBlur}
+                                />
+                            )}
+                        />
+                        {errors.tempHighestPrice &&
+                            <Text style={{color: 'red'}}>{errors.tempHighestPrice.message}</Text>}
                     </View>
                     <TouchableOpacity
                         onPress={handleSubmit(onSubmit)}

@@ -1,13 +1,13 @@
-import {Alert, Text, TextInput, View} from "react-native";
+import {Text, TextInput, View} from "react-native";
 // import MakeEventLayout from "../dashboard/(tabs)/MakeEventLayout";
 import tailwind from "twrnc";
-import MakeEventLayout from "@/app/dashboard/make-event/layout";
-import React, {useEffect, useState} from "react";
+import MakeEventLayout from "@/components/make-event/layout";
+import React from "react";
 import {useDispatch} from "react-redux";
 import {registMakeEvent} from "@/redux/slices/makeEventSlice";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { eventSchema } from "@/helper/validator/schema";
+import {Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {eventSchema} from "@/helper/validator/schema";
 
 const MakeEventName = () => {
     const dispatch = useDispatch();
@@ -17,14 +17,14 @@ const MakeEventName = () => {
         register,
         handleSubmit,
         setValue,
-        formState: { errors, isValid },
-      } = useForm({
+        formState: {errors, isValid},
+    } = useForm({
         resolver: zodResolver(eventSchema),
-        defaultValues : {
+        defaultValues: {
             eventName: "",
             mode: "onChange",
         }
-      });
+    });
 
     const onSubmit = (data) => {
         dispatch(
@@ -35,7 +35,7 @@ const MakeEventName = () => {
     };
 
 
-    console.log("Is input valid", isValid )
+    console.log("Is input valid", isValid)
 
     return (
         <MakeEventLayout
@@ -59,7 +59,7 @@ const MakeEventName = () => {
                     <Controller
                         control={control} // menghubungkan dengan kontrol form
                         name="eventName" // nama field
-                        render={({ field: { onChange, value } }) => (
+                        render={({field: {onChange, value}}) => (
                             <TextInput
                                 className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
                                 placeholder="Enter your event name"
@@ -68,7 +68,7 @@ const MakeEventName = () => {
                             />
                         )}
                     />
-                       {errors.eventName && (
+                    {errors.eventName && (
                         <Text style={tailwind`text-red-500`}>
                             {errors.eventName.message}
                         </Text>
@@ -84,7 +84,7 @@ const MakeEventName = () => {
           />
         </View> */}
             </View>
-        </MakeEventLayout>  
+        </MakeEventLayout>
     );
 };
 

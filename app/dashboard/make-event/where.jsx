@@ -1,9 +1,9 @@
-import {Alert, FlatList, Text, TextInput, TouchableOpacity, View, ScrollView} from "react-native";
+import {Alert, ScrollView, Text, TextInput, TouchableOpacity, View} from "react-native";
 import tailwind from "twrnc";
-import MakeEventLayout from "@/app/dashboard/make-event/layout";
+import MakeEventLayout from "@/components/make-event/layout";
 import React, {useCallback, useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
-import {registMakeEvent, checkVendorAvailability} from "@/redux/slices/makeEventSlice";
+import {useDispatch} from "react-redux";
+import {checkVendorAvailability, registMakeEvent} from "@/redux/slices/makeEventSlice";
 import RNPickerSelect from "react-native-picker-select";
 
 const provinceData = [
@@ -201,9 +201,9 @@ const MakeEventLocation = () => {
     useEffect(() => {
         const checkVendor = async () => {
             try {
-                const response = await dispatch(checkVendorAvailability({ 
-                    city: citySearchText, 
-                    province: provinceSearchText 
+                const response = await dispatch(checkVendorAvailability({
+                    city: citySearchText,
+                    province: provinceSearchText
                 })).unwrap();
 
                 if (response) {
@@ -225,13 +225,13 @@ const MakeEventLocation = () => {
         }
     }, [districtSearchText, dispatch]);
 
-    const handleMakeEvent = async() => {
+    const handleMakeEvent = async () => {
         if (!isInputValid) {
             Alert.alert(
                 "Invalid Input",
                 "Please enter a valid province, city, district and address."
             );
-            return;
+
 
         } else {
             dispatch(
@@ -314,20 +314,20 @@ const MakeEventLocation = () => {
                             value={citySearchText}
                         />
                         {filteredCities.length > 0 && (
-                            <View 
+                            <View
                                 style={{
-                                    position: 'absolute', 
-                                    top: '100%', 
-                                    zIndex: 10, 
-                                    width: '100%', 
+                                    position: 'absolute',
+                                    top: '100%',
+                                    zIndex: 10,
+                                    width: '100%',
                                     maxHeight: 200,
                                     borderWidth: 0.5,
                                     borderColor: 'gray',
                                     borderRadius: 8,
                                     backgroundColor: 'white'
                                 }}
-                            >   
-                                <ScrollView 
+                            >
+                                <ScrollView
                                     nestedScrollEnabled={true}
                                     keyboardShouldPersistTaps="handled"
                                 >
@@ -367,12 +367,12 @@ const MakeEventLocation = () => {
                             value={districtSearchText}
                         />
                         {filteredDistricts.length > 0 && (
-                            <View 
+                            <View
                                 style={{
-                                    position: 'absolute', 
-                                    top: '100%', 
-                                    zIndex: 10, 
-                                    width: '100%', 
+                                    position: 'absolute',
+                                    top: '100%',
+                                    zIndex: 10,
+                                    width: '100%',
                                     maxHeight: 200,
                                     borderWidth: 0.5,
                                     borderColor: 'gray',
@@ -380,7 +380,7 @@ const MakeEventLocation = () => {
                                     backgroundColor: 'white'
                                 }}
                             >
-                                <ScrollView 
+                                <ScrollView
                                     nestedScrollEnabled={true}
                                     keyboardShouldPersistTaps="handled"
                                 >

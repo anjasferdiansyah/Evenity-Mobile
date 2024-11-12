@@ -1,16 +1,7 @@
 import MakeEventLayout from "../../app/dashboard/make-event";
 import tailwind from "twrnc";
-import {
-    View,
-    Text,
-    TextInput,
-    ActivityIndicator,
-    ScrollView,
-    StyleSheet,
-    Modal,
-    TouchableOpacity,
-} from "react-native";
-import React, { useState, useEffect } from "react";
+import {Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from "react-native";
+import React, {useState} from "react";
 import ListChooseVendor from "@/components/ListChooseVendor-user";
 
 const MakeEventTransactionNote = () => {
@@ -22,17 +13,17 @@ const MakeEventTransactionNote = () => {
 
     const handleConfirm = () => {
         setModalVisible(false);
-        navigation.navigate("Home");
+        // navigation.navigate("Home");
     };
 
     const entertainmentItems = [
-        { id: 1, name: "Joko Horeg", price: "10.000.000" },
-        { id: 2, name: "Andi Mc", price: "15.000.000" },
-        { id: 3, name: "Soni Catering enak sekali", price: "15.000.000" },
-        { id: 4, name: "Gelora bung karno", price: "15.000.000" },
-        { id: 5, name: "Gelora bung karno", price: "15.000.000" },
-        { id: 6, name: "Gelora bung karno", price: "15.000.000" },
-        { id: 7, name: "Gelora bung karno", price: "15.000.000" },
+        {id: 1, name: "Joko Horeg", price: "10.000.000"},
+        {id: 2, name: "Andi Mc", price: "15.000.000"},
+        {id: 3, name: "Soni Catering enak sekali", price: "15.000.000"},
+        {id: 4, name: "Gelora bung karno", price: "15.000.000"},
+        {id: 5, name: "Gelora bung karno", price: "15.000.000"},
+        {id: 6, name: "Gelora bung karno", price: "15.000.000"},
+        {id: 7, name: "Gelora bung karno", price: "15.000.000"},
     ];
 
     return (
@@ -43,13 +34,13 @@ const MakeEventTransactionNote = () => {
         >
             <View className="px-10" style={tailwind`my-2 mx-auto`}>
                 <Text className="font-outfitSemiBold text-2xl" style={tailwind`mb-3`}>
-          Vendor Generated
+                    Vendor Generated
                 </Text>
             </View>
 
             <ScrollView style={tailwind`mt-2 `} className="vendor-choosen">
                 {entertainmentItems.map((item) => (
-                    <ListChooseVendor key={item.id} item={item} radius="xl" />
+                    <ListChooseVendor key={item.id} item={item} radius="xl"/>
                 ))}
             </ScrollView>
 
@@ -61,9 +52,9 @@ const MakeEventTransactionNote = () => {
                     <Text className="font-outfitSemiBold text-xl">Total</Text>
                     <Text
                         className="font-outfitRegular text-xl"
-                        style={{ textAlign: "right", flex: 1, marginStart: 10 }}
+                        style={{textAlign: "right", flex: 1, marginStart: 10}}
                     >
-            10.000.000
+                        10.000.000
                     </Text>
                 </View>
             </View>
@@ -103,7 +94,7 @@ const MakeEventTransactionNote = () => {
                 <View style={styles.centeredView}>
                     <View style={styles.modalView}>
                         <Text style={styles.modalText} className="text-3xl font-outfitBold">
-              Confirm Payment
+                            Confirm Payment
                         </Text>
                         <TouchableOpacity
                             onPress={handleAccept}
@@ -111,7 +102,7 @@ const MakeEventTransactionNote = () => {
                             style={tailwind`w-full bg-[#19ff8c] w-52 mb-2`}
                         >
                             <Text className="text-white text-xl font-outfitBold py-1.5">
-                Pay Now!
+                                Pay Now!
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
@@ -120,7 +111,7 @@ const MakeEventTransactionNote = () => {
                             style={tailwind`w-full bg-[#00AA55] w-52 px-10`}
                         >
                             <Text className="text-white text-xl font-outfitBold py-1.5">
-                Later
+                                Later
                             </Text>
                         </TouchableOpacity>
                     </View>

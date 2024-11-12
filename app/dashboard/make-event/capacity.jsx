@@ -1,15 +1,15 @@
-import {Alert, Text, TextInput, View} from "react-native";
-import React, {useEffect, useState} from "react";
+import {Text, TextInput, View} from "react-native";
+import React from "react";
 import {useDispatch} from "react-redux";
 import tailwind from "twrnc";
-import MakeEventLayout from "@/app/dashboard/make-event/layout";
+import MakeEventLayout from "@/components/make-event/layout";
 import {registMakeEvent} from "@/redux/slices/makeEventSlice";
-import {useForm, Controller} from "react-hook-form";
+import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {eventCapacitySchema} from "@/helper/validator/schema";
 
 const MakeEventCapacity = () => {
-  
+
     const dispatch = useDispatch();
 
 
@@ -22,13 +22,13 @@ const MakeEventCapacity = () => {
     });
 
     const onSubmit = (data) => {
-  
-            dispatch(
-                registMakeEvent({
-                    participant: parseInt(data.capacityEvent),
-                })
-            );
-        
+
+        dispatch(
+            registMakeEvent({
+                participant: parseInt(data.capacityEvent),
+            })
+        );
+
     };
 
     return (

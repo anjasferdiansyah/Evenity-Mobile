@@ -1,26 +1,26 @@
-import tailwind from "twrnc";
+// MakeEventTransactionNote.js
+import React, {useEffect, useState} from "react";
+import {Text, View} from "react-native";
+import {useDispatch, useSelector} from "react-redux";
 import {
-    Modal,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
-import React, { useState, useEffect } from "react";
-import ListChooseVendor from "@/components/ListChooseVendor-user";
-import MakeEventLayout from "@/app/dashboard/make-event/layout";
-import { useDispatch, useSelector } from "react-redux";
-import {
-    regenerateEvent,
     acceptAndMakeEvent,
+    regenerateEvent,
     resetRecommendedList,
     updateRecommendedList,
 } from "@/redux/slices/makeEventSlice";
-import { router } from "expo-router";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {router} from "expo-router";
+import MakeEventLayout from "@/components/make-event/layout";
+import tailwind from "twrnc";
+import VendorList from "@/components/make-event/transaction/VendorList";
+import TotalCost from "@/components/make-event/transaction/TotalCost";
+import ConfirmPaymentModal from "@/components/make-event/transaction/ConfirmPaymentModal";
+import VendorDetailModal from "@/components/make-event/transaction/VendorDetailModal";
 
 const MakeEventTransactionNote = () => {
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalDetailVisible, setModalDetailVisible] = useState(false);
+    const [selectedVendor, setSelectedVendor] = useState(null);
+    const [lockedVendor, setLockedVendor] = useState([]);
     const dispatch = useDispatch();
     const {
         makeEventData,
@@ -31,15 +31,11 @@ const MakeEventTransactionNote = () => {
         selectedDetailCategories,
         status,
     } = useSelector((state) => state.makeEventSlice);
-
-    const { id } = useSelector((state) => state.auth);
-    const [modalDetailVisible, setModalDetailVisible] = useState(false);
-    const [selectedVendor, setSelectedVendor] = useState(null);
+    const {id} = useSelector((state) => state.auth);
 
     const handleVendorPress = (vendor) => {
         setSelectedVendor(vendor);
         setModalDetailVisible(true);
-
         const updatedVendorData = {
             productId: vendor.productId,
             newVendorData: {
@@ -53,14 +49,17 @@ const MakeEventTransactionNote = () => {
     };
 
     const handleRegenerateVendor = () => {
+
+        const categoryToRemove = lockedVendor.map(vendor => vendor.categoryId);
+        const categoryProduct = selectedDetailCategories.filter(category => !categoryToRemove.includes(category.categoryId));
+
         const newEventData = {
             ...makeEventRegist,
             customerId: id,
-            categoryProduct: selectedDetailCategories,
+            categoryProduct,
             previousProduct: listSelected,
+            lockedProduct: lockedVendor || [],
         };
-        console.log("newEventData", newEventData);
-
         dispatch(resetRecommendedList());
 
         dispatch(regenerateEvent(newEventData));
@@ -76,7 +75,7 @@ const MakeEventTransactionNote = () => {
             cost: vendor.cost || 0,
         }));
 
-        const eventDataCopy = { ...makeEventData };
+        const eventDataCopy = {...makeEventData};
         delete eventDataCopy.recommendedList;
 
         const eventData = {
@@ -114,107 +113,22 @@ const MakeEventTransactionNote = () => {
                     Vendor Generated
                 </Text>
             </View>
-            <ScrollView style={tailwind`mt-2`} className="vendor-choosen">
-                {makeEventData?.recommendedList?.length > 0 ? (
-                    makeEventData.recommendedList.map((item) => (
-                        <TouchableOpacity
-                            key={item.productId}
-                            onPress={() => handleVendorPress(item)}
-                        >
-                            <ListChooseVendor item={item} radius="xl" />
-                        </TouchableOpacity>
-                    ))
-                ) : (
-                    <Text style={tailwind`text-center text-gray-500`}>
-                        No recommended vendors available.
-                    </Text>
-                )}
-            </ScrollView>
-            <View style={tailwind`flex flex-row gap-4 w-full mt-12 items-center mb-5`}>
-                <View style={tailwind`flex flex-row gap-2 justify-center p-4 rounded-full bg-gray-100`}>
-                    <Text className="font-outfitSemiBold text-xl">Total</Text>
-                    <Text
-                        className="font-outfitRegular text-xl"
-                        style={{ textAlign: "right", flex: 1 }}
-                    >
-                        {typeof totalCost === 'number' && totalCost > 0
-                            ? totalCost.toLocaleString("id-ID", {
-                                style: "currency",
-                                currency: "IDR",
-                            }).replace("IDR", "")
-                            : "Rp 0"}
-                    </Text>
-                </View>
-            </View>
-            <Modal
-                animationType="slide"
-                transparent={true}
+            <VendorList
+                vendors={makeEventData?.recommendedList || []}
+                onVendorPress={handleVendorPress}
+                lockedVendors={lockedVendor} setLockedVendors={setLockedVendor}
+            />
+            <TotalCost totalCost={totalCost}/>
+            <ConfirmPaymentModal
                 visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(!modalVisible);
-                }}
-            >
-                <View style={tailwind`flex-1 justify-center items-center bg-black bg-opacity-50`}>
-                    <View style={tailwind`bg-white rounded-lg shadow-lg w-11/12 max-w-md p-5`}>
-                        <Text style={tailwind`text-3xl font-outfitBold text-center mb-4`}>
-                            Confirm Payment
-                        </Text>
-                        <TouchableOpacity
-                            onPress={acceptMakeEvent}
-                            style={tailwind`mx-auto items-center justify-center py-3 rounded-full bg-[#19ff8c] w-52 mb-2`}
-                        >
-                            <Text style={tailwind`text-white text-xl font-outfitBold py-1.5`}>
-                                Pay Now!
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => setModalVisible(!modalVisible)}
-                            style={tailwind`mx-auto items-center justify-center py-3 rounded-full bg-[#00AA55] w-52`}
-                        >
-                            <Text style={tailwind`text-white text-xl font-outfitBold py-1.5`}>
-                                Later
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
-
-            {/* Modal Detail Vendor */}
-            <Modal
-                animationType="slide"
-                transparent={true}
+                onClose={() => setModalVisible(false)}
+                onAccept={acceptMakeEvent}
+            />
+            <VendorDetailModal
                 visible={modalDetailVisible}
-                onRequestClose={() => {
-                    setModalDetailVisible(false);
-                }}
-            >
-                <View style={tailwind`flex-1 justify-center items-center bg-black bg-opacity-50 py-10`}>
-                    <View style={tailwind`bg-white rounded-lg shadow-lg w-11/12 max-w-md max-h-3/4`}>
-                        <TouchableOpacity
-                            style={tailwind`absolute top-3 right-3 p-2 bg-red-500 rounded-full z-20`}
-                            onPress={() => setModalDetailVisible(false)}
-                        >
-                            <MaterialCommunityIcons name="close" size={20} color="white" />
-                        </TouchableOpacity>
-                        <Text className="text-3xl font-outfitBold text-center my-4">Detail Vendor</Text>
-                        <ScrollView contentContainerStyle={tailwind`p-4`} style={tailwind`max-h-3/4`}>
-                            {selectedVendor && Object.entries(selectedVendor).map(([key, value], index) => (
-                                <View key={index} style={tailwind`bg-gray-100 p-4 rounded-lg mb-2`}>
-                                    <Text className="font-outfitSemiBold text-lg text-gray-800">
-                                        {key
-                                            .replace(/([A-Z])/g, ' $1') // Menambahkan spasi sebelum huruf kapital
-                                            .replace(/^./, (str) => str.toUpperCase()) // Mengubah huruf pertama menjadi kapital
-                                        }
-                                    </Text>
-                                    <Text className="font-outfitRegular text-sm text-gray-600">
-                                        {value}
-                                    </Text>
-                                </View>
-                            ))}
-                        </ScrollView>
-                    </View>
-                </View>
-            </Modal>
+                onClose={() => setModalDetailVisible(false)}
+                vendor={selectedVendor}
+            />
         </MakeEventLayout>
     );
 };

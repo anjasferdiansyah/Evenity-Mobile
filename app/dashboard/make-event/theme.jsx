@@ -1,34 +1,34 @@
-import {Alert, Text, TextInput, View} from "react-native";
+import {Text, TextInput, View} from "react-native";
 import {useDispatch} from "react-redux";
 import {registMakeEvent} from "@/redux/slices/makeEventSlice";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { eventThemeSchema } from "@/helper/validator/schema";
+import {Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {eventThemeSchema} from "@/helper/validator/schema";
 
 // import MakeEventLayout from "../dashboard/(tabs)/MakeEventLayout";
 import tailwind from "twrnc";
-import MakeEventLayout from "@/app/dashboard/make-event/layout";
+import MakeEventLayout from "@/components/make-event/layout";
 
 const MakeEventTheme = () => {
     const dispatch = useDispatch();
 
-    const { control, handleSubmit,  formState: { errors, isValid } } = useForm({
+    const {control, handleSubmit, formState: {errors, isValid}} = useForm({
         resolver: zodResolver(eventThemeSchema),
         mode: "onChange",
-        defaultValues : {
+        defaultValues: {
             theme: "",
         }
-      });
+    });
 
 
     const onSubmit = (data) => {
-       
-            dispatch(
-                registMakeEvent({
-                    theme: data.themeEvent,
-                })
-            );
-        
+
+        dispatch(
+            registMakeEvent({
+                theme: data.themeEvent,
+            })
+        );
+
     };
 
     console.log("isValid", isValid);
@@ -52,18 +52,18 @@ const MakeEventTheme = () => {
                     <Controller
                         control={control}
                         name="themeEvent"
-                        render={({ field: { onChange, value } }) => (
+                        render={({field: {onChange, value}}) => (
                             <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                            placeholder="Enter your event theme"
-                            onChangeText={onChange}
-                            value={value}
-                        />
+                                className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+                                placeholder="Enter your event theme"
+                                onChangeText={onChange}
+                                value={value}
+                            />
                         )}
-                        />
-                        {errors && errors.themeEvent && (
-                            <Text className="text-red-500">{errors.themeEvent.message}</Text>
-                        )}
+                    />
+                    {errors && errors.themeEvent && (
+                        <Text className="text-red-500">{errors.themeEvent.message}</Text>
+                    )}
                 </View>
             </View>
         </MakeEventLayout>
