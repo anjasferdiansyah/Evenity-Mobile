@@ -54,7 +54,7 @@ const orderHistoryVendorSlice = createSlice({
                 state.status = "loading";
             })
             .addCase(loadOrderHistoryVendor.fulfilled, (state, action) => {
-                state.orderHistoryVendor = action.payload;
+                state.orderHistoryVendor = action.payload.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
                 state.status = "success";
             })
             .addCase(loadOrderHistoryDetailVendor.fulfilled, (state, action) => {

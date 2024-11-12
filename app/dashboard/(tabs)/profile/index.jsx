@@ -79,7 +79,7 @@ export default function ProfileScreen() {
                 <Text className="text-sm text-gray-500 font-outfitRegular">
                     {title}
                 </Text>
-                <Text className="text-lg font-outfitSemiBold text-gray-800 max-w-96">
+                <Text className="text-lg font-outfitSemiBold text-gray-800 max-w-72">
                     {value}
 
                 </Text>
