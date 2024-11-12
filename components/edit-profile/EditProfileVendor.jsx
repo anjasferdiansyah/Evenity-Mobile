@@ -13,9 +13,9 @@ export default function EditProfileVendor() {
     const { userInfo } = useSelector((state) => state.profile)
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(fetchUserProfile())
-    }, [dispatch]);
+    // useEffect(() => {
+    //     dispatch(fetchUserProfile())
+    // }, [dispatch]);
 
     useEffect(() => {
         if (userInfo)
