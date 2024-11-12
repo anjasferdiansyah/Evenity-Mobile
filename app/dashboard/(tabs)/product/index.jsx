@@ -48,7 +48,7 @@ export default function ProductScreen() {
                     </Text>
                 </View>
                 <Text className="text-2xl font-outfitBold text-[#00AA55]">
-                    Rp {item.price}
+                    Rp {new Intl.NumberFormat('id-ID').format(item.price)}
                 </Text>
             </View>
         </TouchableOpacity>

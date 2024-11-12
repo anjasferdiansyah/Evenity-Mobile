@@ -102,4 +102,13 @@ const validateRegistration = (formData) => {
     }
 };
 
-export {validateUser, validateRegistration};
+const completeRegistrationCustomerSchema = z.object({
+    userName: z.string().min(1, "Name is required"),
+    phoneNumber: z
+        .string()
+        .min(10, "Phone number must be at least 10 digits")
+        .regex(/^\d+$/, "Phone number must only contain numbers"),
+    address: z.string().min(5, "Address must be at least 5 characters"),
+});
+
+export {validateUser, validateRegistration, completeRegistrationCustomerSchema};

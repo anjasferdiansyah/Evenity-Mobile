@@ -14,6 +14,12 @@ const Product = () => {
             <Stack.Screen
                 name="new"
             />
+            <Stack.Screen
+                name="edit-product"
+                options={{
+                    presentation: 'modal',
+                }}
+            />
         </Stack>
     )
 }

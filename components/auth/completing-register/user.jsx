@@ -7,11 +7,12 @@ import { ROUTES } from "@/constant/ROUTES";
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { completeRegistrationCustomerSchema } from "@/helper/validator/auth";
 
 const CompletingRegisterUser = () => {
-    const [userName, setUserName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [address, setAddress] = useState("");
     const { registerData, status, error } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
@@ -30,12 +31,21 @@ const CompletingRegisterUser = () => {
         }
     }, [dispatch, error]);
 
-    const handleRegister = () => {
+    const { control, handleSubmit, formState: { errors } } = useForm({
+        resolver: zodResolver(completeRegistrationCustomerSchema),
+        defaultValues: {
+            userName: "",
+            phoneNumber: "",
+            address: "",
+        },
+    });
+
+    const onSubmit = (data) => {
         const newRegisterData = {
             ...registerData,
-            fullName: userName,
-            phoneNumber,
-            address,
+            fullName: data.userName,
+            phoneNumber : data.phoneNumber,
+            address : data.address,
         };
         dispatch(completingRegisterUser(newRegisterData));
     };
@@ -77,13 +87,21 @@ const CompletingRegisterUser = () => {
                                         color="gray" 
                                         className="ml-3"
                                     />
-                                    <TextInput
-                                        className="flex-1 py-3 px-3 text-base font-outfitRegular"
-                                        placeholder="Enter your full name"
-                                        onChangeText={setUserName}
-                                        value={userName}
+                                     <Controller
+                                        control={control}
+                                        name="userName"
+                                        render={({ field: { onChange, onBlur, value } }) => (
+                                            <TextInput
+                                                className="flex-1 py-3 px-3 text-base font-outfitRegular"
+                                                placeholder="Enter your full name"
+                                                onBlur={onBlur}
+                                                onChangeText={onChange}
+                                                value={value}
+                                            />
+                                        )}
                                     />
                                 </View>
+                                {errors.userName && <Text className="text-red-500">{errors.userName.message}</Text>}
                             </View>
 
                             {/* Phone Number Input */}
@@ -96,14 +114,23 @@ const CompletingRegisterUser = () => {
                                         color="gray" 
                                         className="ml-3"
                                     />
-                                    <TextInput
-                                        className="flex-1 py-3 px-3 text-base font-outfitRegular"
-                                        placeholder="Enter your phone number"
-                                        keyboardType="phone-pad"
-                                        onChangeText={setPhoneNumber}
-                                        value={phoneNumber}
+                                     <Controller
+                                        control={control}
+                                        name="phoneNumber"
+                                        render={({ field: { onChange, onBlur, value } }) => (
+                                            <TextInput
+                                                className="flex-1 py-3 px-3 text-base font-outfitRegular"
+                                                placeholder="Enter your phone number"
+                                                keyboardType="phone-pad"
+                                                onBlur={onBlur}
+                                                onChangeText={onChange}
+                                                value={value}
+                                            />
+                                        )}
                                     />
+                                
                                 </View>
+                                {errors.phoneNumber && <Text className="text-red-500">{errors.phoneNumber.message}</Text>}
                             </View>
 
                             {/* Address Input */}
@@ -116,21 +143,30 @@ const CompletingRegisterUser = () => {
                                         color="gray" 
                                         className="ml-3 mt-3"
                                     />
-                                    <TextInput
-                                        className="flex-1 py-3 px-3 text-base font-outfitRegular"
-                                        placeholder="Enter your address"
-                                        multiline={true}
-                                        numberOfLines={3}
-                                        onChangeText={setAddress}
-                                        value={address}
-                                        textAlignVertical="top"
+                                     <Controller
+                                        control={control}
+                                        name="address"
+                                        render={({ field: { onChange, onBlur, value } }) => (
+                                            <TextInput
+                                                className="flex-1 py-3 px-3 text-base font-outfitRegular"
+                                                placeholder="Enter your address"
+                                                multiline={true}
+                                                numberOfLines={3}
+                                                textAlignVertical="top"
+                                                onBlur={onBlur}
+                                                onChangeText={onChange}
+                                                value={value}
+                                            />
+                                        )}
                                     />
+                                 
                                 </View>
+                                {errors.address && <Text className="text-red-500">{errors.address.message}</Text>}
                             </View>
 
                             {/* Register Button */}
                             <TouchableOpacity
-                                onPress={handleRegister}
+                                onPress={handleSubmit(onSubmit)}
                                 className="bg-[#10B981] rounded-full py-4 mt-4 shadow-md"
                             >
                                 <Text className="text-white text-center text-lg font-outfitBold">

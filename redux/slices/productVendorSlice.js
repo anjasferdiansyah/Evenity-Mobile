@@ -14,6 +14,44 @@ export const getProduct = createAsyncThunk(
     }
 );
 
+export const getProductById = createAsyncThunk(
+    "product/getProductById",
+    async (id, {rejectWithValue}) => {
+        try {
+            const response = await axios.get(`/product/${id}`);
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to fetch products");
+        }
+    }
+
+)
+
+export const updateProduct = createAsyncThunk(
+    "product/updateProduct",
+    async (data, { rejectWithValue }) => {
+        try {
+            const response = await axios.put(`/product/${data.id}`, data);
+            console.log("response update product", response);
+            return response.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to update product");
+        }
+    }
+);
+
+export const deleteProduct = createAsyncThunk(
+    "product/deleteProduct",
+    async (id, { rejectWithValue }) => {
+        try {
+            const response = await axios.delete(`/product/${id}`);
+            return response.data.data;
+        } catch (error) {
+            return rejectWithValue(error.response?.data?.message || "Failed to delete product");
+        }
+    }
+);
+
 export const createNewProduct = createAsyncThunk(
     "product/createNewProduct",
     async (data, { rejectWithValue }) => {
@@ -59,6 +97,19 @@ const productVendorSlice = createSlice({
             .addCase(getProduct.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.payload || "Unknown error occurred";
+            })
+            .addCase(updateProduct.pending, (state) => {
+                state.status = "loading";
+                state.error = null;
+            })
+            .addCase(updateProduct.fulfilled, (state, action) => {
+                state.status = "success";
+                state.error = null;
+            })
+            .addMatcher((action) => action.type.endsWith("/rejected"), (state, action) => {
+                state.status = "failed";
+                state.error = action.payload || "Unknown error occurred";
+                console.log("error", state.error);
             });
     }
 });

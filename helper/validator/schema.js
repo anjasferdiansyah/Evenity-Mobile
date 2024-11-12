@@ -77,72 +77,66 @@ export const eventCapacitySchema = z
     path: ["capacityEvent"],
   });
 
-  export const priceSchema = z
-  .object({
-    tempLowestPrice: z
-      .string()
-      .min(1, { message: "Lowest price is required" })
-      .refine(
-        (value) => {
-
-          // Hapus semua koma dari input
-
-          const cleanedValue = value.replace(/,/g, '');
-
-          // Pastikan hanya berisi digit
-          return /^\d+$/.test(cleanedValue);
-        }, 
-
-        { 
-          message: "Lowest price must be a valid number without commas" 
-        }
-
-      )
-
-      .transform((value) => {
-        // Hapus semua koma sebelum parsing
-        const cleanedValue = value.replace(/,/g, '');
-        return parseInt(cleanedValue, 10);
+  export const priceSchema = (backendLowestPrice, backendHighestPrice) =>
+    z
+      .object({
+        tempLowestPrice: z
+          .string()
+          .min(1, { message: "Lowest price is required" })
+          .refine(
+            (value) => {
+              // Remove commas and validate digits only
+              const cleanedValue = value.replace(/,/g, '');
+              return /^\d+$/.test(cleanedValue);
+            },
+            {
+              message: "Lowest price must be a valid number without commas",
+            }
+          )
+          .transform((value) => {
+            // Remove commas and parse to integer
+            const cleanedValue = value.replace(/,/g, '');
+            return parseInt(cleanedValue, 10);
+          })
+          .refine((value) => value > 0, {
+            message: "Lowest price must be greater than 0",
+          })
+          .refine((value) => backendLowestPrice == null || value >= backendLowestPrice, {
+            message: `Lowest price must be at least ${backendLowestPrice}`,
+          }),
+  
+        tempHighestPrice: z
+          .string()
+          .min(1, { message: "Highest price is required" })
+          .refine(
+            (value) => {
+              // Remove commas and validate digits only
+              const cleanedValue = value.replace(/,/g, '');
+              return /^\d+$/.test(cleanedValue);
+            },
+            {
+              message: "Highest price must be a valid number without commas",
+            }
+          )
+          .transform((value) => {
+            // Remove commas and parse to integer
+            const cleanedValue = value.replace(/,/g, '');
+            return parseInt(cleanedValue, 10);
+          })
+          .refine((value) => value > 0, {
+            message: "Highest price must be greater than 0",
+          })
+          .refine((value) => backendHighestPrice == null || value <= backendHighestPrice, {
+            message: `Highest price must not exceed ${backendHighestPrice}`,
+          }),
       })
-
-      .refine((value) => value > 0, {
-        message: "Lowest price must be greater than 0",
-      }),
-
-
-    tempHighestPrice: z
-      .string()
-      .min(1, { message: "Highest price is required" })
       .refine(
-
-        (value) => {
-
-          // Hapus semua koma dari input
-          const cleanedValue = value.replace(/,/g, '');
-
-          // Pastikan hanya berisi digit
-          return /^\d+$/.test(cleanedValue);
-        }, 
-        { 
-          message: "Highest price must be a valid number without commas" 
+        (data) => data.tempHighestPrice >= data.tempLowestPrice,
+        {
+          message: "Highest price must be greater than or equal to lowest price",
+          path: ["tempHighestPrice"],
         }
-      )
-      .transform((value) => {
-        // Hapus semua koma sebelum parsing
-        const cleanedValue = value.replace(/,/g, '');
-        return parseInt(cleanedValue, 10);
-      })
-      .refine((value) => value > 0, {
-        message: "Highest price must be greater than 0",
-      }),
-  })
-  .refine(
-    (data) => data.tempHighestPrice >= data.tempLowestPrice,
-    {
-      message: "Highest price must be greater than or equal to lowest price",
-      path: ["tempHighestPrice"],
-    }
-  );
+      );
 
   export const withdrawSchema = (userBalance) => {
     return z
