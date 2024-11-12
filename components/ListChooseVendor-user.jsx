@@ -24,7 +24,7 @@ export default function ListChooseVendor({item, onVendorPress, lockedVendors, se
 
     return (
         <View
-            key={item.productId}
+            // key={item.productId}
             className="flex flex-row w-full px-4 justify-between items-center m-2"
             style={tailwind`mt-4`}
         >

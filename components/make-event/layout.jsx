@@ -1,12 +1,12 @@
-import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {SafeAreaView, Text, TouchableOpacity, View} from "react-native";
 import React from "react";
-import { router } from "expo-router";
-import { ProgressBar } from "@/components/progress-bar";
+import {router} from "expo-router";
+import {ProgressBar} from "@/components/progress-bar";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import tailwind from "twrnc";
-import { useDispatch } from "react-redux";
-import { ROUTES } from "@/constant/ROUTES";
-import { resetRecommendedList, resetRegistMakeEvent } from "@/redux/slices/makeEventSlice";
+import {useDispatch} from "react-redux";
+import {ROUTES} from "@/constant/ROUTES";
+import {resetRecommendedList, resetRegistMakeEvent} from "@/redux/slices/makeEventSlice";
 
 const MakeEventLayout = ({
     progress,
@@ -43,19 +43,19 @@ const MakeEventLayout = ({
                     handleClose();
                 }}
             >
-                <MaterialCommunityIcons name="close" size={24} color="white" />
+                <MaterialCommunityIcons name="close" size={24} color="white"/>
             </TouchableOpacity>
 
             {/* Progress Bar */}
             <View className="w-10/12 px-6 pt-16">
-                <ProgressBar progress={progress} variant="success" />
+                <ProgressBar progress={progress} variant="success"/>
             </View>
 
             {/* Content Area */}
             <View className="flex-1 px-6 mt-4">
-                <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                <View contentContainerStyle={{flexGrow: 1}}>
                     {children}
-                </ScrollView>
+                </View>
             </View>
 
             {/* Bottom Buttons */}
@@ -94,7 +94,7 @@ const MakeEventLayout = ({
                             onPress={() => router.back()}
                             className="mx-auto w-[30%] items-center justify-center rounded-full bg-red-500 p-4"
                         >
-                            <MaterialCommunityIcons name="chevron-left" size={24} color="white" />
+                            <MaterialCommunityIcons name="chevron-left" size={24} color="white"/>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {

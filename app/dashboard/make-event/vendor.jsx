@@ -1,6 +1,5 @@
-import {Alert, ScrollView, Text, TextInput, TouchableOpacity, View,} from "react-native";
+import {Alert, FlatList, ScrollView, Text, TextInput, TouchableOpacity, View,} from "react-native";
 import tailwind from "twrnc";
-import {MaterialCommunityIcons} from "@expo/vector-icons";
 import MakeEventLayout from "@/components/make-event/layout";
 // import { registMakeEvent, makeEvent, addListSelected } from "../../redux/slices/makeEventSlice";
 import {addDetailCategories, makeEvent, removeListSelected,} from "@/redux/slices/makeEventSlice";
@@ -45,7 +44,7 @@ const MakeEventChooseVendor = () => {
     }, [dispatch]);
 
 
-    const { control, handleSubmit, formState: { errors, isValid } } = useForm({
+    const {control, handleSubmit, formState: {errors, isValid}} = useForm({
         resolver: zodResolver(priceSchema(lowestPrice, highestPrice)),
         mode: "onChange",
         shouldFocusError: true,
@@ -157,13 +156,13 @@ const MakeEventChooseVendor = () => {
         }, [])
         .sort((a, b) => a.name.localeCompare(b.name));
 
-   const toTitleCase = (str) => {
+    const toTitleCase = (str) => {
         const words = str.replace(/_/g, ' ').split(' ');
         const titleCasedWords = words.map(word => {
             if (word.length > 0) {
                 return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
             }
-            return word; 
+            return word;
         });
         return titleCasedWords.join(' ');
     };
@@ -239,106 +238,113 @@ const MakeEventChooseVendor = () => {
             handleNext={handleMakeEvent}
             isInputValid={isInputValid}
         >
-            <View className="px-10" style={tailwind`my-2`}>
-                <Text className="text-6xl font-outfitSemiBold" style={tailwind`mb-3`}>
-                    Choose
-                </Text>
+            <ScrollView>
+                <View className="px-10" style={tailwind`my-2`}>
+                    <Text className="text-6xl font-outfitSemiBold" style={tailwind`mb-3`}>
+                        Choose
+                    </Text>
 
-                <Text className="text-6xl font-outfitExtraBold">Vendors</Text>
-            </View>
-            <View
-                className="flex flex-col gap-4 w-full mt-12 px-10"
-                style={tailwind`mt-2`}
-            >
-                <View className="flex flex-col gap-2">
-                    <Text className="font-outfitRegular">Vendor Type</Text>
-                    <View className="border-[0.5px] px-4 rounded-xl border-gray-400">
-                        <Picker
-                            selectedValue={selectedCategory}
-                            onValueChange={handleCategoryChange}
-                        >
-                            <Picker.Item label="Select Category" value=""/>
-                            {uniqueCategories.map((category) => (
-                                <Picker.Item
-                                    key={category.id}
-                                    label={toTitleCase(category.mainCategory)}
-                                    value={category.id}
-                                />
-                            ))}
-                        </Picker>
-                    </View>
+                    <Text className="text-6xl font-outfitExtraBold">Vendors</Text>
                 </View>
-              
-                <View className="flex flex-col gap-3 ">
-                    <View style={tailwind`w-[100%]`}>
-                        <Text className="font-outfitRegular">Lowest Price</Text>
-                        <Controller
-                            control={control}
-                            name="tempLowestPrice"
-                            render={({field: {onChange, onBlur, value}}) => (
-                                <View style={tailwind`w-[100%]`}>
+                <View
+                    className="flex flex-col gap-4 w-full mt-12 px-10"
+                    style={tailwind`mt-2`}
+                >
+                    <View className="flex flex-col gap-2">
+                        <Text className="font-outfitRegular">Vendor Type</Text>
+                        <View className="border-[0.5px] px-4 rounded-xl border-gray-400">
+                            <Picker
+                                selectedValue={selectedCategory}
+                                onValueChange={handleCategoryChange}
+                            >
+                                <Picker.Item label="Select Category" value=""/>
+                                {uniqueCategories.map((category) => (
+                                    <Picker.Item
+                                        key={category.id}
+                                        label={toTitleCase(category.mainCategory)}
+                                        value={category.id}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
+                    </View>
+
+                    <View className="flex flex-col gap-3 ">
+                        <View style={tailwind`w-[100%]`}>
+                            <Text className="font-outfitRegular">Lowest Price</Text>
+                            <Controller
+                                control={control}
+                                name="tempLowestPrice"
+                                render={({field: {onChange, onBlur, value}}) => (
+                                    <View style={tailwind`w-[100%]`}>
+                                        <TextInput
+                                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
+                                            placeholder={`Min: ${formatPrice(lowestPrice)}`}
+                                            keyboardType="numeric"
+                                            value={value}
+                                            onChangeText={onChange}
+                                            onBlur={onBlur}
+                                        />
+                                        <Text className="text-gray-400 text-xs font-outfitLight mt-2">* Lowest
+                                            Price: {formatPrice(lowestPrice)}</Text>
+                                        {errors.tempLowestPrice &&
+                                            <Text style={{color: 'red'}}>{errors.tempLowestPrice.message}</Text>}
+                                    </View>
+                                )}
+                            />
+                        </View>
+                        <View style={tailwind`w-[100%]`}>
+                            <Text className="font-outfitRegular">Highest Price</Text>
+                            <Controller
+                                control={control}
+                                name="tempHighestPrice"
+                                render={({field: {onChange, onBlur, value}}) => (
                                     <TextInput
                                         className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
-                                        placeholder={`Min: ${formatPrice(lowestPrice)}`}
+                                        placeholder={`Max: ${formatPrice(highestPrice)}`}
                                         keyboardType="numeric"
                                         value={value}
                                         onChangeText={onChange}
                                         onBlur={onBlur}
                                     />
-                                    <Text className="text-gray-400 text-xs font-outfitLight mt-2">* Lowest Price: {formatPrice(lowestPrice)}</Text>
-                                    {errors.tempLowestPrice &&
-                                        <Text style={{color: 'red'}}>{errors.tempLowestPrice.message}</Text>}
-                                </View>
-                            )}
-                        />
+                                )}
+                            />
+                            <Text className="text-gray-400 text-xs font-outfitLight mt-2">* Highest
+                                Price: {formatPrice(highestPrice)}</Text>
+                            {errors.tempHighestPrice &&
+                                <Text style={{color: 'red'}}>{errors.tempHighestPrice.message}</Text>}
+                        </View>
                     </View>
-                    <View style={tailwind`w-[100%]`}>
-                        <Text className="font-outfitRegular">Highest Price</Text>
-                        <Controller
-                            control={control}
-                            name="tempHighestPrice"
-                            render={({field: {onChange, onBlur, value}}) => (
-                                <TextInput
-                                    className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight"
-                                    placeholder={`Max: ${formatPrice(highestPrice)}`}
-                                    keyboardType="numeric"
-                                    value={value}
-                                    onChangeText={onChange}
-                                    onBlur={onBlur}
-                                />
-                            )}
-                        />
-                        <Text className="text-gray-400 text-xs font-outfitLight mt-2">* Highest Price: {formatPrice(highestPrice)}</Text>
-                        {errors.tempHighestPrice &&
-                            <Text style={{color: 'red'}}>{errors.tempHighestPrice.message}</Text>}
-                    </View>
+
+                    <TouchableOpacity
+                        onPress={handleSubmit(onSubmit)}
+                        disabled={!isValid}
+                        className="mx-auto w-full flex items-center justify-center rounded-full push-to"
+                        style={tailwind`bg-[#00AA55] p-4 ${isValid ? "" : "opacity-50"}`}
+                    >
+                        <Text className="text-white font-outfitSemiBold">ADD VENDOR</Text>
+                    </TouchableOpacity>
+
+                    {!vendorsAvailable && (
+                        <Text className="text-red-500 mt-2">
+                            No vendors available. Please try a different category.
+                        </Text>
+                    )}
                 </View>
-
-                <TouchableOpacity
-                    onPress={handleSubmit(onSubmit)}
-                    disabled={!isValid}
-                    className="mx-auto w-full flex items-center justify-center rounded-full push-to"
-                    style={tailwind`bg-[#00AA55] p-4 ${isValid ? "" : "opacity-50"}`}
-                >
-                    <Text className="text-white font-outfitSemiBold">ADD VENDOR</Text>
-                </TouchableOpacity>
-            
-                {!vendorsAvailable && (
-                    <Text className="text-red-500 mt-2">
-                        No vendors available. Please try a different category.
-                    </Text>
-                )}
-            </View>
-
-            <ScrollView style={tailwind`mt-5`} className="vendor-choosen">
-                {listSelectedCategory.map((item) => (
-                    <ListVendor
-                        key={item.id}
-                        item={item}
-                        radius="xl"
-                        onRemove={() => handleRemoveCategory(item.categoryId)}
-                    />
-                ))}
+                <FlatList
+                    keyExtractor={(item) => item.id}
+                    data={listSelectedCategory}
+                    renderItem={({item}) =>
+                        <ListVendor
+                            key={item.id}
+                            item={item}
+                            radius="xl"
+                            onRemove={() => handleRemoveCategory(item.categoryId)}
+                        />}
+                    scrollEnabled={true}
+                    nestedScrollEnabled={true}
+                />
+                {/*<BottomPadding/>*/}
             </ScrollView>
         </MakeEventLayout>
     );
