@@ -88,7 +88,7 @@ export default function WithdrawHistoryScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-[#F5F7FA]">
-            <View className="flex-1 px-6 pt-6">
+            <View className="flex-1 px-6 pt-6 pb-[25%]">
                 {/* Header */}
                 <View className="flex-row items-center mb-8 mt-10">
                     <TouchableOpacity 

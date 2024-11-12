@@ -44,7 +44,7 @@ const MakeEventChooseVendor = () => {
     }, [dispatch]);
 
 
-    const {control, handleSubmit, formState: {errors, isValid}} = useForm({
+    const {control, handleSubmit, reset, formState: {errors, isValid}} = useForm({
         resolver: zodResolver(priceSchema(lowestPrice, highestPrice)),
         mode: "onChange",
         shouldFocusError: true,
@@ -200,11 +200,7 @@ const MakeEventChooseVendor = () => {
 
             console.log("listSelectedCategory", listSelectedCategory);
 
-            setSelectedCategory("");
-            setTempLowestPrice("");
-            setTempHighestPrice("");
-            setLowestPrice("");
-            setHighestPrice("");
+            reset();
         }
     };
 
@@ -319,8 +315,7 @@ const MakeEventChooseVendor = () => {
                     <TouchableOpacity
                         onPress={handleSubmit(onSubmit)}
                         disabled={!isValid}
-                        className="mx-auto w-full flex items-center justify-center rounded-full push-to"
-                        style={tailwind`bg-[#00AA55] p-4 ${isValid ? "" : "opacity-50"}`}
+                        className={`mx-auto w-full flex items-center justify-center rounded-full push-to bg-[#00AA55] ${isValid ? "" : "opacity-50"} py-5`}
                     >
                         <Text className="text-white font-outfitSemiBold">ADD VENDOR</Text>
                     </TouchableOpacity>

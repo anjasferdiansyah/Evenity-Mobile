@@ -10,7 +10,7 @@ export default function ListVendor({ item, radius, onRemove }) {
             style={tailwind`mt-4`}
         >
             <View
-                className="flex flex-col gap-2 w-[90%] bg-white p-4 rounded-xl shadow-md border border-gray-300"
+                className="flex flex-col gap-2 w-[90%] bg-white p-4 rounded-xl border border-gray-300"
             >
                 <Text className="font-outfitSemiBold text-lg text-gray-800">{item.name}</Text>
                 <Text className="font-outfitRegular text-sm text-gray-600">
@@ -21,7 +21,7 @@ export default function ListVendor({ item, radius, onRemove }) {
                 </Text>
             </View>
             <TouchableOpacity
-                className="py-2 px-2 bg-red-600 rounded-full shadow-md transition duration-200 transform hover:scale-105"
+                className="py-2 px-2 bg-red-600 rounded-full transition duration-200 transform hover:scale-105"
                 onPress={onRemove}
             >
                 <MaterialIcons name="delete" size={24} color="white" />
