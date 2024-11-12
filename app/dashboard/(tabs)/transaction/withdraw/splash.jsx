@@ -1,43 +1,36 @@
-import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
-import Animated, { 
-  useSharedValue, 
-  useAnimatedStyle, 
-  withTiming, 
-  withSequence,
-  Easing
-} from 'react-native-reanimated';
-import { useNavigation } from '@react-navigation/native';
-import { ROUTES } from '@/constant/ROUTES';
-import { router } from 'expo-router';
+import React, {useEffect} from 'react';
+import {Text, View} from 'react-native';
+import Animated, {Easing, useAnimatedStyle, useSharedValue, withSequence, withTiming} from 'react-native-reanimated';
+// import { useNavigation } from '@react-navigation/native';
+import {ROUTES} from '@/constant/ROUTES';
+import {router} from 'expo-router';
 
 const PaymentSuccessScreen = () => {
-    const navigation = useNavigation();
-    
+
     // Animasi rotasi lingkaran
     const rotation = useSharedValue(0);
-    
+
     // Animasi opacity checkmark
     const checkOpacity = useSharedValue(0);
-    
+
     // Animasi scale checkmark
     const checkScale = useSharedValue(0);
 
     useEffect(() => {
         // Animasi rotasi lingkaran - dipercepat
         rotation.value = withSequence(
-            withTiming(360, { 
+            withTiming(360, {
                 duration: 1500, // Dipercepat
-                easing: Easing.linear 
+                easing: Easing.linear
             })
         );
 
         // Tampilkan checkmark lebih cepat
         const checkmarkTimer = setTimeout(() => {
-            checkOpacity.value = withTiming(1, { duration: 300 }); // Lebih cepat
-            checkScale.value = withTiming(1, { 
+            checkOpacity.value = withTiming(1, {duration: 300}); // Lebih cepat
+            checkScale.value = withTiming(1, {
                 duration: 300, // Lebih cepat
-                easing: Easing.bounce 
+                easing: Easing.bounce
             });
         }, 1000); // Lebih cepat
 
@@ -52,12 +45,12 @@ const PaymentSuccessScreen = () => {
             clearTimeout(checkmarkTimer);
             clearTimeout(redirectTimer);
         };
-    }, [navigation]); // Tambahkan dependency navigation
+    }, [checkOpacity, checkScale, rotation]); // Tambahkan dependency navigation
 
     // Style animasi rotasi lingkaran
     const animatedCircleStyle = useAnimatedStyle(() => {
         return {
-            transform: [{ rotate: `${rotation.value}deg` }],
+            transform: [{rotate: `${rotation.value}deg`}],
             borderTopColor: 'transparent',
             borderRightColor: '#00AA55',
             borderBottomColor: '#00AA55',
@@ -69,22 +62,22 @@ const PaymentSuccessScreen = () => {
     const animatedCheckStyle = useAnimatedStyle(() => {
         return {
             opacity: checkOpacity.value,
-            transform: [{ scale: checkScale.value }]
+            transform: [{scale: checkScale.value}]
         };
     });
 
     return (
-        <View 
-            style={{ 
-                flex: 1, 
-                justifyContent: 'center', 
-                alignItems: 'center', 
-                backgroundColor: 'white' 
+        <View
+            style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: 'white'
             }}
         >
-            <View style={{ position: 'relative', width: 200, height: 200 }}>
+            <View style={{position: 'relative', width: 200, height: 200}}>
                 {/* Lingkaran animasi */}
-                <Animated.View 
+                <Animated.View
                     style={[
                         {
                             width: 200,
@@ -99,7 +92,7 @@ const PaymentSuccessScreen = () => {
                 />
 
                 {/* Checkmark */}
-                <Animated.View 
+                <Animated.View
                     style={[
                         {
                             position: 'absolute',
@@ -113,9 +106,9 @@ const PaymentSuccessScreen = () => {
                         animatedCheckStyle
                     ]}
                 >
-                    <Text style={{ 
-                        fontSize: 80, 
-                        color: '#00AA55' 
+                    <Text style={{
+                        fontSize: 80,
+                        color: '#00AA55'
                     }}>
                         ✓
                     </Text>
