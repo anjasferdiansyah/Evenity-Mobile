@@ -21,7 +21,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
-import { clearProfile, fetchUserProfile } from "@/redux/slices/profileSlice";
 
 
 
@@ -52,7 +51,7 @@ export default function LoginScreen() {
     const dispatch = useDispatch();
     const { isLoggedIn, error, status } = useSelector((state) => state.auth);
     const { userInfo } = useSelector((state) => state.profile);
-    console.log("userInfo", userInfo);
+    // console.log("userInfo", userInfo);
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -106,7 +105,7 @@ export default function LoginScreen() {
         >
             <TouchableOpacity 
                 onPress={() => router.push(ROUTES.AUTH.INDEX)}
-                className="mr-4 p-2 rounded-full bg-[#f3f4f6a2] absolute top-10 left-4"
+                className="mr-4 p-2 rounded-full bg-[#f3f4f6a2] absolute top-10 left-4 z-50"
             >
                 <AntDesignIcons name='arrowleft' size={20} color={'#374151'}/>
             </TouchableOpacity>

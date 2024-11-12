@@ -39,9 +39,9 @@ export default function EditProfileCustomer() {
     const {userInfo} = useSelector((state) => state.profile);
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(fetchUserProfile());
-    }, [dispatch]);
+    // useEffect(() => {
+    //     dispatch(fetchUserProfile());
+    // }, [dispatch]);
 
     console.log("userInfo", userInfo);
 
@@ -216,7 +216,7 @@ export default function EditProfileCustomer() {
                                 })
                             );
                             dispatch(clearProfile());
-                            dispatch(fetchUserProfile());
+                            // dispatch(fetchUserProfile());
                             router.back();
                         } catch (error) {
                             console.log(error);
