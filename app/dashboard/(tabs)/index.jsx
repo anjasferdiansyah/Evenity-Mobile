@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {Dimensions, Image, ScrollView, Text, View} from "react-native";
 import {router} from "expo-router";
 import {useDispatch, useSelector} from "react-redux";
@@ -38,9 +38,9 @@ export default function HomeScreen() {
     const {user} = useSelector(state => state.auth)
     const role = user?.role
 
-    useEffect(() => {
-        dispatch(fetchUserProfile())
-    }, [dispatch])
+    // useEffect(() => {
+    //     dispatch(fetchUserProfile())
+    // }, [dispatch])
 
     const {width} = Dimensions.get('window');
 
