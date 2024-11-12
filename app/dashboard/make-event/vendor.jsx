@@ -157,9 +157,17 @@ const MakeEventChooseVendor = () => {
         }, [])
         .sort((a, b) => a.name.localeCompare(b.name));
 
-    const toTitleCase = (str) => {
-        return str.charAt(0).toUpperCase() + str.slice(1);
+   const toTitleCase = (str) => {
+        const words = str.replace(/_/g, ' ').split(' ');
+        const titleCasedWords = words.map(word => {
+            if (word.length > 0) {
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            }
+            return word; 
+        });
+        return titleCasedWords.join(' ');
     };
+
 
     const onSubmit = (data) => {
 
@@ -236,7 +244,7 @@ const MakeEventChooseVendor = () => {
                     Choose
                 </Text>
 
-                <Text className="text-6xl font-outfitExtraBold">Service / Products?</Text>
+                <Text className="text-6xl font-outfitExtraBold">Vendors</Text>
             </View>
             <View
                 className="flex flex-col gap-4 w-full mt-12 px-10"
@@ -260,7 +268,8 @@ const MakeEventChooseVendor = () => {
                         </Picker>
                     </View>
                 </View>
-                <View className="flex flex-col gap-2 w-full">
+              
+                <View className="flex flex-col gap-3 ">
                     <View style={tailwind`w-[100%]`}>
                         <Text className="font-outfitRegular">Lowest Price</Text>
                         <Controller
@@ -276,6 +285,7 @@ const MakeEventChooseVendor = () => {
                                         onChangeText={onChange}
                                         onBlur={onBlur}
                                     />
+                                    <Text className="text-gray-400 text-xs font-outfitLight mt-2">* Lowest Price: {formatPrice(lowestPrice)}</Text>
                                     {errors.tempLowestPrice &&
                                         <Text style={{color: 'red'}}>{errors.tempLowestPrice.message}</Text>}
                                 </View>
@@ -298,22 +308,21 @@ const MakeEventChooseVendor = () => {
                                 />
                             )}
                         />
+                        <Text className="text-gray-400 text-xs font-outfitLight mt-2">* Highest Price: {formatPrice(highestPrice)}</Text>
                         {errors.tempHighestPrice &&
                             <Text style={{color: 'red'}}>{errors.tempHighestPrice.message}</Text>}
                     </View>
-                    <TouchableOpacity
-                        onPress={handleSubmit(onSubmit)}
-                        disabled={!isValid}
-                        className="mx-auto mt-4 items-center justify-center rounded-full push-to"
-                        style={tailwind`bg-[#00AA55] p-4 ${isValid ? "" : "opacity-50"}`}
-                    >
-                        <MaterialCommunityIcons
-                            name="chevron-down"
-                            size={20}
-                            color="white"
-                        />
-                    </TouchableOpacity>
                 </View>
+
+                <TouchableOpacity
+                    onPress={handleSubmit(onSubmit)}
+                    disabled={!isValid}
+                    className="mx-auto w-full flex items-center justify-center rounded-full push-to"
+                    style={tailwind`bg-[#00AA55] p-4 ${isValid ? "" : "opacity-50"}`}
+                >
+                    <Text className="text-white font-outfitSemiBold">ADD VENDOR</Text>
+                </TouchableOpacity>
+            
                 {!vendorsAvailable && (
                     <Text className="text-red-500 mt-2">
                         No vendors available. Please try a different category.

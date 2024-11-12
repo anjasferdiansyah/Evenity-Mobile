@@ -1,4 +1,4 @@
-import {FlatList, Text, TouchableOpacity, View, SafeAreaView} from 'react-native'
+import {FlatList, Text, TouchableOpacity, View, SafeAreaView, Linking, Alert} from 'react-native'
 import React, {useEffect} from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
@@ -16,6 +16,15 @@ export default function WithdrawHistoryScreen() {
     useEffect(() => {
         dispatch(loadWithdrawHistory(userId))
     }, [dispatch])
+
+    const openLinkInBrowser = async (url) => {
+            const supported = await Linking.canOpenURL(url);
+            if (supported) {
+                await Linking.openURL(url);
+            } else {
+                Alert.alert("Error", "Cannot open the URL");
+            }
+        };
 
     const formatDate = (date) => {
         return moment(date).format('DD MMM YYYY')
@@ -56,9 +65,23 @@ export default function WithdrawHistoryScreen() {
                 <Text className="text-2xl font-bold text-[#333] mb-2">
                     {formatAmount(item.amount)}
                 </Text>
-                <Text className="text-base text-[#666]">
-                    {item.account}
-                </Text>
+                
+               <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                    {/* Tombol untuk membuka di browser hanya jika item.imageProofUrl tidak null */}
+                    {item.imageProofUrl && (
+                        <TouchableOpacity
+                            style={{
+                                backgroundColor: '#00AA55',
+                                padding: 10,
+                                marginRight: 10,
+                            }}
+                            className="rounded-xl"
+                            onPress={() => openLinkInBrowser(item.imageProofUrl)}
+                        >
+                            <Text style={{ color: 'white' }} className="font-outfitSemiBold">Open in Browser</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
             </View>
         )
     }

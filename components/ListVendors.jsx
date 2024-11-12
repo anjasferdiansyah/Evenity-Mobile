@@ -1,30 +1,30 @@
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import tailwind from "twrnc";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function ListVendor({ item, radius, onRemove }) {
     return (
         <View
             key={item.id}
-            className="flex flex-row gap-4 w-full px-10 items-center "
-            style={tailwind`mt-2`}
+            className="flex flex-row gap-4 w-full px-10 items-center"
+            style={tailwind`mt-4`}
         >
             <View
-                className="flex flex-col gap-2"
-                style={tailwind`w-[90%] bg-slate-200 p-4 rounded-${radius}`}
+                className="flex flex-col gap-2 w-[90%] bg-white p-4 rounded-xl shadow-md border border-gray-300"
             >
-                <Text className="font-outfitSemiBold text-[11px]">{item.name}</Text>
-                <Text className="font-outfitRegular text-[11px]">
-          Min Cost: {item.minCost}
+                <Text className="font-outfitSemiBold text-lg text-gray-800">{item.name}</Text>
+                <Text className="font-outfitRegular text-sm text-gray-600">
+                    Min Cost: <Text className="font-bold text-gray-800">{item.minCost}</Text>
                 </Text>
-                <Text className="font-outfitRegular text-[11px]">
-          Max Cost: {item.maxCost}
+                <Text className="font-outfitRegular text-sm text-gray-600">
+                    Max Cost: <Text className="font-bold text-gray-800">{item.maxCost}</Text>
                 </Text>
             </View>
             <TouchableOpacity
-                className="py-2 px-4 bg-red-500 rounded-full"
+                className="py-2 px-2 bg-red-600 rounded-full shadow-md transition duration-200 transform hover:scale-105"
                 onPress={onRemove}
             >
-                <Text className="font-outfitSemiBold text-xl text-white">X</Text>
+                <MaterialIcons name="delete" size={24} color="white" />
             </TouchableOpacity>
         </View>
     );
