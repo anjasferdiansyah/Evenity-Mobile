@@ -40,7 +40,8 @@ const invoiceCustomerSlice = createSlice({
         builder
             .addCase(loadInvoiceOrderCustomer.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.invoiceCustomer = action.payload;
+                // state.invoiceCustomer = action.payload;
+                state.invoiceCustomer = action.payload.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
                 state.status = "success";
             })
             .addCase(loadInvoiceOrderCustomer.rejected, (state) => {

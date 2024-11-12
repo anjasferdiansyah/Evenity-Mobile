@@ -38,7 +38,8 @@ const orderUserSlice = createSlice({
         builder
             .addCase(historyOrderCustomer.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.ordersUser = action.payload;
+                // state.ordersUser = action.payload;
+                state.ordersUser.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
                 state.status = "success";
             })
             .addCase(historyOrderCustomer.rejected, (state) => {

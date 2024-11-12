@@ -11,6 +11,7 @@ import orderHistoryVendorSlice from "./slices/orderHistoryVendor"
 import invoiceCustomerSlice from "./slices/invoiceCustomerSlice"
 import historyEventSlice from "./slices/historyEvent"
 import profileSlice from "./slices/profileSlice"
+import eventSlice from "./slices/eventSlice";
 
 
 export default configureStore({
@@ -26,6 +27,7 @@ export default configureStore({
         orderHistoryVendor: orderHistoryVendorSlice,
         invoiceCustomer: invoiceCustomerSlice,
         historyEvent: historyEventSlice,
-        profile: profileSlice
+        profile: profileSlice,
+        event: eventSlice
     },
 });

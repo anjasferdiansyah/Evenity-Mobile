@@ -58,7 +58,7 @@ const requestSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(fetchRequestLists.fulfilled, (state, action) => {
-                state.requestList = action.payload;
+                state.requestList = action.payload.sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate));
                 state.status = "success";
             })
             .addCase(fetchRequestDetail.fulfilled, (state, action) => {
