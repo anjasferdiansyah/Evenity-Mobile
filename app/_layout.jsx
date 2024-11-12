@@ -1,11 +1,12 @@
-import { Stack } from "expo-router";
-import { Provider } from "react-redux";
+import {Stack} from "expo-router";
+import {Provider} from "react-redux";
 import store from "@/redux/store";
-import { useFonts } from "expo-font";
-import { useEffect } from "react";
+import {useFonts} from "expo-font";
+import {useEffect} from "react";
 import * as ExpoSplash from "expo-splash-screen";
-import { setupAxios } from "@/config/axiosConfig";
+import {setupAxios} from "@/config/axiosConfig";
 
+// import { NavigationContainer } from '@react-navigation/native';
 // import store from "@/redux/store";
 import "../global.css";
 
@@ -29,7 +30,9 @@ export default function IndexLayout() {
 
     return (
         <Provider store={store}>
-            <Stack screenOptions={{ headerShown: false }} />
+            {/*<NavigationContainer>*/}
+            <Stack screenOptions={{headerShown: false}}/>
+            {/*</NavigationContainer>*/}
         </Provider>
     );
 }
