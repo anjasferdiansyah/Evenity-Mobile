@@ -39,41 +39,49 @@ function validateUser(data) {
     }
 }
 
-export const registerSchema = z.object({
-    userEmail: z
-        .string()
-        .min(1, "Email is required")
-        .email("Invalid email format"),
-
-    userPassword: z
-        .string()
-        .min(1, "Password is required")
-        .min(6, "Password must be at least 6 characters"),
-
-    userPasswordConfirmation: z
-        .string()
-        .min(1, "Password confirmation is required"),
-
-    provinceSearchText: z
-        .string()
-        .min(1, "Province name is required"),
-
-    citySearchText: z
-        .string()
-        .min(1, "City name is required"),
-
-    districtSearchText: z
-        .string()
-        .min(1, "District selection is required"),
-}).refine((data) => data.userPassword === data.userPasswordConfirmation, {
-    message: "Passwords don't match",
-    path: ["userPasswordConfirmation"],
-});
+export const registerSchema = ( availableCity, availableDistrict ) => {
+    return z.object({
+        userEmail: z
+            .string()
+            .min(1, "Email is required")
+            .email("Invalid email format"),
+    
+        userPassword: z
+            .string()
+            .min(1, "Password is required")
+            .min(6, "Password must be at least 6 characters"),
+    
+        userPasswordConfirmation: z
+            .string()
+            .min(1, "Password confirmation is required"),
+    
+        provinceSearchText: z
+            .string()
+            .min(1, "Province name is required"),
+    
+        citySearchText: z
+            .string()
+            .min(1, "City name is required")
+            .refine((value) => availableCity.some((city) => city.name === value), {
+                message: "City name not found",
+            }),
+        
+        districtSearchText: z
+            .string()
+            .min(1, "District selection is required")
+            .refine((value) => availableDistrict.some((district) => district.name === value), {
+                message: "District name not found",
+            })
+    }).refine((data) => data.userPassword === data.userPasswordConfirmation, {
+        message: "Passwords don't match",
+        path: ["userPasswordConfirmation"],
+    });
+}  
 
 // Custom validation function
-const validateRegistration = (formData) => {
+const validateRegistration = (formData , { availableCity, availableDistrict }) => {
     try {
-        const validatedData = registerSchema.parse(formData);
+        const validatedData = registerSchema(availableCity, availableDistrict).parse(formData);
         return {
             success: true,
             data: validatedData,
