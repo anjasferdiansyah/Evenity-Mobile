@@ -1,24 +1,18 @@
-import {ScrollView, Text, TouchableOpacity, View, Dimensions, RefreshControl} from "react-native";
-import React, { useState } from "react";
+import {Dimensions, RefreshControl, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import React, {useEffect, useState} from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
 import {useDispatch, useSelector} from "react-redux";
 import moment from "moment";
 import BottomPadding from "@/components/misc/BottomPadding";
-import {fetchEventDetail, regenerateEvent} from "@/redux/slices/historyEvent";
-import Animated, {
-    FadeInDown, 
-    FadeInUp, 
-    useAnimatedStyle, 
-    useSharedValue, 
-    withSpring
-} from 'react-native-reanimated';
-import { BlurView } from "@react-native-community/blur";
+import {fetchEventDetail, regenerateEvent, resetHistoryEventError} from "@/redux/slices/historyEvent";
+import Animated, {FadeInDown, FadeInUp, useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
+import {MaterialIcons} from "@expo/vector-icons";
 
 const {width} = Dimensions.get('window');
 
-const InvoiceDetailUser = () => {
-    const {selectedHistoryEvent} = useSelector((state) => state.historyEvent);
+const EventDetailUser = () => {
+    const {selectedHistoryEvent, error} = useSelector((state) => state.historyEvent);
     const dispatch = useDispatch();
     const [refreshing, setRefreshing] = useState(false);
 
@@ -27,7 +21,7 @@ const InvoiceDetailUser = () => {
 
     const animatedCardStyle = useAnimatedStyle(() => {
         return {
-            transform: [{ scale: withSpring(scale.value) }]
+            transform: [{scale: withSpring(scale.value)}]
         };
     });
 
@@ -37,10 +31,10 @@ const InvoiceDetailUser = () => {
 
     const getCityName = (city) => {
         if (!city) return '';
-        
+
         // Pastikan city adalah string
         const cityString = String(city);
-        
+
         // Hapus prefix KABUPATEN atau KOTA (case insensitive)
         return cityString
             .replace(/^(KABUPATEN|KOTA)\s+/i, "")
@@ -54,7 +48,6 @@ const InvoiceDetailUser = () => {
 
     function handleRegenerate(id) {
         return () => {
-            console.log("id", id)
             dispatch(regenerateEvent(id));
         }
     }
@@ -73,13 +66,13 @@ const InvoiceDetailUser = () => {
     };
 
     const DetailCard = ({title, children, style}) => (
-        <Animated.View 
+        <Animated.View
             entering={FadeInDown}
             style={[{
-                backgroundColor: 'white', 
-                borderRadius: 15, 
-                padding: 15, 
-                marginBottom: 15, 
+                backgroundColor: 'white',
+                borderRadius: 15,
+                padding: 15,
+                marginBottom: 15,
                 shadowColor: "#000",
                 shadowOffset: {
                     width: 0,
@@ -97,10 +90,17 @@ const InvoiceDetailUser = () => {
         </Animated.View>
     );
 
+    useEffect(() => {
+        if (error) {
+            alert(error);
+            dispatch(resetHistoryEventError())
+        }
+    }, [dispatch, error]);
+
     return (
         <View className="flex-1 bg-[#F5F5F5]">
             {/* Background Overlay */}
-            <View 
+            <View
                 className="absolute top-0 left-0 right-0 h-[25%] bg-[#00AA55]"
                 style={{
                     borderBottomLeftRadius: 50,
@@ -109,7 +109,7 @@ const InvoiceDetailUser = () => {
             />
 
             <View className="flex-1 pt-5 px-5">
-                <Animated.View 
+                <Animated.View
                     entering={FadeInUp}
                     className="flex-row items-center mb-4"
                 >
@@ -129,7 +129,7 @@ const InvoiceDetailUser = () => {
                     </View>
                 </Animated.View>
 
-                <ScrollView 
+                <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{paddingBottom: 50}}
                     refreshControl={
@@ -140,9 +140,18 @@ const InvoiceDetailUser = () => {
                         />
                     }
                 >
+                    {selectedHistoryEvent?.isCancelled && (
+                        <View className="p-4 border-red-500 bg-white border-2 rounded-xl mb-4">
+                            <View className="flex flex-row items-center">
+                                <MaterialIcons name="error" size={24} color="red"/>
+                                <Text className="text-red-500 font-outfitBold text-lg">{"     "}This event has been
+                                    cancelled</Text>
+                            </View>
+                        </View>
+                    )}
                     {/* Event Details in Modern Card Style */}
                     <DetailCard title="Event Name">
-                        <Text className="text-xl font-outfitSemiBold text-gray-800">
+                        <Text className="text-2xl font-outfitSemiBold text-gray-800">
                             {selectedHistoryEvent?.name}
                         </Text>
                     </DetailCard>
@@ -224,7 +233,7 @@ const InvoiceDetailUser = () => {
                                     </Text>
                                 </View>
                             </View>
-                        ))} 
+                        ))}
                     </DetailCard>
 
                     {/* Total Price */}
@@ -238,8 +247,8 @@ const InvoiceDetailUser = () => {
 
                     {selectedHistoryEvent?.eventDetailResponseList?.some(
                         (item) => item.approvalStatus === "REJECTED"
-                    ) && (
-                        <TouchableOpacity 
+                    ) && !selectedHistoryEvent?.isCancelled && (
+                        <TouchableOpacity
                             className="bg-green-400 p-4 rounded-xl shadow-lg"
                             onPress={handleRegenerate(selectedHistoryEvent?.id)}
                         >
@@ -255,4 +264,4 @@ const InvoiceDetailUser = () => {
     );
 };
 
-export default InvoiceDetailUser ;
+export default EventDetailUser;
