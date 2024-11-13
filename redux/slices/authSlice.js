@@ -5,7 +5,7 @@ import {setupAxios} from "@/config/axiosConfig";
 
 export const initializeAuth = createAsyncThunk(
     'auth/initialize',
-    async () => {
+    async (_, {dispatch}) => {
         const token = await asyncStorage.getItem("token");
         if (token) {
             setupAxios(token);
@@ -102,7 +102,7 @@ const AuthSlice = createSlice({
             asyncStorage.removeItem("token");
             return {...initialState};
         },
-        clearUser : (state) => {
+        clearUser: (state) => {
             state.user = null
         },
         resetError: (state) => {

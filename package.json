@@ -8,8 +8,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "eslint .",
-    "lint-fix": "eslint . --fix"
+    "lint": "expo lint .",
+    "lint-fix": "expo lint . --fix"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.4",
@@ -62,8 +62,11 @@
     "eslint-import-resolver-babel-module": "^5.3.2",
     "eslint-import-resolver-babel-plugin-root-import": "^1.1.1",
     "eslint-import-resolver-react-native": "^0.2.0",
+    "eslint-plugin-expo": "^0.1.0",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-import-x": "^4.4.2",
     "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-native": "^4.1.0"
   },
   "private": true
