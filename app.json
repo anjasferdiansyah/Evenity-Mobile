@@ -14,13 +14,15 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.eska.evenity"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.eska.evenity"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -31,7 +33,6 @@
         {
           "fonts": [
             "./assets/fonts/Outfit/static/Outfit-Regular.ttf",
-            // "./assets/fonts/Outfit/static/Outfit-Medium.ttf",
             "./assets/fonts/Outfit/static/Outfit-SemiBold.ttf",
             "./assets/fonts/Outfit/static/Outfit-Bold.ttf",
             "./assets/fonts/Outfit/static/Outfit-ExtraBold.ttf",
@@ -40,6 +41,14 @@
         }
       ],
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "a8777287-a2c1-41b6-b7d7-4a09bb3abe09"
+      }
+    }
   }
 }

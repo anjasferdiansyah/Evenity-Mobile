@@ -12,16 +12,16 @@ import {ROLE} from "@/constant/USER";
 import Animated, {FadeInDown, interpolate, useAnimatedStyle, useSharedValue, withSpring} from 'react-native-reanimated';
 import VendorAvatar from "@/assets/group.webp";
 import CustomerAvatar from "@/assets/customer.webp"
-import { resetCategoryState } from "@/redux/slices/categorySlice";
-import { resetHistoryEvent } from "@/redux/slices/historyEvent";
-import { resetInvoiceCustomerState } from "@/redux/slices/invoiceCustomerSlice";
-import { resetMakeEventState } from "@/redux/slices/makeEventSlice";
-import { resetOrderHistoryVendor } from "@/redux/slices/orderHistoryVendor";
-import { resetOrderUserState } from "@/redux/slices/orderUserSlice";
-import { resetProductCustomerState } from "@/redux/slices/productSlice";
-import { resetProductVendorState } from "@/redux/slices/productVendorSlice";
-import { resetWithdrawHistory } from "@/redux/slices/withdrawHistorySlice";
-import { resetRequestState } from "@/redux/slices/requestSlice";
+import {resetCategoryState} from "@/redux/slices/categorySlice";
+import {resetHistoryEvent} from "@/redux/slices/historyEvent";
+import {resetInvoiceCustomerState} from "@/redux/slices/invoiceCustomerSlice";
+import {resetMakeEventState} from "@/redux/slices/makeEventSlice";
+import {resetOrderHistoryVendor} from "@/redux/slices/orderHistoryVendor";
+import {resetOrderUserState} from "@/redux/slices/orderUserSlice";
+import {resetProductCustomerState} from "@/redux/slices/productSlice";
+import {resetProductVendorState} from "@/redux/slices/productVendorSlice";
+import {resetWithdrawHistory} from "@/redux/slices/withdrawHistorySlice";
+import {resetRequestState} from "@/redux/slices/requestSlice";
 
 const {width} = Dimensions.get('window');
 
@@ -43,12 +43,12 @@ export default function ProfileScreen() {
     });
 
     useEffect(() => {
-        if(!userInfo){
+        if (!userInfo) {
             dispatch(fetchUserProfile());
         }
     }, [dispatch, userInfo]);
 
-    const userDetail = userInfo?.detail;
+    const userDetail = user?.detail || userInfo?.detail;
 
 
     const handleLogout = () => {
