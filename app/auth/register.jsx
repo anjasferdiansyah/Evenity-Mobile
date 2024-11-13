@@ -113,7 +113,10 @@ export default function RegisterScreen() {
             districtSearchText,
         };
 
-        const { success, data, error } = validateRegistration(formData);
+        const { success, data, error } = validateRegistration(formData, {
+            availableCity: availableCities,
+            availableDistrict: availableDistricts
+        });
 
         if (!success) {
             alert(error[0]?.message || "Registration failed");
