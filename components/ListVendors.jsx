@@ -25,10 +25,10 @@ export default function ListVendor({ item, radius, onRemove }) {
             >
                 <Text className="font-outfitSemiBold text-lg text-gray-800">{toTitleCase(item.name)}</Text>
                 <Text className="font-outfitRegular text-sm text-gray-600">
-                    Min Cost: <Text className="font-bold text-gray-800">{item.minCost}</Text>
+                    Min Cost: <Text className="font-bold text-gray-800">{new Intl.NumberFormat('id-ID').format(item.minCost)}</Text>
                 </Text>
                 <Text className="font-outfitRegular text-sm text-gray-600">
-                    Max Cost: <Text className="font-bold text-gray-800">{item.maxCost}</Text>
+                    Max Cost: <Text className="font-bold text-gray-800">{new Intl.NumberFormat('id-ID').format(item.maxCost)}</Text>
                 </Text>
             </View>
             <TouchableOpacity

@@ -193,7 +193,7 @@ const EditProduct = () => {
                                 />
                             </View>
 
-                            <View className="flex-1">
+                            {/* <View className="flex-1">
                                 <Text className="text-sm font-outfitRegular text-gray-600 mb-2">Quantity</Text>
                                 <Controller
                                     control={control}
@@ -215,11 +215,11 @@ const EditProduct = () => {
                                         </View>
                                     )}
                                 />
-                            </View>
+                            </View> */}
                         </View>
 
                         {/* Unit */}
-                        <View className="mb-4">
+                        {/* <View className="mb-4">
                             <Text className="text-sm font-outfitRegular text-gray-600 mb-2">Unit</Text>
                             <Controller
                                 control={control}
@@ -257,7 +257,7 @@ const EditProduct = () => {
                                     </View>
                                 )}
                             />
-                        </View>
+                        </View> */}
 
                         {/* Description */}
                         <View>
