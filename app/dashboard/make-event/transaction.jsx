@@ -1,12 +1,13 @@
 // MakeEventTransactionNote.js
 import React, {useEffect, useState} from "react";
-import {Text, View} from "react-native";
+import {Alert, Text, View} from "react-native";
 import {useDispatch, useSelector} from "react-redux";
 import {
     acceptAndMakeEvent,
     regenerateEvent,
     resetRecommendedList,
     updateRecommendedList,
+    resetTempRecommendedList
 } from "@/redux/slices/makeEventSlice";
 import {router} from "expo-router";
 import MakeEventLayout from "@/components/make-event/layout";
@@ -30,6 +31,7 @@ const MakeEventTransactionNote = () => {
         totalCost,
         selectedDetailCategories,
         status,
+        tempRecommendedList
     } = useSelector((state) => state.makeEventSlice);
     const {id} = useSelector((state) => state.auth);
 
@@ -49,7 +51,7 @@ const MakeEventTransactionNote = () => {
     };
 
     const handleRegenerateVendor = () => {
-
+        console.log("hirrrtt")
         const categoryToRemove = lockedVendor.map(vendor => vendor.categoryId);
         const categoryProduct = selectedDetailCategories.filter(category => !categoryToRemove.includes(category.categoryId));
 
@@ -67,7 +69,17 @@ const MakeEventTransactionNote = () => {
     };
 
     const acceptMakeEvent = () => {
-        const recommendedArray = Object.values(recommendedList);
+        let recommendedArray = {};
+        if(Object.keys(recommendedList).length === 0){
+            console.log("No recommended list found");
+            // Alert.alert("Error", "No recommended list found.");
+            recommendedArray = Object.values(tempRecommendedList);
+        } else{
+            recommendedArray = Object.values(recommendedList);
+        }
+        
+
+        console.log(recommendedArray);
         const newEventData = recommendedArray.map((vendor) => ({
             productId: vendor.productId,
             qty: vendor.qty || 1,
@@ -83,6 +95,8 @@ const MakeEventTransactionNote = () => {
             ...eventDataCopy,
             eventDetail: newEventData,
         };
+        dispatch(resetTempRecommendedList());
+        console.log("tempRecommendedList", tempRecommendedList);
 
         try {
             dispatch(acceptAndMakeEvent(eventData));
@@ -96,7 +110,7 @@ const MakeEventTransactionNote = () => {
 
     useEffect(() => {
         if (status === "regenerate_failed") {
-            alert("Failed to regenerate vendors. Please try again.");
+            alert("Sorry, the vendor is not available");
         }
     }, [status]);
 

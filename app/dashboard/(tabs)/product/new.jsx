@@ -11,6 +11,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema } from '@/helper/validator/schema';
 import BottomPadding from '@/components/misc/BottomPadding';
+import { AntDesign } from '@expo/vector-icons';
 
 const New = () => {
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({
@@ -83,7 +84,12 @@ const New = () => {
                     showsVerticalScrollIndicator={false}
                     className="flex-1 px-6 bg-white"
                 >
-                    <View className="mt-20 mb-6">
+                     <TouchableOpacity 
+                        onPress={() => router.back()}
+                        className="p-3 mt-20  bg-white rounded-full shadow-md w-12">
+                        <AntDesign name='arrowleft' size={24} color='#2C3E50'/>
+                    </TouchableOpacity>
+                    <View className="mt-12 mb-6">
                         <Text className="text-4xl font-outfitBold text-gray-800">Create New Product</Text>
                         <Text className="text-gray-500 mt-2">Fill in the details for your new product</Text>
                     </View>
@@ -177,7 +183,7 @@ const New = () => {
                                 />
                             </View>
 
-                            <View className="flex-1">
+                            {/* <View className="flex-1">
                                 <Text className="text-sm font-outfitRegular text-gray-600 mb-2">Quantity</Text>
                                 <Controller
                                     control={control}
@@ -199,11 +205,11 @@ const New = () => {
                                         </View>
                                     )}
                                 />
-                            </View>
+                            </View> */}
                         </View>
 
                         {/* Unit */}
-                        <View className="mb-4">
+                        {/* <View className="mb-4">
                             <Text className="text-sm font-outfitRegular text-gray-600 mb-2">Unit</Text>
                             <Controller
                                 control={control}
@@ -241,7 +247,7 @@ const New = () => {
                                     </View>
                                 )}
                             />
-                        </View>
+                        </View> */}
 
                         {/* Description */}
                         <View>

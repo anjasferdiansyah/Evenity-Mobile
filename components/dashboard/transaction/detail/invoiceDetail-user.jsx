@@ -230,7 +230,7 @@ const InvoiceDetailUser = () => {
                     {/* Total Price */}
                     <DetailCard title="Total Cost">
                         <Text className="text-4xl font-outfitBold text-gray-800">
-                            {`Rp ${selectedHistoryEvent?.totalCost
+                            {`Rp ${totalCost
                                 .toString()
                                 .replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}
                         </Text>

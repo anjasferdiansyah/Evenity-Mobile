@@ -33,6 +33,8 @@ const ProductDetail = () => {
         )
     }
 
+    console.log("selectedProduct", selectedProduct);
+
     return (
         <SafeAreaView className="flex-1 bg-[#F5F7FA]">
             <View className="flex-1 px-6 pt-4">
@@ -77,8 +79,8 @@ const ProductDetail = () => {
                             <Text className="text-base font-outfitRegular text-gray-500 mb-2">
                                 Price
                             </Text>
-                            <Text className="text-2xl font-outfitBold text-[#00F279]">
-                                Rp. {new Intl.NumberFormat('id-ID').format(selectedProduct?.price || 0)}
+                            <Text className="text-2xl font-outfitBold text-[#00AA55] capitalize">
+                                Rp. {new Intl.NumberFormat('id-ID').format(selectedProduct?.price || 0)} / {selectedProduct?.productUnit || 'N/A'}
                             </Text>
                         </View>
 

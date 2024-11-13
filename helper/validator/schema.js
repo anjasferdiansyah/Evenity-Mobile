@@ -77,7 +77,7 @@ export const eventCapacitySchema = z
     path: ["capacityEvent"],
   });
 
-  export const priceSchema = (backendLowestPrice, backendHighestPrice) =>
+  export const priceSchema = (backendLowestPrice) =>
     z
       .object({
         tempLowestPrice: z
@@ -102,7 +102,7 @@ export const eventCapacitySchema = z
             message: "Lowest price must be greater than 0",
           })
           .refine((value) => backendLowestPrice == null || value >= backendLowestPrice, {
-            message: `Lowest price must be at least ${backendLowestPrice}`,
+            message: `Lowest price must be at least ${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(backendLowestPrice)}`,
           }),
   
         tempHighestPrice: z
@@ -126,9 +126,6 @@ export const eventCapacitySchema = z
           .refine((value) => value > 0, {
             message: "Highest price must be greater than 0",
           })
-          .refine((value) => backendHighestPrice == null || value <= backendHighestPrice, {
-            message: `Highest price must not exceed ${backendHighestPrice}`,
-          }),
       })
       .refine(
         (data) => data.tempHighestPrice >= data.tempLowestPrice,
@@ -177,19 +174,19 @@ export const eventCapacitySchema = z
       .refine((value) => value > 0, {
         message: "Price must be greater than 0",
       }),
-    qty: z
-      .string()
-      .min(1, { message: "Quantity is required" })
-      .refine((value) => /^\d+$/.test(value.replace(/,/g, "")), {
-        message: "Quantity must be a valid number",
-      })
-      .transform((value) => parseInt(value.replace(/,/g, ""), 10))
-      .refine((value) => value > 0, {
-        message: "Quantity must be greater than 0",
-      }),
-      productUnit: z.enum(["PCS", "DAY"], {
-        message: "Unit must be either 'PCS' or 'DAY'",
-      }),
+    // qty: z
+    //   .string()
+    //   .min(1, { message: "Quantity is required" })
+    //   .refine((value) => /^\d+$/.test(value.replace(/,/g, "")), {
+    //     message: "Quantity must be a valid number",
+    //   })
+    //   .transform((value) => parseInt(value.replace(/,/g, ""), 10))
+    //   .refine((value) => value > 0, {
+    //     message: "Quantity must be greater than 0",
+    //   }),
+    //   productUnit: z.enum(["PCS", "DAY"], {
+    //     message: "Unit must be either 'PCS' or 'DAY'",
+    //   }),
       categoryId : z
       .string()
       .min(1, { message: "Category is required" })

@@ -122,6 +122,7 @@ const MakeEventSlice = createSlice({
         makeEventRegist: null,
         makeEventData: null,
         recommendedList: {},
+        tempRecommendedList: [],
         listSelected: [],
         selectedDetailCategories: null,
         totalCost: 0,
@@ -178,6 +179,9 @@ const MakeEventSlice = createSlice({
             state.selectedDetailCategories = null;
             state.totalCost = 0;
         },
+        resetTempRecommendedList: (state) => {
+            state.tempRecommendedList = [];
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -255,6 +259,7 @@ const MakeEventSlice = createSlice({
                     validVendors.forEach((vendor) => {
                         if (vendor && vendor.productId) {
                             state.recommendedList[vendor.productId] = vendor;
+                            state.tempRecommendedList = state.recommendedList;
                         } else {
                             console.log("Vendor tidak valid:", vendor);
                         }
@@ -281,7 +286,6 @@ const MakeEventSlice = createSlice({
                     // Hitung total biaya dengan pengecekan tambahan
 
                     const totalCost = Object.values(state.recommendedList)
-
                         .reduce((total, vendor) => {
 
                             // Pastikan vendor dan cost valid
@@ -296,6 +300,7 @@ const MakeEventSlice = createSlice({
 
                     // Log untuk debugging
                     console.log("Updated recommendedList:", state.recommendedList);
+                    console.log("Updated tempRecommendedList:", state.tempRecommendedList);
                     console.log("Updated makeEventData:", state.makeEventData);
                     console.log("Updated listSelected:", state.listSelected);
                     console.log("Total Cost:", state.totalCost);
@@ -327,6 +332,9 @@ const MakeEventSlice = createSlice({
             })
             .addCase(regenerateEvent.rejected, (state, action) => {
                 state.isLoading = false;
+                console.log("totalCost rejected", state.totalCost);
+                console.log("recomendedlist rejected", state.recommendedList);
+                console.log("tempRecommendedList rejected", state.tempRecommendedList);
                 state.status = "regenerate_failed";
             })
             .addCase(acceptAndMakeEvent.pending, (state) => {
@@ -367,6 +375,7 @@ export const {
     addDetailCategories,
     resetMakeEventState,
     incrementRegenerationCount,
-    resetRegenerationCount
+    resetRegenerationCount,
+    resetTempRecommendedList
 } = MakeEventSlice.actions;
 export default MakeEventSlice.reducer;

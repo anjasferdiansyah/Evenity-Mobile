@@ -50,7 +50,7 @@ const MakeEventChooseVendor = () => {
 
 
     const {control, handleSubmit, reset, formState: {errors, isValid}} = useForm({
-        resolver: zodResolver(priceSchema(lowestPrice, highestPrice)),
+        resolver: zodResolver(priceSchema(lowestPrice)),
         mode: "onChange",
         shouldFocusError: true,
     });
@@ -313,7 +313,7 @@ const MakeEventChooseVendor = () => {
                                         <Text className="text-gray-400 text-xs font-outfitLight mt-2">* Lowest
                                             Price: {formatPrice(lowestPrice)}</Text>
                                         {errors.tempLowestPrice &&
-                                            <Text style={{color: 'red'}}>{errors.tempLowestPrice.message}</Text>}
+                                            <Text className="text-red-500">{errors.tempLowestPrice.message}</Text>}
                                     </View>
                                 )}
                             />
