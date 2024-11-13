@@ -1,5 +1,5 @@
 module.exports = {
-    "parser": "@babel/eslint-parser",
+    // "parser": "@babel/eslint-parser",
     "parserOptions": {
         "ecmaVersion": 2020,
         "sourceType": "module",
@@ -35,6 +35,7 @@ module.exports = {
     },
     rules: {
         'import-x/named': 'off',
+        'import-x/namespace': 'off',
         'import/no-unresolved': 'off',
         'indent': ['error', 4],
     }

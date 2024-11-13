@@ -336,8 +336,8 @@ const MakeEventChooseVendor = () => {
                             radius="xl"
                             onRemove={() => handleRemoveCategory(item.categoryId)}
                         />}
-                    scrollEnabled={true}
-                    nestedScrollEnabled={true}
+                    scrollEnabled={false}
+                    nestedScrollEnabled={false}
                 />
                 {/*<BottomPadding/>*/}
             </ScrollView>
