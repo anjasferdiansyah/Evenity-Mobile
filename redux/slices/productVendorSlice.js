@@ -1,9 +1,14 @@
-import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {
+    createAsyncThunk,
+    createSlice
+} from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const getProduct = createAsyncThunk(
     "product/getProduct",
-    async (id, {rejectWithValue}) => {
+    async (id, {
+        rejectWithValue
+    }) => {
         try {
             const response = await axios.get(`/vendor/${id}/products`);
             return response.data.data;
@@ -16,7 +21,9 @@ export const getProduct = createAsyncThunk(
 
 export const getProductById = createAsyncThunk(
     "product/getProductById",
-    async (id, {rejectWithValue}) => {
+    async (id, {
+        rejectWithValue
+    }) => {
         try {
             const response = await axios.get(`/product/${id}`);
             return response.data.data;
@@ -29,7 +36,9 @@ export const getProductById = createAsyncThunk(
 
 export const updateProduct = createAsyncThunk(
     "product/updateProduct",
-    async (data, { rejectWithValue }) => {
+    async (data, {
+        rejectWithValue
+    }) => {
         try {
             const response = await axios.put(`/product/${data.id}`, data);
             console.log("response update product", response);
@@ -42,7 +51,9 @@ export const updateProduct = createAsyncThunk(
 
 export const deleteProduct = createAsyncThunk(
     "product/deleteProduct",
-    async (id, { rejectWithValue }) => {
+    async (id, {
+        rejectWithValue
+    }) => {
         try {
             const response = await axios.delete(`/product/${id}`);
             return response.data.data;
@@ -54,7 +65,9 @@ export const deleteProduct = createAsyncThunk(
 
 export const createNewProduct = createAsyncThunk(
     "product/createNewProduct",
-    async (data, { rejectWithValue }) => {
+    async (data, {
+        rejectWithValue
+    }) => {
         console.log(data)
         try {
             const response = await axios.post("/product", data);
@@ -90,7 +103,9 @@ const productVendorSlice = createSlice({
                 state.error = null;
             })
             .addCase(getProduct.fulfilled, (state, action) => {
-                state.products = action.payload;
+                state.products = action.payload.productList.sort((a, b) => {
+                    return new Date(b.modifiedDate) - new Date(a.modifiedDate);
+                });
                 state.status = "success";
                 state.error = null;
             })
@@ -114,6 +129,9 @@ const productVendorSlice = createSlice({
     }
 });
 
-export const {setSelectedProduct, resetProductVendorState} = productVendorSlice.actions;
+export const {
+    setSelectedProduct,
+    resetProductVendorState
+} = productVendorSlice.actions;
 
 export default productVendorSlice.reducer;

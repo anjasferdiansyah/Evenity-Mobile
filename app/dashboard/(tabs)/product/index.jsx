@@ -70,7 +70,7 @@ export default function ProductScreen() {
                         </TouchableOpacity>
                     </View>
                 )}
-                data={products?.productList || []}
+                data={products || []}
                 renderItem={renderProductItem}
                 keyExtractor={(item) => item.id.toString()}
                 contentContainerStyle={{paddingHorizontal: 20, paddingTop: 10}}

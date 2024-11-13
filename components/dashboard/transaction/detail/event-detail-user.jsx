@@ -239,9 +239,7 @@ const EventDetailUser = () => {
                     {/* Total Price */}
                     <DetailCard title="Total Cost">
                         <Text className="text-4xl font-outfitBold text-gray-800">
-                            {`Rp ${totalCost
-                                .toString()
-                                .replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}
+                            {`Rp ${(totalCost ?? 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")},-`}
                         </Text>
                     </DetailCard>
 
