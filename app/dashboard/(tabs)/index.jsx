@@ -14,6 +14,7 @@ import {
 import {ROLE as ROLES} from "@/constant/USER";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {ROUTES} from "@/constant/ROUTES";
+import BottomPadding from "@/components/misc/BottomPadding";
 
 // Event image placeholders (you can replace with your own or fetch from an API)
 const EVENT_IMAGES = [
@@ -55,7 +56,6 @@ export default function HomeScreen() {
     }
 
     return (
-
         <LinearGradient
             colors={['#F0FFF4', '#E6FFF4', '#D4FAF0']}
             className="flex-1"
@@ -132,10 +132,11 @@ export default function HomeScreen() {
                             />
                         </View>
                     </View>
+                    <BottomPadding/>  
                 </ScrollView>
+                
             </SafeAreaView>
-
+         
         </LinearGradient>
-        // <BottomPadding/>
     );
 };
