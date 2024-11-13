@@ -106,7 +106,7 @@ const withdrawHistorySlice = createSlice({
         state.status = "loading";
       })
       .addCase(loadWithdrawHistory.fulfilled, (state, action) => {
-        state.withdrawHistory = action.payload;
+        state.withdrawHistory = action.payload.sort((a, b) => new Date(b.modifiedDate) - new Date(a.modifiedDate));
         state.status = "success";
       })
       .addCase(getListBank.fulfilled, (state, action) => {

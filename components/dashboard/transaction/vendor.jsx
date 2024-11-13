@@ -48,11 +48,13 @@ export function OrderHistoryVendor() {
 
     const fetchHistoryTransactionVendor = useCallback(() => {
         dispatch(loadOrderHistoryVendor(id));
-    }, [dispatch, id]);
+        dispatch(getUserBalance({ id: userId }))
+    }, [dispatch, id, userId]);
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
         fetchHistoryTransactionVendor();
+        
         setTimeout(() => setRefreshing(false), 2000);
     }, [fetchHistoryTransactionVendor]);
 
