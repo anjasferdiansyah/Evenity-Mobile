@@ -9,6 +9,7 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { withdrawSchema } from '@/helper/validator/schema';
 import { ROUTES } from '@/constant/ROUTES';
+import BottomPadding from '@/components/misc/BottomPadding';
 
 export default function WithdrawScreen() {
 
@@ -159,19 +160,20 @@ export default function WithdrawScreen() {
                             />
                     </View>
                     {errors.amount && <Text className="text-red-500 text-center">{errors.amount.message}</Text>}
-                    <View className="flex flex-row items-center justify-center gap-8">
+                    <View className="flex flex-col items-center justify-center mt-10 gap-5">
                         <TouchableOpacity
                             onPress={handleSubmit(onSubmit)}
-                            className="flex flex-row items-center justify-center bg-[#00F279] py-3 px-8 rounded-full mt-20">
-                            <Text className="text-xl font-outfitBold text-center text-white">Send</Text>
+                            className="flex flex-row items-center justify-center bg-[#00F279] py-5 px-8 rounded-full w-full">
+                            <Text className="text-2xl font-outfitBold text-center text-white">Send</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            className="flex flex-row items-center justify-center bg-red-500 py-3 px-8  rounded-full mt-20">
-                            <Text className="text-xl font-outfitBold text-center text-white">Cancel</Text>
+                            className="flex flex-row items-center justify-center bg-red-500 py-5 px-8  rounded-full w-full">
+                            <Text className="text-2xl font-outfitBold text-center text-white">Cancel</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
             </View>
+            <BottomPadding />
         </ScrollView>
     )
 }

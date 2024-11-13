@@ -5,6 +5,7 @@ import React, {useCallback, useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {checkVendorAvailability, registMakeEvent} from "@/redux/slices/makeEventSlice";
 import RNPickerSelect from "react-native-picker-select";
+import BottomPadding from "@/components/misc/BottomPadding";
 
 const provinceData = [
     {label: "JAWA BARAT", value: "32", name: "JAWA BARAT"},
@@ -252,164 +253,167 @@ const MakeEventLocation = () => {
             handleNext={handleMakeEvent}
             isInputValid={isInputValid}
         >
-            <View className="px-10" style={tailwind`mt-5`}>
-                <Text className="text-6xl font-outfitSemiBold" style={tailwind``}>
-                    Where's
-                </Text>
-                <Text className="text-6xl font-outfitSemiBold" style={tailwind`mb-3`}>
-                    Event
-                </Text>
-                <Text className="text-6xl font-outfitExtraBold">location?</Text>
-            </View>
-            <View
-                className="flex flex-col gap-4 w-full mt-12 px-10"
-                style={tailwind`mt-7`}
-            >
-                <View className="flex flex-col gap-2 w-[90%]">
-                    <Text className="font-outfitRegular">Province</Text>
-                    <View
-                        className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full">
-                        <RNPickerSelect
-                            onValueChange={(value, index) => {
-                                setSelectedProvinceId(value);
-                                // If value exists, find the corresponding province and set its name
-                                if (value) {
-                                    const selectedProvince = provinceData.find(
-                                        (p) => p.value === value
-                                    );
-                                    setProvinceSearchText(selectedProvince.name);
-                                } else {
-                                    setProvinceSearchText("");
+            <ScrollView>
+                <View className="px-10" style={tailwind`mt-5`}>
+                    <Text className="text-6xl font-outfitSemiBold" style={tailwind``}>
+                        Where's
+                    </Text>
+                    <Text className="text-6xl font-outfitSemiBold" style={tailwind`mb-3`}>
+                        Event
+                    </Text>
+                    <Text className="text-6xl font-outfitExtraBold">location?</Text>
+                </View>
+                <View
+                    className="flex flex-col gap-4 w-full mt-12 px-10"
+                    style={tailwind`mt-7`}
+                >
+                    <View className="flex flex-col gap-2 w-[90%]">
+                        <Text className="font-outfitRegular">Province</Text>
+                        <View
+                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full">
+                            <RNPickerSelect
+                                onValueChange={(value, index) => {
+                                    setSelectedProvinceId(value);
+                                    // If value exists, find the corresponding province and set its name
+                                    if (value) {
+                                        const selectedProvince = provinceData.find(
+                                            (p) => p.value === value
+                                        );
+                                        setProvinceSearchText(selectedProvince.name);
+                                    } else {
+                                        setProvinceSearchText("");
+                                    }
+                                }}
+                                placeholder={{label: "Select province", value: null}}
+                                useNativeAndroidPickerStyle={false}
+                                pickerProps={{mode: "dropdown"}}
+                                items={provinceData}
+                            />
+                        </View>
+                    </View>
+                    <View className="flex flex-row gap-2 w-[90%]">
+                        <View className="flex flex-col gap-2 w-[50%]">
+                            <Text
+                                className={
+                                    selectedProvinceId !== null
+                                        ? "font-outfitRegular"
+                                        : "font-outfitRegular opacity-50"
                                 }
-                            }}
-                            placeholder={{label: "Select province", value: null}}
-                            useNativeAndroidPickerStyle={false}
-                            pickerProps={{mode: "dropdown"}}
-                            items={provinceData}
-                        />
-                    </View>
-                </View>
-                <View className="flex flex-row gap-2 w-[90%]">
-                    <View className="flex flex-col gap-2 w-[50%]">
-                        <Text
-                            className={
-                                selectedProvinceId !== null
-                                    ? "font-outfitRegular"
-                                    : "font-outfitRegular opacity-50"
-                            }
-                        >
-                            City
-                        </Text>
-                        <TextInput
-                            editable={selectedProvinceId !== null}
-                            // className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                            className={
-                                selectedProvinceId !== null
-                                    ? "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                                    : "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full opacity-50"
-                            }
-                            placeholder="Enter your email.."
-                            maxLength={50}
-                            onChangeText={handleCitySearch}
-                            value={citySearchText}
-                        />
-                        {filteredCities.length > 0 && (
-                            <View
-                                style={{
-                                    position: 'absolute',
-                                    top: '100%',
-                                    zIndex: 10,
-                                    width: '100%',
-                                    maxHeight: 200,
-                                    borderWidth: 0.5,
-                                    borderColor: 'gray',
-                                    borderRadius: 8,
-                                    backgroundColor: 'white'
-                                }}
                             >
-                                <ScrollView
-                                    nestedScrollEnabled={true}
-                                    keyboardShouldPersistTaps="handled"
+                                City
+                            </Text>
+                            <TextInput
+                                editable={selectedProvinceId !== null}
+                                // className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+                                className={
+                                    selectedProvinceId !== null
+                                        ? "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+                                        : "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full opacity-50"
+                                }
+                                placeholder="Enter your city"
+                                maxLength={50}
+                                onChangeText={handleCitySearch}
+                                value={citySearchText}
+                            />
+                            {filteredCities.length > 0 && (
+                                <View
+                                    style={{
+                                        position: 'absolute',
+                                        top: '100%',
+                                        zIndex: 10,
+                                        width: '100%',
+                                        maxHeight: 200,
+                                        borderWidth: 0.5,
+                                        borderColor: 'gray',
+                                        borderRadius: 8,
+                                        backgroundColor: 'white'
+                                    }}
                                 >
-                                    {filteredCities.map((item) => (
-                                        <TouchableOpacity
-                                            key={item.id}
-                                            className="p-5 border-b border-gray-400 w-full"
-                                            onPress={() => handleCitySelection(item)}
-                                        >
-                                            <Text className="text-sm font-outfitSemiBold">{item.name}</Text>
-                                        </TouchableOpacity>
-                                    ))}
-                                </ScrollView>
-                            </View>
-                        )}
-                    </View>
-                    <View className="flex flex-col gap-2 w-[50%]">
-                        <Text
-                            className={
-                                selectedCityId !== null
-                                    ? "font-outfitRegular"
-                                    : "font-outfitRegular opacity-50"
-                            }
-                        >
-                            District
-                        </Text>
-                        <TextInput
-                            // className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                            editable={selectedCityId !== null}
-                            className={
-                                selectedCityId !== null
-                                    ? "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                                    : "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full opacity-50"
-                            }
-                            placeholder="Enter district"
-                            onChangeText={handleDistrictSearch}
-                            value={districtSearchText}
-                        />
-                        {filteredDistricts.length > 0 && (
-                            <View
-                                style={{
-                                    position: 'absolute',
-                                    top: '100%',
-                                    zIndex: 10,
-                                    width: '100%',
-                                    maxHeight: 200,
-                                    borderWidth: 0.5,
-                                    borderColor: 'gray',
-                                    borderRadius: 8,
-                                    backgroundColor: 'white'
-                                }}
+                                    <ScrollView
+                                        nestedScrollEnabled={true}
+                                        keyboardShouldPersistTaps="handled"
+                                    >
+                                        {filteredCities.map((item) => (
+                                            <TouchableOpacity
+                                                key={item.id}
+                                                className="p-5 border-b border-gray-400 w-full"
+                                                onPress={() => handleCitySelection(item)}
+                                            >
+                                                <Text className="text-sm font-outfitSemiBold">{item.name}</Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </ScrollView>
+                                </View>
+                            )}
+                        </View>
+                        <View className="flex flex-col gap-2 w-[50%]">
+                            <Text
+                                className={
+                                    selectedCityId !== null
+                                        ? "font-outfitRegular"
+                                        : "font-outfitRegular opacity-50"
+                                }
                             >
-                                <ScrollView
-                                    nestedScrollEnabled={true}
-                                    keyboardShouldPersistTaps="handled"
+                                District
+                            </Text>
+                            <TextInput
+                                // className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+                                editable={selectedCityId !== null}
+                                className={
+                                    selectedCityId !== null
+                                        ? "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+                                        : "border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full opacity-50"
+                                }
+                                placeholder="Enter district"
+                                onChangeText={handleDistrictSearch}
+                                value={districtSearchText}
+                            />
+                            {filteredDistricts.length > 0 && (
+                                <View
+                                    style={{
+                                        position: 'absolute',
+                                        top: '100%',
+                                        zIndex: 10,
+                                        width: '100%',
+                                        maxHeight: 200,
+                                        borderWidth: 0.5,
+                                        borderColor: 'gray',
+                                        borderRadius: 8,
+                                        backgroundColor: 'white'
+                                    }}
                                 >
-                                    {filteredDistricts.map((item) => (
-                                        <TouchableOpacity
-                                            key={item.id}
-                                            className="p-5 border-b border-gray-400 w-full"
-                                            onPress={() => handleDistrictSelection(item)}
-                                        >
-                                            <Text className="text-sm font-outfitSemiBold">{item.name}</Text>
-                                        </TouchableOpacity>
-                                    ))}
-                                </ScrollView>
-                            </View>
-                        )}
+                                    <ScrollView
+                                        nestedScrollEnabled={true}
+                                        keyboardShouldPersistTaps="handled"
+                                    >
+                                        {filteredDistricts.map((item) => (
+                                            <TouchableOpacity
+                                                key={item.id}
+                                                className="p-5 border-b border-gray-400 w-full"
+                                                onPress={() => handleDistrictSelection(item)}
+                                            >
+                                                <Text className="text-sm font-outfitSemiBold">{item.name}</Text>
+                                            </TouchableOpacity>
+                                        ))}
+                                    </ScrollView>
+                                </View>
+                            )}
+                        </View>
+                    </View>
+                    <View className="flex flex-col gap-2 w-[90%]">
+                        <View className="flex flex-col gap-2">
+                            <Text className="font-outfitRegular opacity-50">Event Address</Text>
+                            <TextInput
+                                className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
+                                placeholder="Enter your address"
+                                value={addressEvent}
+                                onChangeText={setAddressEvent}
+                            />
+                        </View>
                     </View>
                 </View>
-                <View className="flex flex-col gap-2 w-[90%]">
-                    <View className="flex flex-col gap-2">
-                        <Text className="font-outfitRegular opacity-50">Event Address</Text>
-                        <TextInput
-                            className="border-[0.5px] py-2 px-4 rounded-xl border-gray-400 text-xs font-outfitLight w-full"
-                            placeholder="Enter your event name"
-                            value={addressEvent}
-                            onChangeText={setAddressEvent}
-                        />
-                    </View>
-                </View>
-            </View>
+                <BottomPadding />
+            </ScrollView>
         </MakeEventLayout>
     );
 };

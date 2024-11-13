@@ -8,6 +8,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import {Controller, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {eventDateSchema} from "@/helper/validator/schema";
+import BottomPadding from "@/components/misc/BottomPadding";
 
 const MakeEventDate = () => {
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
@@ -180,6 +181,7 @@ const MakeEventDate = () => {
                     </View>
                 </View>
             </View>
+            <BottomPadding />
         </MakeEventLayout>
     );
 };

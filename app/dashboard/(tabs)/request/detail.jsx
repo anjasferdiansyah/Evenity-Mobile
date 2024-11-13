@@ -135,23 +135,26 @@ export default function DetailRequest() {
 
                 {/* Action Buttons */}
                 {selectedRequest?.approvalStatus === "PENDING" && (
-                    <View className="flex-row justify-between absolute left-6 right-6 bottom-0">
+                    <View className="flex-row justify-between mt-6">
                         <TouchableOpacity 
-                            className="flex-1 mr-4 py-4 bg-[#10B981] items-center rounded-xl"
+                            className="flex-1 mr-4 py-4 bg-[#10B981] items-center rounded-full"
                             onPress={handleApprove(selectedRequest?.eventDetailId)}
                         >
                             <Text className="text-white text-xl font-outfitBold">Approve</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            className="flex-1 py-4 bg-[#EF4444] items-center rounded-xl"
+                            className="flex-1 py-4 bg-[#EF4444] items-center rounded-full"
                             onPress={handleReject(selectedRequest?.eventDetailId)}
                         >
                             <Text className="text-white text-xl font-outfitBold">Reject</Text>
                         </TouchableOpacity>
+                        
                     </View>
                 )}
+                <BottomPadding/>
+                
             </View>
-            <BottomPadding/>
+            
         </SafeAreaView>
     )
 }
