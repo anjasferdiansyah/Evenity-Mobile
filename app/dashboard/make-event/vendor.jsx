@@ -33,11 +33,16 @@ const MakeEventChooseVendor = () => {
     const [vendorsAvailable, setVendorsAvailable] = useState(true);
     const [isInputValid, setIsInputValid] = useState(false);
     const {id} = useSelector((state) => state.auth);
+    const [excludeChoose, setExcludeChoose] = useState([]);
+    const [uniqueCategories, setUniqueCategories] = useState([]);
+
 
     const excludedIds = [
         "5384c23b-9e4b-4d01-8ee9-86bf7e114e69",
         "ac165cdd-57d5-426e-a115-faf1922ba7ed",
     ];
+
+    
 
     useEffect(() => {
         dispatch(loadCategories());
@@ -65,6 +70,7 @@ const MakeEventChooseVendor = () => {
         };
         console.log("data", data);
         dispatch(getPriceRange(data));
+
     };
 
     useEffect(() => {
@@ -104,6 +110,7 @@ const MakeEventChooseVendor = () => {
             dispatch(addDetailCategories(listSelectedVendor));
 
             dispatch(makeEvent(newEventData));
+            setExcludeChoose([]);
         }
     };
 
@@ -146,15 +153,36 @@ const MakeEventChooseVendor = () => {
         setTempHighestPrice(value);
     };
 
-    const uniqueCategories = categories
-        .filter((category) => !excludedIds.includes(category.id))
-        .reduce((acc, category) => {
-            if (!acc.some((item) => item.name === category.name)) {
-                acc.push(category);
-            }
-            return acc;
-        }, [])
-        .sort((a, b) => a.name.localeCompare(b.name));
+    // const uniqueCategories = categories
+    //     .filter((category) => !excludedIds.includes(category.id))
+    //     .filter((category) => !excludeChoose.includes(category.id))
+    //     .reduce((acc, category) => {
+    //         if (!acc.some((item) => item.name === category.name)) {
+    //             acc.push(category);
+    //         }
+    //         return acc;
+    //     }, [])
+    //     .sort((a, b) => a.name.localeCompare(b.name));
+
+    const handleRemoveCategory = (id) => {
+        setListSelectedVendor((prevList) => prevList.filter((item) => item.categoryId !== id));
+        setExcludeChoose((prev) => prev.filter((item) => item !== id)); // Update excludeChoose
+    };
+
+    useEffect(() => {
+        const filteredCategories = categories
+            .filter((category) => !excludedIds.includes(category.id))
+            .filter((category) => !excludeChoose.includes(category.id))
+            .reduce((acc, category) => {
+                if (!acc.some((item) => item.name === category.name)) {
+                    acc.push(category);
+                }
+                return acc;
+            }, [])
+            .sort((a, b) => a.name.localeCompare(b.name));
+
+        setUniqueCategories(filteredCategories);
+    }, [categories, excludeChoose]);
 
     const toTitleCase = (str) => {
         const words = str.replace(/_/g, ' ').split(' ');
@@ -199,21 +227,22 @@ const MakeEventChooseVendor = () => {
             ]);
 
             console.log("listSelectedCategory", listSelectedCategory);
+            setExcludeChoose((prev) => [...prev, selectedCategory]);
 
             reset();
         }
     };
 
-    const handleRemoveCategory = (id) => {
-        setListSelectedCategory((prevList) =>
-            prevList.filter((item) => item.categoryId !== id)
-        );
+    // const handleRemoveCategory = (id) => {
+    //     setListSelectedCategory((prevList) =>
+    //         prevList.filter((item) => item.categoryId !== id)
+    //     );
 
-        setListSelectedVendor((prevList) =>
-            prevList.filter((item) => item.categoryId !== id)
-        );
-        dispatch(removeListSelected(id));
-    };
+    //     setListSelectedVendor((prevList) =>
+    //         prevList.filter((item) => item.categoryId !== id)
+    //     );
+    //     dispatch(removeListSelected(id));
+    // };
 
     function formatPrice(price) {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
