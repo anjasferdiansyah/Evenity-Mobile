@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import {Dimensions, Image, ScrollView, Text, View} from "react-native";
+import React, {useEffect} from "react";
+import {ActivityIndicator, Dimensions, Image, ScrollView, Text, View} from "react-native";
 import {router} from "expo-router";
 import {useDispatch, useSelector} from "react-redux";
 import Carousel from 'react-native-reanimated-carousel';
@@ -14,8 +14,7 @@ import {
 import {ROLE as ROLES} from "@/constant/USER";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {ROUTES} from "@/constant/ROUTES";
-import { ActivityIndicator } from "react-native";
-import { loadUser } from "@/redux/slices/authSlice";
+import {loadUser} from "@/redux/slices/authSlice";
 import BottomPadding from "@/components/misc/BottomPadding";
 
 // Event image placeholders (you can replace with your own or fetch from an API)
@@ -50,7 +49,7 @@ export default function HomeScreen() {
     if (!role) {
         return (
             <View className="flex-1 items-center justify-center bg-white">
-                <ActivityIndicator size="large" color="#10B981" />
+                <ActivityIndicator size="large" color="#10B981"/>
             </View>
         )
     }
@@ -132,11 +131,11 @@ export default function HomeScreen() {
                             />
                         </View>
                     </View>
-                    <BottomPadding/>  
+                    <BottomPadding/>
                 </ScrollView>
-                
+
             </SafeAreaView>
-         
+
         </LinearGradient>
     );
 };
