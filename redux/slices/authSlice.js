@@ -102,7 +102,7 @@ const AuthSlice = createSlice({
             asyncStorage.removeItem("token");
             return {...initialState};
         },
-        clearUser : (state) => {
+        clearUser: (state) => {
             state.user = null
         },
         resetError: (state) => {
