@@ -38,11 +38,8 @@ const OrderDetailUser = () => {
     // const allApproved = event?.eventDetailResponseList?.every(detail => detail.approvalStatus === 'APPROVED')
     useEffect(() => {
     if (event?.eventDetailResponseList) {
-        const filteredDetails = event.eventDetailResponseList.filter(detail => 
-            detail.approvalStatus === 'APPROVED' || detail.approvalStatus === 'PENDING'
-        );
+        const filteredDetails = event.eventDetailResponseList
         const allApprovedStatus = filteredDetails.length > 0 && filteredDetails.every(detail => detail.approvalStatus === 'APPROVED');
-        // console.log("allApprovedStatus", allApprovedStatus);
         setAllApproved(allApprovedStatus);
     }
 }, [event]);

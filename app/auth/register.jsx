@@ -172,7 +172,7 @@ export default function RegisterScreen() {
         >
             <TouchableOpacity 
                 onPress={() => router.replace(ROUTES.AUTH.INDEX)}
-                className="mr-4 p-2 rounded-full bg-[#f3f4f6a2] absolute top-10 left-4"
+                className="mr-4 p-2 rounded-full bg-[#f3f4f6a2] absolute top-10 left-4 z-20"
             >
                 <AntDesignIcons name='arrowleft' size={20} color={'#374151'}/>
             </TouchableOpacity>
