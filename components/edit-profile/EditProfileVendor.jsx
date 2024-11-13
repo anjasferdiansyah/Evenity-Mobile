@@ -18,7 +18,7 @@ export default function EditProfileVendor() {
         if(!user){
             dispatch(loadUser())
         }
-    }, [dispatch]);
+    }, [dispatch, user]);
 
     useEffect(() => {
         if (user)

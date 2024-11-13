@@ -44,7 +44,7 @@ export default function EditProfileCustomer() {
         if(!user){
             dispatch(loadUser());
         }
-    }, [dispatch]);
+    }, [dispatch, user]);
 
 
 
