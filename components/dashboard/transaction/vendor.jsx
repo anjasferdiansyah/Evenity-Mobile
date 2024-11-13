@@ -1,4 +1,4 @@
-import {FlatList, Text, TouchableOpacity, useWindowDimensions, View, StatusBar, RefreshControl, ScrollView} from "react-native";
+import {FlatList, Text, TouchableOpacity, useWindowDimensions, View, StatusBar, RefreshControl, ScrollView, ActivityIndicator} from "react-native";
 import React, {useCallback, useEffect, useState} from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
@@ -15,6 +15,7 @@ import axios from "axios";
 import {loadOrderHistoryVendor, setSelectedOrderHistoryVendor} from "@/redux/slices/orderHistoryVendor";
 import {ROUTES} from "@/constant/ROUTES";
 import { getUserBalance } from "@/redux/slices/withdrawHistorySlice";
+import BottomPadding from "@/components/misc/BottomPadding";
 
 // Color Palette
 const COLORS = {
@@ -30,7 +31,7 @@ const COLORS = {
 
 export function OrderHistoryVendor() {
     const dispatch = useDispatch();
-    const {orderHistoryVendor} = useSelector(
+    const {orderHistoryVendor, status} = useSelector(
         (state) => state.orderHistoryVendor
     );
 
@@ -265,7 +266,7 @@ export function OrderHistoryVendor() {
                 </View>
 
                 {/* Order History List */}
-                <View className="list-history space-y-4 mt-6 pb-32">
+                <View className="list-history space-y-4 mt-6">
                     <FlatList
                         data={filteredItems}
                         renderItem={renderItem}
@@ -284,6 +285,18 @@ export function OrderHistoryVendor() {
                                     No Order History
                                 </Text>
                             </View>
+                        )}
+                        ListFooterComponent={() => (
+                            <>
+                                {status === "loading" && (
+                                    <ActivityIndicator
+                                        size="large"
+                                        color="#00F279"
+                                        className="mt-4"
+                                    />
+                                )}
+                                <BottomPadding/>
+                            </>
                         )}
                     />
                 </View>

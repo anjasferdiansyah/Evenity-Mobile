@@ -10,6 +10,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema } from '@/helper/validator/schema';
+import BottomPadding from '@/components/misc/BottomPadding';
 
 const EditProduct = () => {
 
@@ -286,6 +287,7 @@ const EditProduct = () => {
                             <Text className="text-white text-lg font-outfitBold">Edit Product</Text>
                         </TouchableOpacity>
                     </View>
+                    <BottomPadding />
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
