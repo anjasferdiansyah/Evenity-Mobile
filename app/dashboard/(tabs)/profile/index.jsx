@@ -2,7 +2,7 @@ import {Dimensions, Image, ScrollView, Text, TouchableOpacity, View} from "react
 import React, {useEffect} from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import {useDispatch, useSelector} from "react-redux";
-import {logout} from "@/redux/slices/authSlice";
+import {loadUser, logout} from "@/redux/slices/authSlice";
 import {AntDesign, Entypo, FontAwesome, Fontisto, MaterialIcons} from "@expo/vector-icons";
 import {router} from "expo-router";
 import {clearProfile, fetchUserProfile, resetProfileState} from "@/redux/slices/profileSlice";
@@ -28,7 +28,7 @@ const {width} = Dimensions.get('window');
 export default function ProfileScreen() {
     const dispatch = useDispatch();
     const {user} = useSelector((state) => state.auth);
-    const {userInfo} = useSelector((state) => state.profile)
+    // const {userInfo} = useSelector((state) => state.profile)
 
     // Animasi scaling
     const scale = useSharedValue(1);
@@ -41,14 +41,9 @@ export default function ProfileScreen() {
             opacity: interpolate(scale.value, [0.8, 1], [0.8, 1])
         };
     });
+   
 
-    useEffect(() => {
-        if (!userInfo) {
-            dispatch(fetchUserProfile());
-        }
-    }, [dispatch, userInfo]);
-
-    const userDetail = user?.detail || userInfo?.detail;
+    const userDetail = user?.detail;
 
 
     const handleLogout = () => {

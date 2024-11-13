@@ -14,6 +14,8 @@ import {
 import {ROLE as ROLES} from "@/constant/USER";
 import {SafeAreaView} from "react-native-safe-area-context";
 import {ROUTES} from "@/constant/ROUTES";
+import { ActivityIndicator } from "react-native";
+import { loadUser } from "@/redux/slices/authSlice";
 import BottomPadding from "@/components/misc/BottomPadding";
 
 // Event image placeholders (you can replace with your own or fetch from an API)
@@ -39,18 +41,16 @@ export default function HomeScreen() {
     const {user} = useSelector(state => state.auth)
     const role = user?.role
 
-    // useEffect(() => {
-    //     dispatch(fetchUserProfile())
-    // }, [dispatch])
+    useEffect(() => {
+        dispatch(loadUser())
+    }, [dispatch])
 
     const {width} = Dimensions.get('window');
 
     if (!role) {
         return (
             <View className="flex-1 items-center justify-center bg-white">
-                <Text className="text-2xl font-outfitBold">
-                    You are not logged in
-                </Text>
+                <ActivityIndicator size="large" color="#10B981" />
             </View>
         )
     }

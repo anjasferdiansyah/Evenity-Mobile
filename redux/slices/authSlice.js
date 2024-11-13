@@ -5,7 +5,7 @@ import {setupAxios} from "@/config/axiosConfig";
 
 export const initializeAuth = createAsyncThunk(
     'auth/initialize',
-    async (_, {dispatch}) => {
+    async () => {
         const token = await asyncStorage.getItem("token");
         if (token) {
             setupAxios(token);
@@ -18,7 +18,7 @@ export const initializeAuth = createAsyncThunk(
 
 export const login = createAsyncThunk(
     'auth/login',
-    async ({email, password}, {dispatch, rejectWithValue}) => {
+    async ({email, password}, {rejectWithValue}) => {
         try {
             email = email.toLowerCase();
             const response = await axios.post("auth/login", {email, password});
@@ -27,7 +27,7 @@ export const login = createAsyncThunk(
                 const {token} = response.data.data;
                 await asyncStorage.setItem("token", token);
                 setupAxios(token);
-                dispatch(loadUser());
+                // dispatch(loadUser());
                 return response.data.data;
             }
             return rejectWithValue("Invalid credentials");
@@ -102,6 +102,9 @@ const AuthSlice = createSlice({
             asyncStorage.removeItem("token");
             return {...initialState};
         },
+        clearUser : (state) => {
+            state.user = null
+        },
         resetError: (state) => {
             state.error = null;
         },
@@ -143,10 +146,11 @@ const AuthSlice = createSlice({
                 state.error = null;
             })
             .addCase(completingRegisterVendor.fulfilled, (state) => {
-                return {
-                    ...initialState,
-                    status: "registered"
-                };
+                state.status = "registered";
+                state.error = null;
+                state.registerData = null;
+                state.registerAs = null;
+                state.isInitialized = true;
             })
             .addCase(completingRegisterVendor.rejected, (state, action) => {
                 state.status = "failed";
@@ -157,10 +161,11 @@ const AuthSlice = createSlice({
                 state.error = null;
             })
             .addCase(completingRegisterUser.fulfilled, (state) => {
-                return {
-                    ...initialState,
-                    status: "registered"
-                };
+                state.status = "registered";
+                state.error = null;
+                state.registerData = null;
+                state.registerAs = null;
+                state.isInitialized = true;
             })
             .addCase(completingRegisterUser.rejected, (state, action) => {
                 state.status = "failed";
@@ -195,7 +200,8 @@ export const {
     resetError,
     register,
     resetStatus,
-    setRegisterAs
+    setRegisterAs,
+    clearUser
 } = AuthSlice.actions;
 
 export default AuthSlice.reducer;

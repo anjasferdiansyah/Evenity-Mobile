@@ -5,6 +5,7 @@ import {router} from "expo-router";
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import RNPickerSelect from "react-native-picker-select";
 import {clearProfile, editCustomerProfile, fetchUserProfile} from "@/redux/slices/profileSlice";
+import { clearUser, loadUser } from "@/redux/slices/authSlice";
 
 export default function EditProfileCustomer() {
        const provinceData = [
@@ -36,32 +37,32 @@ export default function EditProfileCustomer() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const {userInfo} = useSelector((state) => state.profile);
+    const {user} = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
-    // useEffect(() => {
-    //     dispatch(fetchUserProfile());
-    // }, [dispatch]);
+    useEffect(() => {
+        dispatch(loadUser());
+    }, [dispatch]);
 
-    console.log("userInfo", userInfo);
+
 
     useEffect(() => {
-        if (userInfo) {
-            setFullName(userInfo?.detail?.fullName || "");
-            setPhoneNumber(userInfo?.detail?.phoneNumber || "");
-            setAddress(userInfo?.detail?.address || "");
-            setSelectedCityId(userInfo?.detail?.city);
+        if (user) {
+            setFullName(user?.detail?.fullName || "");
+            setPhoneNumber(user?.detail?.phoneNumber || "");
+            setAddress(user?.detail?.address || "");
+            setSelectedCityId(user?.detail?.city);
             // setSelectedProvinceId(userInfo?.detail?.province);
             provinceData.forEach((element) => {
-                if (element.name === userInfo?.detail?.province.toUpperCase()) {
+                if (element.name === user?.detail?.province.toUpperCase()) {
                     setSelectedProvinceId(element.value);
                     setSelectedProvince(element.value);
                 }
             });
-            setCitySearchText(userInfo?.detail?.city.toUpperCase() || ""); // assuming cityName is available in userInfo
-            setDistrictSearchText(userInfo?.detail?.district.toUpperCase() || ""); // assuming districtName is available in userInfo
+            setCitySearchText(user?.detail?.city.toUpperCase() || ""); // assuming cityName is available in userInfo
+            setDistrictSearchText(user?.detail?.district.toUpperCase() || ""); // assuming districtName is available in userInfo
         }
-    }, [userInfo]);
+    }, [user]);
 
     useEffect(() => {
         let isMounted = true; // For cleanup
@@ -212,10 +213,11 @@ export default function EditProfileCustomer() {
                             dispatch(
                                 editCustomerProfile({
                                     updatedCustomerProfile: newRegisterData,
-                                    id: userInfo?.detail.id,
+                                    id: user?.detail.id,
                                 })
                             );
-                            dispatch(clearProfile());
+                            dispatch(clearUser());
+                            dispatch(loadUser());
                             // dispatch(fetchUserProfile());
                             router.back();
                         } catch (error) {

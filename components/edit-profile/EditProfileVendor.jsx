@@ -4,13 +4,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {router} from "expo-router";
 import AntDesignIcons from 'react-native-vector-icons/AntDesign';
 import { clearProfile, editVendorProfile, fetchUserProfile } from "@/redux/slices/profileSlice";
+import { clearUser, loadUser } from "@/redux/slices/authSlice";
 
 export default function EditProfileVendor() {
     const [name, setName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [address, setAddress] = useState("");
     const [ownerName, setOwnerName] = useState("");
-    const { userInfo } = useSelector((state) => state.profile)
+    const { user } = useSelector((state) => state.auth)
     const dispatch = useDispatch();
 
     // useEffect(() => {
@@ -18,30 +19,31 @@ export default function EditProfileVendor() {
     // }, [dispatch]);
 
     useEffect(() => {
-        if (userInfo)
+        if (user)
         {
-            setName(userInfo?.detail.name|| "")
-            setPhoneNumber(userInfo?.detail.phoneNumber|| "")
-            setAddress(userInfo?.detail.address || "")
-            setOwnerName(userInfo?.detail.owner || "")
+            setName(user?.detail.name|| "")
+            setPhoneNumber(user?.detail.phoneNumber|| "")
+            setAddress(user?.detail.address || "")
+            setOwnerName(user?.detail.owner || "")
         }
-    }, [userInfo, dispatch]);
+    }, [user, dispatch]);
 
     const handleEditProfile = async () => {
         const newRegisterData = {
             name,
             phoneNumber,
-            province : userInfo?.detail.province,
-            city : userInfo?.detail.city,
-            district : userInfo?.detail.district,
+            province : user?.detail.province,
+            city : user?.detail.city,
+            district : user?.detail.district,
             mainCategory : "CATERING",
             address,
             ownerName
         }
 
         try {
-            dispatch(editVendorProfile({  updatedVendorProfile: newRegisterData, id : userInfo?.detail.id }))
-            dispatch(clearProfile())
+            dispatch(editVendorProfile({  updatedVendorProfile: newRegisterData, id : user?.detail.id }))
+            dispatch(clearUser())
+            dispatch(loadUser())
             router.back()
         } catch (error) {
             console.log(error)

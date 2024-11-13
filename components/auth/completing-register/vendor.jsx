@@ -23,7 +23,7 @@ const CompletingRegisterVendor = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [address, setAddress] = useState("");
     const [ownerName, setOwnerName] = useState("");
-    const { registerData, status, error } = useSelector(state => state.auth)
+    const { registerData, status, error, isLoggedIn } = useSelector(state => state.auth)
     const [categoryId, setCategoryId] = useState(null);
     const dispatch = useDispatch();
 
@@ -33,7 +33,7 @@ const CompletingRegisterVendor = () => {
             alert("Registered successfully, please login")
             router.push(ROUTES.AUTH.LOGIN)
         }
-    }, [dispatch, status]);
+    }, [dispatch, status, isLoggedIn]);
 
     useEffect(() => {
         if (error) {

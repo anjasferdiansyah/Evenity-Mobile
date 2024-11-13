@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { completeRegistrationCustomerSchema } from "@/helper/validator/auth";
 
 const CompletingRegisterUser = () => {
-    const { registerData, status, error } = useSelector((state) => state.auth);
+    const { registerData, status, error, isLoggedIn } = useSelector((state) => state.auth);
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -22,7 +22,7 @@ const CompletingRegisterUser = () => {
             alert("Registered successfully, please login");
             router.push(ROUTES.AUTH.LOGIN);
         }
-    }, [dispatch, status]);
+    }, [dispatch, status, isLoggedIn]);
 
     useEffect(() => {
         if (error) {

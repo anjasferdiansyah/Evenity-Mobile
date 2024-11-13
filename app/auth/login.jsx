@@ -50,14 +50,13 @@ export default function LoginScreen() {
     const [hidePassword, setHidePassword] = useState(true);
     const dispatch = useDispatch();
     const { isLoggedIn, error, status } = useSelector((state) => state.auth);
-    const { userInfo } = useSelector((state) => state.profile);
     // console.log("userInfo", userInfo);
 
     useEffect(() => {
-        if (isLoggedIn) {
+        if (status === "logged in") {
             router.replace(ROUTES.DASHBOARD.INDEX);
         }
-    }, [isLoggedIn]);
+    }, [status]);
 
     useEffect(() => {
         if (error) {
