@@ -1,4 +1,4 @@
-import {FlatList, Text, TouchableOpacity, useWindowDimensions, View, StatusBar, RefreshControl} from 'react-native'
+import {FlatList, Text, TouchableOpacity, useWindowDimensions, View, StatusBar, RefreshControl, ActivityIndicator} from 'react-native'
 import React, {useCallback, useEffect, useState} from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
@@ -13,6 +13,7 @@ import Animated, {
     FadeInUp
 } from 'react-native-reanimated';
 import {ROUTES} from "@/constant/ROUTES";
+import BottomPadding from '@/components/misc/BottomPadding';
 
 // Color Palette
 const COLORS = {
@@ -32,7 +33,7 @@ const COLORS = {
 
 export default function ListRequestScreen() {
     const dispatch = useDispatch();
-    const {requestList} = useSelector((state) => state.request);
+    const {requestList, status} = useSelector((state) => state.request);
     const {id} = useSelector((state) => state.auth);
     const {width} = useWindowDimensions();
 
@@ -248,7 +249,7 @@ export default function ListRequestScreen() {
                 </View>
 
                 {/* Request List */}
-                <View className="list-history space-y-4 mt-6">
+                <View className="list-history space-y-4 mt-6 pb-36">
                     <FlatList
                         data={filteredItems}
                         renderItem={renderItem}
@@ -268,8 +269,22 @@ export default function ListRequestScreen() {
                                 </Text>
                             </View>
                         )}
+                        ListFooterComponent={() => (
+                            <>
+                                {status === "loading" && (
+                                    <ActivityIndicator
+                                        size="large"
+                                        color="#00F279"
+                                        className="mt-4"
+                                    />
+                                )}
+                                <BottomPadding/>
+                            </>
+                        )}
                     />
+                    
                 </View>
+                <BottomPadding />
             </Animated.View>
         </View>
     )
