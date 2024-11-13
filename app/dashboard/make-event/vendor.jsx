@@ -164,10 +164,10 @@ const MakeEventChooseVendor = () => {
     //     }, [])
     //     .sort((a, b) => a.name.localeCompare(b.name));
 
-    const handleRemoveCategory = (id) => {
-        setListSelectedVendor((prevList) => prevList.filter((item) => item.categoryId !== id));
-        setExcludeChoose((prev) => prev.filter((item) => item !== id)); // Update excludeChoose
-    };
+    // const handleRemoveCategory = (id) => {
+    //     setListSelectedVendor((prevList) => prevList.filter((item) => item.categoryId !== id));
+    //     setExcludeChoose((prev) => prev.filter((item) => item !== id)); // Update excludeChoose
+    // };
 
     useEffect(() => {
         const filteredCategories = categories
@@ -233,16 +233,18 @@ const MakeEventChooseVendor = () => {
         }
     };
 
-    // const handleRemoveCategory = (id) => {
-    //     setListSelectedCategory((prevList) =>
-    //         prevList.filter((item) => item.categoryId !== id)
-    //     );
+    const handleRemoveCategory = (id) => {
+        setListSelectedCategory((prevList) =>
+            prevList.filter((item) => item.categoryId !== id)
+        );
 
-    //     setListSelectedVendor((prevList) =>
-    //         prevList.filter((item) => item.categoryId !== id)
-    //     );
-    //     dispatch(removeListSelected(id));
-    // };
+        setListSelectedVendor((prevList) =>
+            prevList.filter((item) => item.categoryId !== id)
+        );
+
+        setExcludeChoose((prev) => prev.filter((item) => item !== id));
+        dispatch(removeListSelected(id));
+    };
 
     function formatPrice(price) {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
