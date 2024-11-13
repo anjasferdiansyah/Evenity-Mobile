@@ -41,7 +41,9 @@ export default function EditProfileCustomer() {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(loadUser());
+        if(!user){
+            dispatch(loadUser());
+        }
     }, [dispatch]);
 
 
@@ -269,7 +271,7 @@ export default function EditProfileCustomer() {
             >
                 <View className="flex-1 px-6 pt-6">
                     {/* Header */}
-                    <View className="flex-row items-center mb-6 mt-10">
+                    <View className="flex-row items-center mb-6 mt-10 z-20">
                         <TouchableOpacity 
                             onPress={() => router.back()} 
                             className="mr-4 p-2 rounded-full bg-[#F3F4F6]"
@@ -369,6 +371,8 @@ export default function EditProfileCustomer() {
                                             renderItem={renderCityListItem}
                                             keyExtractor={(item) => item.id}
                                             className="absolute z-10 w-full border border-[#E5E7EB] rounded-lg bg-white"
+                                            scrollEnabled={false}
+                                            nestedScrollEnabled={false}
                                         />
                                     )}
                                 </View>
@@ -391,6 +395,8 @@ export default function EditProfileCustomer() {
                                             renderItem={renderDistrictListItem}
                                             keyExtractor={(item) => item.id}
                                             className="absolute z-10 w-full border border-[#E5E7EB] rounded-lg bg-white"
+                                            scrollEnabled={false}
+                                            nestedScrollEnabled={false}
                                         />
                                     )}
                                 </View>

@@ -3,6 +3,17 @@ import tailwind from "twrnc";
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default function ListVendor({ item, radius, onRemove }) {
+    const toTitleCase = (str) => {
+            const words = str.replace(/_/g, ' ').split(' ');
+            const titleCasedWords = words.map(word => {
+                if (word.length > 0) {
+                    return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+                }
+                return word;
+            });
+            return titleCasedWords.join(' ');
+        };
+
     return (
         <View
             key={item.id}
@@ -12,7 +23,7 @@ export default function ListVendor({ item, radius, onRemove }) {
             <View
                 className="flex flex-col gap-2 w-[90%] bg-white p-4 rounded-xl border border-gray-300"
             >
-                <Text className="font-outfitSemiBold text-lg text-gray-800">{item.name}</Text>
+                <Text className="font-outfitSemiBold text-lg text-gray-800">{toTitleCase(item.name)}</Text>
                 <Text className="font-outfitRegular text-sm text-gray-600">
                     Min Cost: <Text className="font-bold text-gray-800">{item.minCost}</Text>
                 </Text>

@@ -14,9 +14,11 @@ export default function EditProfileVendor() {
     const { user } = useSelector((state) => state.auth)
     const dispatch = useDispatch();
 
-    // useEffect(() => {
-    //     dispatch(fetchUserProfile())
-    // }, [dispatch]);
+    useEffect(() => {
+        if(!user){
+            dispatch(loadUser())
+        }
+    }, [dispatch]);
 
     useEffect(() => {
         if (user)
