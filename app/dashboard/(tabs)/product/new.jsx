@@ -10,6 +10,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { productSchema } from '@/helper/validator/schema';
+import BottomPadding from '@/components/misc/BottomPadding';
 
 const New = () => {
     const { control, handleSubmit, formState: { errors, isValid } } = useForm({
@@ -270,6 +271,7 @@ const New = () => {
                             <Text className="text-white text-lg font-outfitBold">Create Product</Text>
                         </TouchableOpacity>
                     </View>
+                    <BottomPadding/>
                 </ScrollView>
             </KeyboardAvoidingView>
         </SafeAreaView>
