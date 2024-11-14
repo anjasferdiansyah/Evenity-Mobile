@@ -200,22 +200,30 @@ export default function ListRequestScreen() {
                             elevation: 3,
                         }}
                     >
-                        {["All", "Pending", "Approved", "Rejected"].map((item, index) => (
+                        {["ALL", "PENDING", "APPROVED", "REJECTED"].map((item, index) => (
                             <TouchableOpacity
                                 key={index}
                                 onPress={() => handlePress(item, index)}
                                 className={`rounded-full mx-auto`}
                                 style={{
                                     width: itemWidth,
-                                    paddingVertical: 10,
+                                    alignItems: "center",
+                                    paddingVertical: 2,
+                                    marginHorizontal: 5, 
                                     // backgroundColor:selected === item ? "#00AA55" : "transparent",
                                 }}
                             >
                                 <Text
                                     style={{
+                                        color: selected === item ? "white" : COLORS.text.dark,
                                         textAlign: "center",
+                                        fontSize: 12,
+                                        backgroundColor: selected === item ? COLORS.primary : "transparent",
+                                        paddingHorizontal: 15,
+                                        paddingVertical: 5,
+                                        borderRadius: 15,
                                     }}
-                                    className={`font-outfitBold text-base 
+                                    className={`font-outfitBold text-base capitalize 
                                                   
                                                 `}
                                 >
@@ -265,22 +273,22 @@ export default function ListRequestScreen() {
                         ListEmptyComponent={() => (
                             <View className="flex-1 items-center justify-center mt-10">
                                 <Text className="text-gray-500 text-lg font-outfitRegular">
-                                    No products available
+                                    No requests available
                                 </Text>
                             </View>
                         )}
-                        ListFooterComponent={() => (
-                            <>
-                                {status === "loading" && (
-                                    <ActivityIndicator
-                                        size="large"
-                                        color="#00F279"
-                                        className="mt-4"
-                                    />
-                                )}
-                                <BottomPadding/>
-                            </>
-                        )}
+                        // ListFooterComponent={() => (
+                        //     <>
+                        //         {status === "loading" && (
+                        //             <ActivityIndicator
+                        //                 size="large"
+                        //                 color="#00F279"
+                        //                 className="mt-4"
+                        //             />
+                        //         )}
+                        //         <BottomPadding/>
+                        //     </>
+                        // )}
                     />
                     
                 </View>

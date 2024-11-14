@@ -1,4 +1,4 @@
-import {FlatList, RefreshControl, Text, TouchableOpacity, useWindowDimensions, View,} from "react-native";
+import {FlatList, RefreshControl, ScrollView, Text, TouchableOpacity, useWindowDimensions, View,} from "react-native";
 import React, {useCallback, useEffect, useState} from "react";
 import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
@@ -63,32 +63,37 @@ export default function CheckApprove() {
                     (detail) => detail.approvalStatus === "PENDING"
                 )
         ),
+        Cancelled: historyEvent.filter(
+            (item) => item.isCancelled
+        ),
     };
 
     const filteredItems = filterMapping[selected] || historyEvent;
     //   console.log("filteredItems", filteredItems);
 
-    const checkApprovalStatus = (eventDetails) => {
-        const allApproved = eventDetails?.every(
+    const checkApprovalStatus = (event) => {
+        const allApproved = event?.eventDetailResponseList?.every(
             (detail) => detail.approvalStatus === "APPROVED"
         );
-        const allRejected = eventDetails?.every(
+        const allRejected = event?.eventDetailResponseList?.every(
             (detail) => detail.approvalStatus === "REJECTED"
         );
-        const hasApproved = eventDetails?.some(
+        const hasApproved = event?.eventDetailResponseList?.some(
             (detail) => detail.approvalStatus === "APPROVED"
         );
-        const hasRejected = eventDetails?.some(
+        const hasRejected = event?.eventDetailResponseList?.some(
             (detail) => detail.approvalStatus === "REJECTED"
         );
-        const hasPending = eventDetails?.some(
+        const hasPending = event?.eventDetailResponseList?.some(
             (detail) => detail.approvalStatus === "PENDING"
         );
+        const hasCancelled = event?.isCancelled
 
         if (allApproved) return "Accepted";
         if (allRejected) return "Rejected";
         if (hasPending) return "Pending";
         if (hasApproved && hasRejected) return "Pending";
+        if (hasCancelled) return "Cancelled";
         return "Unknown";
     };
 
@@ -106,7 +111,7 @@ export default function CheckApprove() {
     };
 
     const renderItem = ({item}) => {
-        const eventStatus = checkApprovalStatus(item.eventDetailResponseList);
+        const eventStatus = checkApprovalStatus(item);
 
         return (
             <TouchableOpacity
@@ -177,8 +182,12 @@ export default function CheckApprove() {
                 </View>
 
                 <View className="mb-4">
-                    <View className="flex flex-row bg-gray-200 rounded-full p-1">
-                        {["All", "Accepted", "Pending", "Rejected"].map((item) => (
+                    <ScrollView 
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={{alignItems: 'center'}}
+                    className="flex flex-row bg-gray-200 rounded-full p-1">
+                        {["All", "Accepted", "Pending", "Rejected", "Cancelled"].map((item) => (
                             <TouchableOpacity
                                 key={item}
                                 onPress={() => handlePress(item)}
@@ -202,7 +211,7 @@ export default function CheckApprove() {
                                 </Text>
                             </TouchableOpacity>
                         ))}
-                    </View>
+                    </ScrollView>
                 </View>
 
                 <View className="list-history space-y-4 flex-1">
