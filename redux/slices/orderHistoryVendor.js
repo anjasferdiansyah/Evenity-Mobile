@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const { createSlice, createAsyncThunk } = require("@reduxjs/toolkit");
+const {
+    createSlice,
+    createAsyncThunk
+} = require("@reduxjs/toolkit");
 
 
 export const loadOrderHistoryVendor = createAsyncThunk(
@@ -27,14 +30,24 @@ export const getEventOnVendor = createAsyncThunk(
     }
 )
 
+export const loadInvoiceByVendorId = createAsyncThunk(
+    'orderHistoryVendor/invoiceByVendorId',
+    async (id) => {
+        const response = await axios.get(`invoice/vendor/${id}`)
+        return response.data.data
+    }
+)
+
 
 const orderHistoryVendorSlice = createSlice({
     name: "orderHistoryVendor",
-    initialState : {
-        orderHistoryVendor : [],
+    initialState: {
+        orderHistoryVendor: [],
+        invoiceByVendorId: [],
+        selectedInvoiceVendor: null,
         selectedOrderHistoryVendor: null,
-        eventOnVendor : null,
-        status : ""
+        eventOnVendor: null,
+        status: ""
     },
     reducers: {
         setSelectedOrderHistoryVendor: (state, action) => {
@@ -45,6 +58,11 @@ const orderHistoryVendorSlice = createSlice({
             state.selectedOrderHistoryVendor = null
             state.eventOnVendor = null
             state.status = ""
+            state.selectedInvoiceVendor = null
+            state.invoiceByVendorId = []
+        },
+        setSelectedInvoiceVendor: (state, action) => {
+            state.selectedInvoiceVendor = action.payload
         }
     },
 
@@ -64,6 +82,12 @@ const orderHistoryVendorSlice = createSlice({
             .addCase(getEventOnVendor.fulfilled, (state, action) => {
                 state.eventOnVendor = action.payload;
             })
+            .addCase(loadInvoiceByVendorId.fulfilled, (state, action) => {
+                state.invoiceByVendorId = action.payload;
+            })
+            .addMatcher((action) => action.type.endsWith("/pending"), (state) => {
+                state.status = "loading";
+            })
             .addMatcher((action) => action.type.endsWith("/rejected"), (state, action) => {
                 state.status = "failed";
             })
@@ -71,5 +95,9 @@ const orderHistoryVendorSlice = createSlice({
 
 })
 
-export const { setSelectedOrderHistoryVendor, resetOrderHistoryVendor } = orderHistoryVendorSlice.actions
+export const {
+    setSelectedOrderHistoryVendor,
+    resetOrderHistoryVendor,
+    setSelectedInvoiceVendor
+} = orderHistoryVendorSlice.actions
 export default orderHistoryVendorSlice.reducer

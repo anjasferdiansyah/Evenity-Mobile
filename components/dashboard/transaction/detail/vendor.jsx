@@ -3,23 +3,23 @@ import React, { useEffect, useState } from 'react'
 import AntDesignIcons from 'react-native-vector-icons/AntDesign'
 import {router} from "expo-router";
 import { useDispatch, useSelector } from 'react-redux';
-import { getEventOnVendor, loadOrderHistoryDetailVendor } from '@/redux/slices/orderHistoryVendor';
+import { getEventOnVendor, loadOrderHistoryDetailVendor, setSelectedInvoiceVendor } from '@/redux/slices/orderHistoryVendor';
 import moment from 'moment';
 
 const OrderDetailVendor = () => {
-    const { selectedOrderHistoryVendor, eventOnVendor } = useSelector((state) => state.orderHistoryVendor);
+    const { selectedOrderHistoryVendor, eventOnVendor, selectedInvoiceVendor, invoiceByVendorId } = useSelector((state) => state.orderHistoryVendor);
     const dispatch = useDispatch();
     const [refreshing, setRefreshing] = useState(false);
 
     const onRefresh = () => {
         setRefreshing(true);
         dispatch(loadOrderHistoryDetailVendor(selectedOrderHistoryVendor?.eventId))
-        dispatch(getEventOnVendor(selectedOrderHistoryVendor?.eventId))
+        // dispatch(    getEventOnVendor(selectedOrderHistoryVendor?.eventId))
             .finally(() => setRefreshing(false));
     };
 
     useEffect(()=> {
-        dispatch(getEventOnVendor(selectedOrderHistoryVendor?.eventId))
+        // dispatch(getEventOnVendor(selectedOrderHistoryVendor?.eventId))
     }, [dispatch, selectedOrderHistoryVendor?.eventId])
 
     const formatDate = (date) => {
@@ -29,6 +29,11 @@ const OrderDetailVendor = () => {
     const calculateDays = (startDate, endDate) => {
         return moment(endDate).diff(moment(startDate), 'days') + 1
     }
+
+    const totalCost = selectedInvoiceVendor?.invoiceDetailResponseList?.reduce(
+        (acc, item) => acc + (item.cost || 0),
+        0
+    );
 
     const renderDetailItem = (label, value, isHighlighted = false) => (
         <View className="py-4 border-b border-[#E5E7EB]">
@@ -79,19 +84,15 @@ const OrderDetailVendor = () => {
                             elevation: 2
                         }}
                     >
-                        {renderDetailItem('Event Period', `${formatDate(eventOnVendor?.startDate)} - ${formatDate(eventOnVendor?.endDate)}`)}
-                        
-                        {renderDetailItem('Days', `${calculateDays(eventOnVendor?.startDate, eventOnVendor?.endDate)} Days`, true)}
-                        
-                        {renderDetailItem('Quantity', `${selectedOrderHistoryVendor?.quantity} ${selectedOrderHistoryVendor?.unit}`)}
-                        
-                        {renderDetailItem('Product Name', 'Catering')}
-                        
-                        {renderDetailItem('Event Name', eventOnVendor?.name)}
-                        
-                        {renderDetailItem('Address', eventOnVendor?.address)}
-                        
-                        {renderDetailItem('Notes', selectedOrderHistoryVendor?.notes)}
+                                                {renderDetailItem('Invoice ID', selectedInvoiceVendor?.invoiceId)}
+                        {renderDetailItem('Event Name', selectedInvoiceVendor?.eventName)}
+                        {renderDetailItem('Event Period', `${formatDate(selectedInvoiceVendor?.startDate)} - ${formatDate(selectedInvoiceVendor?.endDate)}`)}
+                        {renderDetailItem('Customer Name', selectedInvoiceVendor?.customerName)}
+                        {renderDetailItem('Days', `${calculateDays(selectedInvoiceVendor?.startDate, selectedInvoiceVendor?.endDate)} Days`, true)}
+                        {renderDetailItem('Location', `${selectedInvoiceVendor?.district}, ${selectedInvoiceVendor?.city}, ${selectedInvoiceVendor?.province}`)}
+                        {renderDetailItem('Address Detail', selectedInvoiceVendor?.address)}
+                        {renderDetailItem('participant', `${selectedInvoiceVendor?.participant}`)}
+                        {renderDetailItem('Total Cost', `Rp ${totalCost?.toLocaleString('id-ID')}`)}
                     </View>
                 </ScrollView>
             </View>

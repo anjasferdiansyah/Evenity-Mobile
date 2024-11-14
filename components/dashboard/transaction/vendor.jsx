@@ -12,7 +12,7 @@ import Animated, {
 } from "react-native-reanimated";
 import {MaterialIcons} from "@expo/vector-icons";
 import axios from "axios";
-import {loadOrderHistoryVendor, setSelectedOrderHistoryVendor} from "@/redux/slices/orderHistoryVendor";
+import {loadOrderHistoryVendor, setSelectedOrderHistoryVendor, setSelectedInvoiceVendor, loadInvoiceByVendorId} from "@/redux/slices/orderHistoryVendor";
 import {ROUTES} from "@/constant/ROUTES";
 import { getUserBalance } from "@/redux/slices/withdrawHistorySlice";
 import BottomPadding from "@/components/misc/BottomPadding";
@@ -31,7 +31,7 @@ const COLORS = {
 
 export function OrderHistoryVendor() {
     const dispatch = useDispatch();
-    const {orderHistoryVendor, status} = useSelector(
+    const {orderHistoryVendor, status, invoiceByVendorId} = useSelector(
         (state) => state.orderHistoryVendor
     );
 
@@ -45,11 +45,11 @@ export function OrderHistoryVendor() {
 
     useEffect(() => {
         fetchHistoryTransactionVendor();
-    }, []);
+    }, [fetchHistoryTransactionVendor]);
 
     const fetchHistoryTransactionVendor = useCallback(() => {
-        dispatch(loadOrderHistoryVendor(id));
         dispatch(getUserBalance({ id: userId }))
+        dispatch(loadInvoiceByVendorId(id));
     }, [dispatch, id, userId]);
 
     const onRefresh = useCallback(() => {
@@ -63,11 +63,11 @@ export function OrderHistoryVendor() {
 
     useEffect(() => {
         dispatch(getUserBalance({ id: userId }));
-    }, [user]);
+    }, [dispatch, userId]);
 
     const {width} = useWindowDimensions();
 
-    const [selected, setSelected] = useState("All");
+    const [selected, setSelected] = useState("ALL");
 
     const slideAnim = useSharedValue(0);
     const paddingHorizontal = 20;
@@ -78,17 +78,20 @@ export function OrderHistoryVendor() {
         slideAnim.value = withTiming(index * itemWidth, {duration: 300});
     };
 
-    const animatedIndicatorStyle = useAnimatedStyle(() => ({
-        transform: [{translateX: slideAnim.value}],
-    }));
-
     const filteredItems =
-        selected === "All"
-            ? orderHistoryVendor
-            : orderHistoryVendor.filter((item) => item.eventProgress === selected.toUpperCase());
+        selected === "ALL"
+            ? invoiceByVendorId
+            : selected === "UNPAID"
+            ? invoiceByVendorId.filter((item) => item.paymentStatus === "UNPAID" && item.isEventCancelled === false)
+            : selected === "COMPLETE"
+            ? invoiceByVendorId.filter((item) => item.paymentStatus === "COMPLETE")
+            : selected === "CANCELLED"
+            ? invoiceByVendorId.filter((item) => item.isEventCancelled === true)
+            : invoiceByVendorId;
+
 
     const handleSelectedDetail = (item) => {
-        dispatch(setSelectedOrderHistoryVendor(item))
+        dispatch(setSelectedInvoiceVendor(item));
         router.push(ROUTES.DASHBOARD.TRANSACTION.DETAIL);
     };
 
@@ -108,11 +111,13 @@ export function OrderHistoryVendor() {
             >
                 <View
                     className={`flex flex-row justify-between items-center p-5 ${
-                        item.eventProgress === "FINISHED" 
+                        item.isEventCancelled === true
+                            ? "bg-[#FDE4E1]"
+                        : item.paymentStatus === "COMPLETE" 
                             ? "bg-[#DFF7E6]"
-                            : item.eventProgress === "ON_PROGRESS"
+                            : item.paymentStatus === "UNPAID"
                                 ? "bg-[#FFF7E6]" 
-                            : "bg-[#FDE4E1]"
+                            : "bg-slate-300"
                     } rounded-2xl`}
                 >
                     <View className="flex-1 pr-4">
@@ -120,7 +125,7 @@ export function OrderHistoryVendor() {
                             {item.eventName}
                         </Text>
                         <Text className="text-sm font-outfitRegular text-[#7F8C8D]">
-                            {item.eventProgress}
+                            {item.paymentStatus}
                         </Text>
                     </View>
 
@@ -236,7 +241,7 @@ export function OrderHistoryVendor() {
                                 elevation: 3,
                             }}
                         >
-                            {["All", "NOT_STARTED","ON_PROGRESS" , "FINISHED", "CANCELLED"].map((item, index) => (
+                            {["ALL", "COMPLETE" , "UNPAID", "CANCELLED"].map((item, index) => (
                                 <TouchableOpacity
                                     key={item}
                                     onPress={() => handlePress(item, index)}
