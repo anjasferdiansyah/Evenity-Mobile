@@ -14,13 +14,8 @@ const OrderDetailVendor = () => {
     const onRefresh = () => {
         setRefreshing(true);
         dispatch(loadOrderHistoryDetailVendor(selectedOrderHistoryVendor?.eventId))
-        // dispatch(    getEventOnVendor(selectedOrderHistoryVendor?.eventId))
             .finally(() => setRefreshing(false));
     };
-
-    useEffect(()=> {
-        // dispatch(getEventOnVendor(selectedOrderHistoryVendor?.eventId))
-    }, [dispatch, selectedOrderHistoryVendor?.eventId])
 
     const formatDate = (date) => {
         return moment(date).format('DD MMM YYYY')
@@ -84,7 +79,7 @@ const OrderDetailVendor = () => {
                             elevation: 2
                         }}
                     >
-                                                {renderDetailItem('Invoice ID', selectedInvoiceVendor?.invoiceId)}
+                        {renderDetailItem('Invoice ID', selectedInvoiceVendor?.invoiceId)}
                         {renderDetailItem('Event Name', selectedInvoiceVendor?.eventName)}
                         {renderDetailItem('Event Period', `${formatDate(selectedInvoiceVendor?.startDate)} - ${formatDate(selectedInvoiceVendor?.endDate)}`)}
                         {renderDetailItem('Customer Name', selectedInvoiceVendor?.customerName)}
