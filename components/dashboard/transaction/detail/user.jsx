@@ -22,18 +22,16 @@ const OrderDetailUser = () => {
         return moment(date).format('DD MMM YYYY')
     }
 
-    // const getEventDetailResponse = (id) => {
-    //     dispatch(getEventById(id));
-    // };
+    const getEventDetailResponse = (id) => {
+        dispatch(getEventById(id));
+    };
 
-    // useEffect(() => {
-    //     console.log("selectedInvoice", selectedInvoiceCustomer)
-    //     console.log("invoice detail", selectedInvoiceCustomer.eventId)
-    //     if (selectedInvoiceCustomer?.eventId) {
-    //         getEventDetailResponse(selectedInvoiceCustomer.eventId);
-    //         // console.log("Ke HITT!")
-    //     }
-    // }, [selectedInvoiceCustomer]);
+    useEffect(() => {
+        if (selectedInvoiceCustomer?.eventId) {
+            getEventDetailResponse(selectedInvoiceCustomer?.eventId);
+            // console.log("Ke HITT!")
+        }
+    }, [selectedInvoiceCustomer]);
 
     // const allApproved = event?.eventDetailResponseList?.every(detail => detail.approvalStatus === 'APPROVED')
 
