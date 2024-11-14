@@ -4,7 +4,7 @@ import AntDesignIcons from "react-native-vector-icons/AntDesign";
 import {router} from "expo-router";
 import {useSelector, useDispatch} from "react-redux";
 import moment from "moment";
-import axios from "axios";
+import axios, { all } from "axios";
 import Animated, {FadeInDown, FadeInUp} from 'react-native-reanimated';
 import BottomPadding from "@/components/misc/BottomPadding";
 import { getEventById } from "@/redux/slices/eventSlice";
@@ -22,20 +22,23 @@ const OrderDetailUser = () => {
         return moment(date).format('DD MMM YYYY')
     }
 
-    const getEventDetailResponse = (id) => {
-        dispatch(getEventById(id));
-    };
+    // const getEventDetailResponse = (id) => {
+    //     dispatch(getEventById(id));
+    // };
 
-    useEffect(() => {
-        console.log("selectedInvoice", selectedInvoiceCustomer)
-        console.log("invoice detail", selectedInvoiceCustomer.eventId)
-        if (selectedInvoiceCustomer?.eventId) {
-            getEventDetailResponse(selectedInvoiceCustomer.eventId);
-            // console.log("Ke HITT!")
-        }
-    }, [selectedInvoiceCustomer]);
+    // useEffect(() => {
+    //     console.log("selectedInvoice", selectedInvoiceCustomer)
+    //     console.log("invoice detail", selectedInvoiceCustomer.eventId)
+    //     if (selectedInvoiceCustomer?.eventId) {
+    //         getEventDetailResponse(selectedInvoiceCustomer.eventId);
+    //         // console.log("Ke HITT!")
+    //     }
+    // }, [selectedInvoiceCustomer]);
 
     // const allApproved = event?.eventDetailResponseList?.every(detail => detail.approvalStatus === 'APPROVED')
+
+  
+
     useEffect(() => {
     if (event?.eventDetailResponseList) {
         const filteredDetails = event.eventDetailResponseList
@@ -204,18 +207,14 @@ const OrderDetailUser = () => {
 
                     {/* Vendor List */}
                     {
-                        selectedInvoiceCustomer?.invoiceDetailResponseList.length > 0 && (
+                        selectedInvoiceCustomer?.invoiceDetailResponseList.length > 0 && !selectedInvoiceCustomer?.isEventCancelled && (
                             <DetailCard title="Selected Vendors">
                             {selectedInvoiceCustomer?.invoiceDetailResponseList.map((item, index) => (
                                 <Animated.View 
                                     key={index} 
                                     entering={FadeInDown.delay(index * 100)}
                                     className={`
-                                        flex flex-row gap-4 w-full items-center mt-2
-                                        ${item.approvalStatus === 'APPROVED' 
-                                            ? 'bg-green-50' 
-                                            : 'bg-red-50'
-                                        } p-4 rounded-xl
+                                        flex flex-row gap-4 w-full items-center mt-2 bg-slate-100 p-4 rounded-xl
                                     `}
                                 >
                                     <View className="flex-1">
@@ -244,7 +243,7 @@ const OrderDetailUser = () => {
 
                     {/* Total Cost */}
                     {
-                        selectedInvoiceCustomer?.paymentStatus === "UNPAID" && selectedInvoiceCustomer?.totalCost > 0 && (
+                        selectedInvoiceCustomer?.paymentStatus === "UNPAID" && selectedInvoiceCustomer?.totalCost > 0 && !selectedInvoiceCustomer?.isEventCancelled && (
                             <DetailCard title="Total Cost">
                                 <Text className="text-3xl font-outfitBold text-gray-800">
                                     {`Rp ${(selectedInvoiceCustomer?.totalCost + selectedInvoiceCustomer?.adminFeeResponse?.cost)
@@ -263,7 +262,7 @@ const OrderDetailUser = () => {
                         !allApproved && selectedInvoiceCustomer?.paymentStatus === "UNPAID" && (
                             <DetailCard title="Vendor Status">
                             <Text className="text-xl font-outfitBold text-gray-800">
-                                Waiting Vendor to Approve
+                                { !selectedInvoiceCustomer?.isEventCancelled ? "Waiting for approval" : "Cancelled"  }
                             </Text>
                         </DetailCard>
                         ) 

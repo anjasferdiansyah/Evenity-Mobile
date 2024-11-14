@@ -44,11 +44,21 @@ const EditProduct = () => {
     }, [selectedProduct, setValue]);
 
 
-    const mapToLabelAndValue = (categories) => {
-        return categories.map((category) => ({
-            label: category.mainCategory,
-            value: category.id,
-        }));
+     const mapToLabelAndValue = (categories) => {
+        console.log("categories", categories);
+        const uniqueCategories = new Map();
+    
+        categories.forEach(category => {
+            // Jika ID kategori belum ada di dalam Map, tambahkan
+            if (!uniqueCategories.has(category.mainCategory)) {
+                uniqueCategories.set(category.mainCategory, {
+                    label: category.mainCategory,
+                    value: category.id,
+                });
+            }
+        });
+
+        return Array.from(uniqueCategories.values());
     }
 
     const onSubmit = async (data) => {

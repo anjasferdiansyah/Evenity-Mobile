@@ -20,6 +20,7 @@ const MakeEventDate = () => {
 
     const {control, handleSubmit, setValue, formState: {errors, isValid}} = useForm({
         resolver: zodResolver(eventDateSchema),
+        mode: "onChange",
     });
 
     const onSubmit = (data) => {

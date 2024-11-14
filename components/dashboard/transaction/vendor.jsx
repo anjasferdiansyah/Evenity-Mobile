@@ -236,7 +236,7 @@ export function OrderHistoryVendor() {
                                 elevation: 3,
                             }}
                         >
-                            {["All", "NOT_STARTED","ON_PROGRESS" , "FINISHED"].map((item, index) => (
+                            {["All", "NOT_STARTED","ON_PROGRESS" , "FINISHED", "CANCELLED"].map((item, index) => (
                                 <TouchableOpacity
                                     key={item}
                                     onPress={() => handlePress(item, index)}
