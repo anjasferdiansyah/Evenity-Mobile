@@ -59,8 +59,18 @@ export default function CheckApprove() {
         Pending: historyEvent.filter(
             (item) =>
                 item.eventDetailResponseList &&
-                item.eventDetailResponseList.some(
-                    (detail) => detail.approvalStatus === "PENDING"
+                (
+                    item.eventDetailResponseList.some(
+                        (detail) => detail.approvalStatus === "PENDING"
+                    ) ||
+                    (
+                        item.eventDetailResponseList.some(
+                            (detail) => detail.approvalStatus === "APPROVED"
+                        ) &&
+                        item.eventDetailResponseList.some(
+                            (detail) => detail.approvalStatus === "REJECTED"
+                        )
+                    )
                 )
         ),
         Cancelled: historyEvent.filter(
@@ -89,12 +99,20 @@ export default function CheckApprove() {
         );
         const hasCancelled = event?.isCancelled
 
-        if (allApproved) return "Accepted";
-        if (allRejected) return "Rejected";
-        if (hasPending) return "Pending";
-        if (hasApproved && hasRejected) return "Pending";
-        if (hasCancelled) return "Cancelled";
-        return "Unknown";
+        switch (true) {
+            case allApproved:
+                return "Accepted";
+            case allRejected:
+                return "Rejected";
+            case hasCancelled:
+                return "Cancelled";
+            case hasPending:
+                return "Pending";
+            case hasApproved && hasRejected:
+                return "Pending";
+            default:
+                return "Unknown";
+        }
     };
 
     const formatedDate = (date) => {
